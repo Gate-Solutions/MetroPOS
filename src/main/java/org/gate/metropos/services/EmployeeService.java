@@ -13,12 +13,18 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @AllArgsConstructor
-@NoArgsConstructor
 public class EmployeeService {
-    private EmployeeRepository employeeRepository = new EmployeeRepository();
-    private PasswordEncoder passwordEncoder = new PasswordEncoder();
+    private EmployeeRepository employeeRepository;
+    private PasswordEncoder passwordEncoder;
     @Getter
     private Employee loggedInEmployee = null;
+
+
+
+    public EmployeeService() {
+        employeeRepository = new EmployeeRepository();
+        passwordEncoder = new PasswordEncoder();
+    }
 
     public ServiceResponse<Employee> createEmployee(Employee employee) {
         if (employeeRepository.findByEmail(employee.getEmail()) != null) {
@@ -158,5 +164,16 @@ public class EmployeeService {
         this.loggedInEmployee = null;
         return new ServiceResponse<>(true, 200, "Logout successful", null);
     }
+
+    public ServiceResponse<Boolean> isFirstTimeLogin() {
+        if (loggedInEmployee == null) {
+            return new ServiceResponse<>(false, 401, "No employee logged in", null);
+        }
+        return new ServiceResponse<>(true, 200, "First time status retrieved", loggedInEmployee.isFirstTime());
+    }
+
+
+
+
 
 }
