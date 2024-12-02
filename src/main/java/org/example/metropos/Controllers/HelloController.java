@@ -1,4 +1,4 @@
-package org.example.metropos;
+package org.example.metropos.Controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

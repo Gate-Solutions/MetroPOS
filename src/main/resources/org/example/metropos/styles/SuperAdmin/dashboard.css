@@ -1,0 +1,33 @@
+.sidebar {
+    -fx-background-color: -primary-color;
+    -fx-min-width: 250px;
+    -fx-padding: 20px 10px;
+    -fx-spacing: 10;
+}
+
+.brand-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 0 0 20px 0;
+    -fx-alignment: center;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 15px 20px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-min-width: 230px;
+    -fx-cursor: hand;
+}
+
+.nav-button:hover {
+    -fx-background-color: -primary-color-dark;
+    -fx-background-radius: 5;
+}
+
+.logout-button {
+    -fx-text-fill: #ff4444;
+}

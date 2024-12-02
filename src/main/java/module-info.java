@@ -6,6 +6,10 @@ module org.example.metropos {
     requires org.jooq;
 
 
-    opens org.gate.metropos to javafx.fxml;
-    exports org.gate.metropos;
+    opens org.example.metropos to javafx.fxml;
+    exports org.example.metropos;
+    exports org.example.metropos.Controllers;
+    opens org.example.metropos.Controllers to javafx.fxml;
+    exports org.example.metropos.Controllers.SuperAdminControllers;
+    opens org.example.metropos.Controllers.SuperAdminControllers to javafx.fxml;
 }

@@ -1,4 +1,4 @@
-package org.gate.metropos.config;
+package org.example.metropos.config;
 
 
 import com.zaxxer.hikari.HikariConfig;
