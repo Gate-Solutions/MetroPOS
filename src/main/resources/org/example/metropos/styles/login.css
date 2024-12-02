@@ -1,0 +1,39 @@
+.root {
+    -fx-background-color: linear-gradient(to right bottom, -primary-color, -secondary-color);
+}
+
+.login-panel {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 0);
+    -fx-max-width: 360;
+    -fx-max-height: 400;
+}
+
+.title-label {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-color;
+}
+
+.input-field {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-font-size: 14px;
+    -fx-padding: 10;
+    -fx-pref-width: 280;
+}
+
+.login-button {
+    -fx-background-color: -primary-color;
+    -fx-text-fill: -background-color;
+    -fx-font-size: 14px;
+    -fx-padding: 12;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-pref-width: 280;
+}
+
+.login-button:hover {
+    -fx-background-color: -primary-color-dark;
+}

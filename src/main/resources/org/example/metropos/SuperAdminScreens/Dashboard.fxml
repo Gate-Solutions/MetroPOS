@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.metropos.Controllers.SuperAdminControllers.DashBoardController"
+      stylesheets="@../styles/global.css,@../styles/SuperAdmin/dashboard.css">
+
+    <!-- Sidebar -->
+    <VBox styleClass="sidebar">
+        <Label text="Metro POS" styleClass="brand-label"/>
+
+        <Button text="Dashboard" styleClass="nav-button" fx:id="dashboardBtn"/>
+        <Button text="Manage Branches" styleClass="nav-button" fx:id="branchesBtn"/>
+        <Button text="Manage Users" styleClass="nav-button" fx:id="usersBtn"/>
+        <Button text="Reports" styleClass="nav-button" fx:id="reportsBtn"/>
+        <Button text="Settings" styleClass="nav-button" fx:id="settingsBtn"/>
+
+        <Region VBox.vgrow="ALWAYS"/>
+        <Button text="Logout" styleClass="nav-button, logout-button" fx:id="logoutBtn"/>
+    </VBox>
+
+    <!-- Main Content Area -->
+    <StackPane HBox.hgrow="ALWAYS" fx:id="contentArea">
+        <!-- Content will be loaded here dynamically -->
+    </StackPane>
+</HBox>
