@@ -1,6 +1,5 @@
 package org.example.metropos.scheduler;
 
-import lombok.RequiredArgsConstructor;
 import org.example.metropos.services.SyncService;
 
 import java.util.concurrent.Executors;

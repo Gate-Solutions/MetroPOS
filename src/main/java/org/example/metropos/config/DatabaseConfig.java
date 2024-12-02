@@ -15,7 +15,7 @@ public class DatabaseConfig {
     private static void initializeRemoteDataSources() {
         try {
             HikariConfig remoteConfig = new HikariConfig();
-            remoteConfig.setJdbcUrl("jdbc:postgresql://remote-host:5432/remote_db");
+            remoteConfig.setJdbcUrl("jdbc:postgresql://localhost:5432/remote_db");
             remoteConfig.setUsername("postgres");
             remoteConfig.setPassword("asad123");
             remoteDataSource = new HikariDataSource(remoteConfig);

@@ -9,6 +9,7 @@ public enum SyncTrackingFields {
     ID("id"),
     TABLE_NAME("table_name"),
     RECORD_ID("record_id"),
+    FIELD_VALUES("field_values"),
     OPERATION("operation"),
     SYNC_STATUS("sync_status"),
     CREATED_AT("created_at");
