@@ -1,0 +1,24 @@
+.page-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text-color;
+}
+
+.stat-card {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
+    -fx-min-width: 200px;
+}
+
+.stat-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: -text-color;
+}
+
+.stat-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-color;
+}

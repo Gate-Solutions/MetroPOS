@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="org.example.metropos.Controllers.LoginController"
+           stylesheets="@styles/login.css,@styles/global.css"
+           prefHeight="600.0" prefWidth="800.0">
+
+    <VBox alignment="CENTER" spacing="15" styleClass="login-panel">
+        <padding>
+            <Insets top="30" right="40" bottom="30" left="40"/>
+        </padding>
+
+        <Label text="Metro POS System" styleClass="title-label">
+            <VBox.margin>
+                <Insets bottom="20"/>
+            </VBox.margin>
+        </Label>
+
+        <VBox spacing="15" alignment="CENTER">
+            <ComboBox fx:id="userTypeComboBox"
+                      promptText="Select User Type"
+                      styleClass="input-field"
+                      maxWidth="280"/>
+
+            <TextField fx:id="usernameField"
+                       promptText="Username"
+                       styleClass="input-field"
+                       maxWidth="280"/>
+
+            <PasswordField fx:id="passwordField"
+                           promptText="Password"
+                           styleClass="input-field"
+                           maxWidth="280"/>
+
+            <Button fx:id="loginButton"
+                    text="Login"
+                    styleClass="login-button"
+                    maxWidth="280">
+                <VBox.margin>
+                    <Insets top="10"/>
+                </VBox.margin>
+            </Button>
+        </VBox>
+    </VBox>
+</StackPane>

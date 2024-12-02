@@ -8,5 +8,7 @@ module org.example.metropos {
 
 
     opens org.example.metropos to javafx.fxml;
+    opens org.example.metropos.Controllers to javafx.fxml;
+    exports org.example.metropos.Controllers to javafx.fxml;
     exports org.example.metropos;
 }
