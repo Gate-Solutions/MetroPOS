@@ -9,7 +9,7 @@ public class InitializeRemoteDatabase {
         if(remoteDSL == null) {
             return;
         }
-        DatabaseInitializer initializer = new DatabaseInitializer(remoteDSL);
+        DatabaseInitializer initializer = new DatabaseInitializer(remoteDSL, false);
         initializer.createTables();
     }
 }

@@ -49,11 +49,11 @@ public class DatabaseConfig {
         return remoteDsl;
     }
 
-    public boolean isRemoteAvailable() {
+    public static boolean isRemoteAvailable() {
         return remoteDsl != null;
     }
 
-    public void shutdown() {
+    public static void shutdown() {
         if (localDataSource != null) {
             localDataSource.close();
         }
