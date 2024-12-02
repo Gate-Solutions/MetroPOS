@@ -34,11 +34,11 @@ public class DatabaseInitializer {
                 .column(SyncTrackingFields.TABLE_NAME.getColumnName(), VARCHAR(255))
                 .column(SyncTrackingFields.RECORD_ID.getColumnName(), INTEGER)
                 .column(SyncTrackingFields.OPERATION.getColumnName(), VARCHAR(50))
+                .column(SyncTrackingFields.FIELD_VALUES.getColumnName(), JSONB)
                 .column(SyncTrackingFields.SYNC_STATUS.getColumnName(), BOOLEAN.defaultValue(false))
                 .column(SyncTrackingFields.CREATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()))
                 .primaryKey(SyncTrackingFields.ID.getColumnName())
                 .execute();
     }
-
 
 }
