@@ -4,14 +4,13 @@ import org.gate.metropos.enums.SuperAdminFields;
 import org.gate.metropos.enums.SyncTrackingFields;
 import org.gate.metropos.enums.UserFields;
 import org.gate.metropos.enums.UserRole;
-import org.gate.metropos.models.Employee;
 import org.gate.metropos.models.SuperAdmin;
-import org.gate.metropos.models.User;
 import org.jooq.DSLContext;
+
 import static org.jooq.impl.DSL.*;
 import static org.jooq.impl.SQLDataType.*;
 
-
+// TODO: Modify inherited table queries to add non inherited constraints
 public class DatabaseInitializer {
     private final DSLContext dsl;
     boolean isLocal = true;
@@ -28,6 +27,7 @@ public class DatabaseInitializer {
     public void initialize() {
         createTables();
         initializeSuperAdmin();
+        createEmployeeTable();
     }
 
     public void createTables() {
@@ -81,7 +81,6 @@ public class DatabaseInitializer {
         dsl.execute(sql);
     }
 
-
     public void initializeSuperAdmin() {
         boolean superAdminExists = dsl.fetchCount(SuperAdminFields.SuperAdminTable.toTableField()) > 0;
 
@@ -103,5 +102,22 @@ public class DatabaseInitializer {
         }
     }
 
+    public void createEmployeeTable() {
+        String sql = """
+    CREATE TABLE IF NOT EXISTS employees (
+        id BIGINT GENERATED ALWAYS AS IDENTITY,
+        name VARCHAR(255) NOT NULL,
+        employee_no VARCHAR(50) NOT NULL,
+        is_active BOOLEAN DEFAULT true,
+        is_first_time BOOLEAN DEFAULT true,
+        salary DECIMAL(10,2),
+        branch_id BIGINT,
+        CONSTRAINT employee_no_unique UNIQUE (employee_no),
+        CONSTRAINT salary_check CHECK (salary > 0)
+--        CONSTRAINT branch_fk FOREIGN KEY (branch_id) REFERENCES branches(id)
+    ) INHERITS (users);
+    """;
+        dsl.execute(sql);
+    }
 
 }
