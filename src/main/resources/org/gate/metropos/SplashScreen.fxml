@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.gate.metropos.Controllers.SplashScreenController"
+            prefHeight="400.0" prefWidth="600.0"
+            style="-fx-background-color: linear-gradient(to right bottom, #2193b0, #6dd5ed);"
+
+>
+
+    <VBox alignment="CENTER" spacing="20" AnchorPane.topAnchor="0"
+          AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0">
+
+        <!--        <ImageView fitHeight="150" fitWidth="150" preserveRatio="true">-->
+        <!--            <Image url="@/org/example/metropos/assets/splashImage.jpg"/>-->
+        <!--        </ImageView>-->
+
+        <Label text="MetroPOS" textFill="WHITE">
+            <font>
+                <Font name="System Bold" size="36"/>
+            </font>
+        </Label>
+
+        <Label text="Point of Sale System" textFill="WHITE">
+            <font>
+                <Font size="18"/>
+            </font>
+        </Label>
+
+        <ProgressBar fx:id="loadingProgress"
+                     prefWidth="300"
+                     style="-fx-accent: white;"/>
+
+        <Label fx:id="loadingLabel"
+               text="Loading..."
+               textFill="WHITE">
+            <font>
+                <Font size="14"/>
+            </font>
+        </Label>
+    </VBox>
+</AnchorPane>
+
