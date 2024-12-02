@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.gate.metropos.Controllers.SuperAdminControllers.HomeController"
+      stylesheets="@../styles/SuperAdmin/home.css, @../styles/global.css"
+      spacing="20">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Dashboard Overview" styleClass="page-title"/>
+
+    <GridPane hgap="20" vgap="20">
+        <VBox styleClass="stat-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <Label text="Total Branches" styleClass="stat-label"/>
+            <Label text="12" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+            <Label text="Total Users" styleClass="stat-label"/>
+            <Label text="45" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="2" GridPane.rowIndex="0">
+            <Label text="Active Sessions" styleClass="stat-label"/>
+            <Label text="8" styleClass="stat-value"/>
+        </VBox>
+
+
+
+        <VBox styleClass="stat-card" GridPane.columnIndex="3" GridPane.rowIndex="0">
+            <Label text="Total Sales Today" styleClass="stat-label"/>
+            <Label text="10" styleClass="stat-value"/>
+        </VBox>
+
+    </GridPane>
+
+    <TableView VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn text="Branch" prefWidth="150"/>
+            <TableColumn text="Manager" prefWidth="150"/>
+            <TableColumn text="Today's Sales" prefWidth="150"/>
+            <TableColumn text="Status" prefWidth="100"/>
+        </columns>
+    </TableView>
+</VBox>
