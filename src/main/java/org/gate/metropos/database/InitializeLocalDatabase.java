@@ -8,6 +8,6 @@ public class InitializeLocalDatabase {
     public static void main(String[] args) {
         DSLContext localDSL = DatabaseConfig.getLocalDSL();
         DatabaseInitializer initializer = new DatabaseInitializer(localDSL);
-        initializer.createTables();
+        initializer.initialize();
     }
 }
