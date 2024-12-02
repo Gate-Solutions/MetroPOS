@@ -7,6 +7,6 @@ module org.example.metropos {
     requires com.fasterxml.jackson.databind;
 
 
-    opens org.example.metropos to javafx.fxml;
-    exports org.example.metropos;
+    opens org.gate.metropos to javafx.fxml;
+    exports org.gate.metropos;
 }
