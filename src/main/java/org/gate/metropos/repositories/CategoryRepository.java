@@ -21,7 +21,7 @@ public class CategoryRepository {
     public Category createCategory(Category category) {
         Record record = dsl.insertInto(CategoryFields.CategoryTable.toTableField())
                 .set(CategoryFields.NAME.toField(), category.getName())
-                .returning()
+                .returning(CategoryFields.ID.toField(), CategoryFields.NAME.toField())
                 .fetchOne();
         return mapToCategory(record);
     }
@@ -49,6 +49,22 @@ public class CategoryRepository {
 
         return records.map(this::mapToCategory);
     }
+
+    public Category updateCategory(Category category) {
+        Record record = dsl.update(CategoryFields.CategoryTable.toTableField())
+                .set(CategoryFields.NAME.toField(), category.getName())
+                .where(CategoryFields.ID.toField().eq(category.getId()))
+                .returning()
+                .fetchOne();
+        return mapToCategory(record);
+    }
+    public boolean deleteCategory(Long id) {
+        int result = dsl.deleteFrom(CategoryFields.CategoryTable.toTableField())
+                .where(CategoryFields.ID.toField().eq(id))
+                .execute();
+        return result > 0;
+    }
+
 
 
 }
