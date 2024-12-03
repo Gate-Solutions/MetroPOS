@@ -24,12 +24,15 @@ public class ProductService {
     }
 
     public ServiceResponse<Product> createProduct(Product product) {
+        Product existingProduct = productRepository.checkExistence(product.getCode());
+        if (existingProduct != null) {
+            return new ServiceResponse<>(false, 400, "Product with this code already exists", null);
+        }
         try {
             validateProductData(product);
         } catch (IllegalArgumentException e) {
             return new ServiceResponse<>(false, 400, e.getMessage(), null);
         }
-
         Product newProduct = productRepository.createProduct(product);
         return new ServiceResponse<>(true, 200, "Product created successfully", newProduct);
     }

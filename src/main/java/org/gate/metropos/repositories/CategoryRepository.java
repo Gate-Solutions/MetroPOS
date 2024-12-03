@@ -18,11 +18,19 @@ public class CategoryRepository {
         dsl = DatabaseConfig.getLocalDSL();
     }
 
-    public Category createCategory(Category category) {
+    public Category createCategory(String categoryName) {
         Record record = dsl.insertInto(CategoryFields.CategoryTable.toTableField())
-                .set(CategoryFields.NAME.toField(), category.getName())
+                .set(CategoryFields.NAME.toField(), categoryName)
                 .returning(CategoryFields.ID.toField(), CategoryFields.NAME.toField())
                 .fetchOne();
+        return mapToCategory(record);
+    }
+    public Category findByName(String name) {
+        Record record = dsl.select()
+                .from(CategoryFields.CategoryTable.toTableField())
+                .where(CategoryFields.NAME.toField().eq(name))
+                .fetchOne();
+
         return mapToCategory(record);
     }
 
