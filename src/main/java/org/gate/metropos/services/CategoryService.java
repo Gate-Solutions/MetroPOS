@@ -36,4 +36,40 @@ public class CategoryService {
         List<Category> categories = categoryRepository.getAllCategories();
         return new ServiceResponse<>(true, 200, "Categories retrieved successfully", categories);
     }
+    public ServiceResponse<Void> deleteCategory(Long id) {
+        // Check if category exists
+        Category existingCategory = categoryRepository.findById(id);
+        if (existingCategory == null) {
+            return new ServiceResponse<>(false, 404, "Category not found", null);
+        }
+
+        // Delete category
+        boolean deleted = categoryRepository.deleteCategory(id);
+        if (deleted) {
+            return new ServiceResponse<>(true, 200, "Category deleted successfully", null);
+        } else {
+            return new ServiceResponse<>(false, 500, "Failed to delete category", null);
+        }
+    }
+    public ServiceResponse<Category> updateCategory(Category category) {
+
+        if (category.getId() == null) {
+            return new ServiceResponse<>(false, 400, "Category ID cannot be null", null);
+        }
+        if (category.getName() == null || category.getName().trim().isEmpty()) {
+            return new ServiceResponse<>(false, 400, "Category name cannot be empty", null);
+        }
+
+        Category existingCategory = categoryRepository.findById(category.getId());
+        if (existingCategory == null) {
+            return new ServiceResponse<>(false, 404, "Category not found", null);
+        }
+
+
+        Category updatedCategory = categoryRepository.updateCategory(category);
+        return new ServiceResponse<>(true, 200, "Category updated successfully", updatedCategory);
+    }
+
+
+
 }

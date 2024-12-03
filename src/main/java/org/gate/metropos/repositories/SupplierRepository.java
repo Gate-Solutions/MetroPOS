@@ -42,11 +42,19 @@ public class SupplierRepository {
                 .set(SupplierFields.PHONE.toField(), supplier.getPhone())
                 .set(SupplierFields.NTN_NUMBER.toField(), supplier.getNtnNumber())
                 .set(SupplierFields.IS_ACTIVE.toField(), true)
-                .returning()
+                .returning(
+                        SupplierFields.ID.toField(),
+                        SupplierFields.NAME.toField(),
+                        SupplierFields.EMAIL.toField(),
+                        SupplierFields.PHONE.toField(),
+                        SupplierFields.NTN_NUMBER.toField(),
+                        SupplierFields.IS_ACTIVE.toField()
+                )
                 .fetchOne();
 
         return mapToSupplier(record);
     }
+
 
     public Supplier updateSupplier(Supplier supplier) {
         Record record = dsl.update(SupplierFields.SupplierTable.toTableField())
@@ -58,7 +66,12 @@ public class SupplierRepository {
                 .set(SupplierFields.NTN_NUMBER.toField(), supplier.getNtnNumber())
 
                 .where(SupplierFields.ID.toField().eq(supplier.getId()))
-                .returning()
+                .returning(SupplierFields.ID.toField(),
+                        SupplierFields.NAME.toField(),
+                        SupplierFields.EMAIL.toField(),
+                        SupplierFields.PHONE.toField(),
+                        SupplierFields.NTN_NUMBER.toField(),
+                        SupplierFields.IS_ACTIVE.toField())
                 .fetchOne();
 
         return mapToSupplier(record);

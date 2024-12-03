@@ -1,9 +1,6 @@
 package org.gate.metropos.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -11,11 +8,13 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Product {
     private Long id;
     private String name;
     private String code;
-    private Long categoryId;
+
+    private Category category;
     private BigDecimal originalPrice;
     private BigDecimal salePrice;
     private BigDecimal priceOfCarton;

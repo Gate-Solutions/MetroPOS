@@ -80,9 +80,6 @@ public class SupplierService {
         if (supplier.getName() == null || supplier.getName().trim().isEmpty()) {
             throw new IllegalArgumentException("Supplier name cannot be empty");
         }
-        if (supplier.getCompanyName() == null || supplier.getCompanyName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Company name cannot be empty");
-        }
         if (supplier.getPhone() == null || !supplier.getPhone().matches("\\d{10}")) {
             throw new IllegalArgumentException("Invalid phone number format");
         }
@@ -91,6 +88,12 @@ public class SupplierService {
         }
     }
 
-}
+
+
+
+    }
+
+
+
 
 
