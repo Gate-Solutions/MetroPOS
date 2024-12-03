@@ -15,7 +15,7 @@ public class Product {
     private Long id;
     private String name;
     private String code;
-    private String category;
+    private Long categoryId;
     private BigDecimal originalPrice;
     private BigDecimal salePrice;
     private BigDecimal priceOfCarton;
