@@ -1,9 +1,6 @@
 package org.gate.metropos.database;
 
-import org.gate.metropos.enums.SuperAdminFields;
-import org.gate.metropos.enums.SyncTrackingFields;
-import org.gate.metropos.enums.UserFields;
-import org.gate.metropos.enums.UserRole;
+import org.gate.metropos.enums.*;
 import org.gate.metropos.models.SuperAdmin;
 import org.jooq.DSLContext;
 
@@ -27,17 +24,20 @@ public class DatabaseInitializer {
     public void initialize() {
         createTables();
         initializeSuperAdmin();
-        createEmployeeTable();
+
+
     }
 
     public void createTables() {
-//        Add All the tables
+//        Adding All the tables
         createSyncTrackingTable();
         createUserTable();
+        createEmployeeTable();
         createSuperAdminTable();
+        createBranchTable();
     }
 
-//    Add functions to create tables
+//    Adding functions to create tables
     public void createSyncTrackingTable() {
         if(!isLocal)
             return;
@@ -119,5 +119,26 @@ public class DatabaseInitializer {
     """;
         dsl.execute(sql);
     }
+
+    public void createBranchTable() {
+        dsl.createTableIfNotExists(BranchFields.BranchTable.getColumnName())
+                .column(BranchFields.ID.getColumnName(), BIGINT.identity(true).notNull())
+                .column(BranchFields.BRANCH_CODE.getColumnName(), VARCHAR(50).notNull())
+                .column(BranchFields.NAME.getColumnName(), VARCHAR(255).notNull())
+                .column(BranchFields.CITY.getColumnName(), VARCHAR(100).notNull())
+                .column(BranchFields.ADDRESS.getColumnName(), VARCHAR(500).notNull())
+                .column(BranchFields.PHONE.getColumnName(), VARCHAR(20).notNull())
+                .column(BranchFields.IS_ACTIVE.getColumnName(), BOOLEAN.defaultValue(true).notNull())
+                .column(BranchFields.NUMBER_OF_EMPLOYEES.getColumnName(), INTEGER.defaultValue(0).notNull())
+                .column(BranchFields.CREATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()).notNull())
+                .column(BranchFields.UPDATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()).notNull())
+                .constraints(
+                        primaryKey(BranchFields.ID.getColumnName()),
+                        unique(BranchFields.BRANCH_CODE.getColumnName()),
+                        check(field(BranchFields.NUMBER_OF_EMPLOYEES.getColumnName()).greaterOrEqual(0))
+                )
+                .execute();
+    }
+
 
 }
