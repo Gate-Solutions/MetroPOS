@@ -29,6 +29,13 @@ public class ProductRepository {
         return mapToProduct(record);
     }
 
+    public Product checkExistence(String code) {
+        Record record = dsl.select()
+                .from(ProductFields.ProductTable.toTableField())
+                .where(ProductFields.CODE.toField().eq(code))
+                .fetchOne();
+        return mapToProduct(record);
+    }
     public Product createProduct(Product product) {
         Record record = dsl.insertInto(ProductFields.ProductTable.toTableField())
                 .set(ProductFields.NAME.toField(), product.getName())
