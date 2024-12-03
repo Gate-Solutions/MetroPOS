@@ -47,11 +47,16 @@ public class BranchRepository {
                 .set(BranchFields.CITY.toField(), branch.getCity())
                 .set(BranchFields.ADDRESS.toField(), branch.getAddress())
                 .set(BranchFields.PHONE.toField(), branch.getPhone())
-                .returning()
+                .returning(
+                        BranchFields.ID.toField()
+                )
                 .fetchOne();
 
+        if (record == null) {return null;}
 
-        return mapToBranch(record);
+        Long branchId = record.get(BranchFields.ID.toField(), Long.class);
+
+        return findById(branchId);
     }
 
 
@@ -132,8 +137,6 @@ public class BranchRepository {
 
                 .build();
     }
-
-
 
 
 }

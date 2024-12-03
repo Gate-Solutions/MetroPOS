@@ -67,7 +67,6 @@ public class PurchaseInvoiceRepository {
         return dsl.transactionResult(configuration -> {
             DSLContext ctx = DSL.using(configuration);
             // Insert main invoice
-            System.out.println(invoice);
             Record record = ctx.insertInto(PurchaseInvoiceFields.toTableField())
                     .set(PurchaseInvoiceFields.INVOICE_NUMBER.toField(), invoice.getInvoiceNumber())
                     .set(PurchaseInvoiceFields.SUPPLIER_ID.toField(), invoice.getSupplierId())
