@@ -23,6 +23,17 @@ public class EmployeeRepository {
     public EmployeeRepository () {
         dsl = DatabaseConfig.getLocalDSL();
     }
+
+    public Employee findById(Long id) {
+        Record record = dsl.select()
+                .from(EmployeeFields.EmployeeTable.toTableField())
+                .where(UserFields.ID.toField().eq(id))
+                .fetchOne();
+
+        if(record == null) return null;
+        return mapToEmployee(record);
+    }
+
     public Employee findByEmail(String email) {
         Record record = dsl.select()
                 .from(EmployeeFields.EmployeeTable.toTableField())

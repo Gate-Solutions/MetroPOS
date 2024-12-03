@@ -83,7 +83,7 @@ public class ProductService {
         if (product.getPriceOfCarton() == null || product.getPriceOfCarton().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Carton price must be greater than zero");
         }
-        if (product.getCategory().getId() == null) {
+        if (product.getCategory() == null || product.getCategory().getId() == null) {
             throw new IllegalArgumentException("Category ID cannot be null");
         }
         Category category = categoryRepository.findById(product.getCategory().getId());
