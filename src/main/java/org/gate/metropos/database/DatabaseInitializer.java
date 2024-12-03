@@ -36,6 +36,7 @@ public class DatabaseInitializer {
         createSuperAdminTable();
         createBranchTable();
         createSupplierTable();
+        createProductTables();
     }
 
 //    functions to create tables
@@ -160,4 +161,37 @@ public class DatabaseInitializer {
                 )
                 .execute();
     }
+
+    public void createProductTables() {
+        dsl.createTableIfNotExists("products")
+                .column("id", BIGINT.identity(true))
+                .column("name", VARCHAR(255).notNull())
+                .column("code", VARCHAR(50).notNull())
+                .column("category", VARCHAR(100))
+                .column("original_price", DECIMAL(10, 2).notNull())
+                .column("sale_price", DECIMAL(10, 2).notNull())
+                .column("is_active", BOOLEAN.defaultValue(true))
+                .column("price_of_carton", DECIMAL(10, 2).notNull())
+                .constraints(
+                        primaryKey("id"),
+                        unique("code"),
+                        check(field("sale_price").greaterThan(field("original_price")))
+                )
+                .execute();
+
+        dsl.createTableIfNotExists("branch_products")
+                .column("id", BIGINT.identity(true))
+                .column("branch_id", BIGINT.notNull())
+                .column("product_id", BIGINT.notNull())
+                .column("quantity", INTEGER.notNull().defaultValue(0))
+                .constraints(
+                        primaryKey("id"),
+                        unique("branch_id", "product_id"),
+                        foreignKey("branch_id").references("branches", "id"),
+                        foreignKey("product_id").references("products", "id"),
+                        check(field("quantity").greaterOrEqual(0))
+                )
+                .execute();
+    }
+
 }

@@ -1,16 +1,22 @@
 package org.gate.metropos.services;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.gate.metropos.models.Branch;
 import org.gate.metropos.repositories.BranchRepository;
 import org.gate.metropos.utils.ServiceResponse;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
+
 public class BranchService {
     private final BranchRepository branchRepository;
 
+    public BranchService() {
+        this.branchRepository = new BranchRepository();
+    }
     public ServiceResponse<Branch> createBranch(String branchCode, String name, String city, String address, String phone) {
 
         if (branchRepository.findByBranchCode(branchCode) != null) {
@@ -116,6 +122,8 @@ public class BranchService {
             throw new IllegalArgumentException("Invalid phone number format");
         }
     }
+
 }
+
 
 

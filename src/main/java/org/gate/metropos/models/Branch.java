@@ -18,7 +18,6 @@ public class Branch {
     private String phone;
     private boolean isActive;
     private int numberOfEmployees;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+
 }
 

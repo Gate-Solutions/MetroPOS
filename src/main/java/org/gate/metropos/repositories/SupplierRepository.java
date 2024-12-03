@@ -56,7 +56,7 @@ public class SupplierRepository {
                 .set(SupplierFields.PHONE.toField(), supplier.getPhone())
 
                 .set(SupplierFields.NTN_NUMBER.toField(), supplier.getNtnNumber())
-                .set(SupplierFields.UPDATED_AT.toField(), LocalDateTime.now())
+
                 .where(SupplierFields.ID.toField().eq(supplier.getId()))
                 .returning()
                 .fetchOne();
@@ -75,10 +75,10 @@ public class SupplierRepository {
     public void setSupplierStatus(Long id, boolean isActive) {
         dsl.update(SupplierFields.SupplierTable.toTableField())
                 .set(SupplierFields.IS_ACTIVE.toField(), isActive)
-                .set(SupplierFields.UPDATED_AT.toField(), LocalDateTime.now())
                 .where(SupplierFields.ID.toField().eq(id))
                 .execute();
     }
+
 
     private Supplier mapToSupplier(Record record) {
         if (record == null) return null;
@@ -91,8 +91,8 @@ public class SupplierRepository {
 
                 .ntnNumber(record.get(SupplierFields.NTN_NUMBER.toField(), String.class))
                 .isActive(record.get(SupplierFields.IS_ACTIVE.toField(), Boolean.class))
-                .createdAt(record.get(SupplierFields.CREATED_AT.toField(), LocalDateTime.class))
-                .updatedAt(record.get(SupplierFields.UPDATED_AT.toField(), LocalDateTime.class))
+
+
                 .build();
     }
 }
