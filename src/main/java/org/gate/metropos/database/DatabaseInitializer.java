@@ -35,9 +35,10 @@ public class DatabaseInitializer {
         createEmployeeTable();
         createSuperAdminTable();
         createBranchTable();
+        createSupplierTable();
     }
 
-//    Adding functions to create tables
+//    functions to create tables
     public void createSyncTrackingTable() {
         if(!isLocal)
             return;
@@ -140,5 +141,23 @@ public class DatabaseInitializer {
                 .execute();
     }
 
+    public void createSupplierTable() {
+        dsl.createTableIfNotExists(SupplierFields.SupplierTable.getColumnName())
+                .column(SupplierFields.ID.getColumnName(), BIGINT.identity(true))
+                .column(SupplierFields.NAME.getColumnName(), VARCHAR(255).notNull())
 
+                .column(SupplierFields.EMAIL.getColumnName(), VARCHAR(255))
+                .column(SupplierFields.PHONE.getColumnName(), VARCHAR(20).notNull())
+
+                .column(SupplierFields.NTN_NUMBER.getColumnName(), VARCHAR(50))
+                .column(SupplierFields.IS_ACTIVE.getColumnName(), BOOLEAN.defaultValue(true))
+                .column(SupplierFields.CREATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()))
+                .column(SupplierFields.UPDATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()))
+                .constraints(
+                        primaryKey(SupplierFields.ID.getColumnName()),
+                        unique(SupplierFields.NTN_NUMBER.getColumnName()),
+                        unique(SupplierFields.EMAIL.getColumnName())
+                )
+                .execute();
+    }
 }
