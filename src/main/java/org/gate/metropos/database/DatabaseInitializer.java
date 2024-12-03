@@ -1,6 +1,8 @@
 package org.gate.metropos.database;
 
 import org.gate.metropos.enums.*;
+import org.gate.metropos.enums.PurchaseInvoice.PurchaseInvoiceFields;
+import org.gate.metropos.enums.PurchaseInvoice.PurchaseInvoiceItemFields;
 import org.gate.metropos.models.SuperAdmin;
 import org.jooq.DSLContext;
 
@@ -24,12 +26,10 @@ public class DatabaseInitializer {
     public void initialize() {
         createTables();
         initializeSuperAdmin();
-
-
     }
 
     public void createTables() {
-//        Adding All the tables
+//        Add All the tables
         createSyncTrackingTable();
         createUserTable();
         createEmployeeTable();
@@ -37,9 +37,10 @@ public class DatabaseInitializer {
         createBranchTable();
         createSupplierTable();
         createProductTables();
+        createPurchaseInvoiceTables();
     }
 
-//    functions to create tables
+//   functions to create tables
     public void createSyncTrackingTable() {
         if(!isLocal)
             return;
@@ -197,7 +198,6 @@ public class DatabaseInitializer {
                 .execute();
     }
 
-
     public void createCategoryTable() {
         dsl.createTableIfNotExists("categories")
                 .column("id", BIGINT.identity(true))
@@ -208,4 +208,50 @@ public class DatabaseInitializer {
                 )
                 .execute();
     }
+
+    public void createPurchaseInvoiceTables() {
+        dsl.createTableIfNotExists(PurchaseInvoiceFields.PurchaseInvoiceTable.getColumnName())
+                .column(PurchaseInvoiceFields.ID.getColumnName(), BIGINT.identity(true))
+                .column(PurchaseInvoiceFields.INVOICE_NUMBER.getColumnName(), VARCHAR(50).notNull())
+                .column(PurchaseInvoiceFields.SUPPLIER_ID.getColumnName(), BIGINT.notNull())
+                .column(PurchaseInvoiceFields.BRANCH_ID.getColumnName(), BIGINT.notNull())
+                .column(PurchaseInvoiceFields.CREATED_BY.getColumnName(), BIGINT.notNull())
+                .column(PurchaseInvoiceFields.INVOICE_DATE.getColumnName(), DATE.notNull())
+                .column(PurchaseInvoiceFields.TOTAL_AMOUNT.getColumnName(), DECIMAL(10, 2).notNull())
+                .column(PurchaseInvoiceFields.NOTES.getColumnName(), VARCHAR(500))
+                .column(PurchaseInvoiceFields.CREATED_AT.getColumnName(), TIMESTAMPWITHTIMEZONE.defaultValue(currentOffsetDateTime()))
+                .column(PurchaseInvoiceFields.UPDATED_AT.getColumnName(), TIMESTAMPWITHTIMEZONE.defaultValue(currentOffsetDateTime()))
+                .constraints(
+                        primaryKey(PurchaseInvoiceFields.ID.getColumnName()),
+                        unique(PurchaseInvoiceFields.INVOICE_NUMBER.getColumnName()),
+                        foreignKey(PurchaseInvoiceFields.SUPPLIER_ID.getColumnName())
+                                .references(SupplierFields.SupplierTable.getColumnName(), SupplierFields.ID.getColumnName()),
+                        foreignKey(PurchaseInvoiceFields.BRANCH_ID.getColumnName())
+                                .references(BranchFields.BranchTable.getColumnName(), BranchFields.ID.getColumnName()),
+                        foreignKey(PurchaseInvoiceFields.CREATED_BY.getColumnName())
+                                .references(UserFields.UserTable.getColumnName(), UserFields.ID.getColumnName())
+                )
+                .execute();
+
+        dsl.createTableIfNotExists(PurchaseInvoiceItemFields.PurchaseInvoiceItemTable.getColumnName())
+                .column(PurchaseInvoiceItemFields.ID.getColumnName(), BIGINT.identity(true))
+                .column(PurchaseInvoiceItemFields.INVOICE_ID.getColumnName(), BIGINT.notNull())
+                .column(PurchaseInvoiceItemFields.PRODUCT_ID.getColumnName(), BIGINT.notNull())
+                .column(PurchaseInvoiceItemFields.QUANTITY.getColumnName(), INTEGER.notNull())
+                .column(PurchaseInvoiceItemFields.UNIT_PRICE.getColumnName(), DECIMAL(10, 2).notNull())
+                .column(PurchaseInvoiceItemFields.CARTON_PRICE.getColumnName(), DECIMAL(10, 2).notNull())
+                .column(PurchaseInvoiceItemFields.TOTAL_PRICE.getColumnName(), DECIMAL(10, 2).notNull())
+                .constraints(
+                        primaryKey(PurchaseInvoiceItemFields.ID.getColumnName()),
+                        foreignKey(PurchaseInvoiceItemFields.INVOICE_ID.getColumnName())
+                                .references(PurchaseInvoiceFields.PurchaseInvoiceTable.getColumnName(), PurchaseInvoiceFields.ID.getColumnName()),
+                        foreignKey(PurchaseInvoiceItemFields.PRODUCT_ID.getColumnName())
+                                .references(ProductFields.ProductTable.getColumnName(), ProductFields.ID.getColumnName()),
+                        check(field(PurchaseInvoiceItemFields.QUANTITY.getColumnName()).greaterThan(0)),
+                        check(field(PurchaseInvoiceItemFields.UNIT_PRICE.getColumnName()).greaterThan(0)),
+                        check(field(PurchaseInvoiceItemFields.CARTON_PRICE.getColumnName()).greaterThan(0))
+                )
+                .execute();
+    }
+
 }
