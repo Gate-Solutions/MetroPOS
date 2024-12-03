@@ -1,9 +1,15 @@
 package org.gate.metropos.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 
+
+
+@AllArgsConstructor
+@Getter
 public enum SaleFields {
     SaleTable("sales"),
     ID("id"),
@@ -19,14 +25,6 @@ public enum SaleFields {
     UPDATED_AT("updated_at");
 
     private final String columnName;
-
-    SaleFields(String columnName) {
-        this.columnName = columnName;
-    }
-
-    public String getColumnName() {
-        return columnName;
-    }
 
     public Field<Object> toField() {
         return DSL.field(this.getColumnName());

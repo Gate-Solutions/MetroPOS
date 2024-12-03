@@ -62,4 +62,18 @@ public class BranchProductRepository {
                 .quantity(record.get(BranchProductFields.QUANTITY.toField(), Integer.class))
                 .build();
     }
+
+    public BranchProduct getProductById(DSLContext ctx, Long branchId, Long productId) {
+        Record record = ctx.select()
+                .from(BranchProductFields.toTableField())
+                .where(BranchProductFields.BRANCH_ID.toField().eq(branchId))
+                .and(BranchProductFields.PRODUCT_ID.toField().eq(productId))
+                .fetchOne();
+
+        return mapToBranchProduct(record);
+    }
+
+    public BranchProduct getProductById(Long branchId, Long productId) {
+        return getProductById(dsl, branchId, productId);
+    }
 }

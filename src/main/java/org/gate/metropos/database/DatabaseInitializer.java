@@ -38,6 +38,7 @@ public class DatabaseInitializer {
         createSupplierTable();
         createProductTables();
         createPurchaseInvoiceTables();
+        createSalesTables();
     }
 
 //   functions to create tables
@@ -108,7 +109,7 @@ public class DatabaseInitializer {
     public void createEmployeeTable() {
         String sql = """
     CREATE TABLE IF NOT EXISTS employees (
-        id BIGINT GENERATED ALWAYS AS IDENTITY,
+        id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
         name VARCHAR(255) NOT NULL,
         employee_no VARCHAR(50) NOT NULL,
         is_active BOOLEAN DEFAULT true,
@@ -253,5 +254,49 @@ public class DatabaseInitializer {
                 )
                 .execute();
     }
+
+
+    public void createSalesTables() {
+        // Create Sales table
+        dsl.createTableIfNotExists(SaleFields.SaleTable.getColumnName())
+                .column(SaleFields.ID.getColumnName(), BIGINT.identity(true).notNull())
+                .column(SaleFields.INVOICE_NUMBER.getColumnName(), VARCHAR(50).notNull())
+                .column(SaleFields.BRANCH_ID.getColumnName(), BIGINT.notNull())
+                .column(SaleFields.CREATED_BY.getColumnName(), BIGINT.notNull())
+                .column(SaleFields.INVOICE_DATE.getColumnName(), DATE.notNull())
+                .column(SaleFields.TOTAL_AMOUNT.getColumnName(), DECIMAL(10, 2).notNull())
+                .column(SaleFields.DISCOUNT.getColumnName(), DECIMAL(10, 2).notNull())
+                .column(SaleFields.NET_AMOUNT.getColumnName(), DECIMAL(10, 2).notNull())
+                .column(SaleFields.NOTES.getColumnName(), VARCHAR(500))
+                .column(SaleFields.CREATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()).notNull())
+                .column(SaleFields.UPDATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()).notNull())
+                .constraints(
+                        primaryKey(SaleFields.ID.getColumnName()),
+                        unique(SaleFields.INVOICE_NUMBER.getColumnName()),
+                        foreignKey(SaleFields.BRANCH_ID.getColumnName())
+                                .references("branches", "id"),
+                        foreignKey(SaleFields.CREATED_BY.getColumnName())
+                                .references(EmployeeFields.EmployeeTable.getColumnName(), "id")
+                )
+                .execute();
+
+        // Create Sale Items table
+        dsl.createTableIfNotExists(SaleItemFields.SaleItemTable.getColumnName())
+                .column(SaleItemFields.ID.getColumnName(), BIGINT.identity(true).notNull())
+                .column(SaleItemFields.SALE_ID.getColumnName(), BIGINT.notNull())
+                .column(SaleItemFields.PRODUCT_ID.getColumnName(), BIGINT.notNull())
+                .column(SaleItemFields.QUANTITY.getColumnName(), INTEGER.notNull())
+                .column(SaleItemFields.UNIT_PRICE.getColumnName(), DECIMAL(10, 2).notNull())
+                .column(SaleItemFields.TOTAL_PRICE.getColumnName(), DECIMAL(10, 2).notNull())
+                .constraints(
+                        primaryKey(SaleItemFields.ID.getColumnName()),
+                        foreignKey(SaleItemFields.SALE_ID.getColumnName())
+                                .references(SaleFields.SaleTable.getColumnName(), SaleFields.ID.getColumnName()),
+                        foreignKey(SaleItemFields.PRODUCT_ID.getColumnName())
+                                .references("products", "id")
+                )
+                .execute();
+    }
+
 
 }
