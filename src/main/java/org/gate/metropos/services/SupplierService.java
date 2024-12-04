@@ -80,7 +80,7 @@ public class SupplierService {
         if (supplier.getName() == null || supplier.getName().trim().isEmpty()) {
             throw new IllegalArgumentException("Supplier name cannot be empty");
         }
-        if (supplier.getPhone() == null || !supplier.getPhone().matches("\\d{10}")) {
+        if (supplier.getPhone() == null || !supplier.getPhone().matches("\\d{11}")) {
             throw new IllegalArgumentException("Invalid phone number format");
         }
         if (supplier.getEmail() != null && !supplier.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {

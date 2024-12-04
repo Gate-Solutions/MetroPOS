@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.gate.metropos.Controllers.BranchManagerControllers.DashboardController"
+      stylesheets="@../styles/global.css,@../styles/SuperAdmin/dashboard.css">
+
+    <!-- Sidebar -->
+    <VBox styleClass="sidebar">
+        <HBox styleClass="logo-container">
+            <ImageView fitWidth="150" fitHeight="50" preserveRatio="true">
+                <Image url="@../assets/logo.png"/>
+            </ImageView>
+        </HBox>
+
+        <Button styleClass="nav-button" fx:id="dashboardBtn">
+            <graphic>
+                <FontAwesomeIconView glyphName="DASHBOARD" size="20" styleClass="nav-icon"/>
+            </graphic>
+            <text>Dashboard</text>
+        </Button>
+        <Button styleClass="nav-button" fx:id="branchesBtn">
+            <graphic>
+                <FontAwesomeIconView glyphName="BUILDING" size="20" styleClass="nav-icon"/>
+            </graphic>
+            <text>Manage Cashiers</text>
+        </Button>
+        <Button styleClass="nav-button" fx:id="usersBtn">
+            <graphic>
+                <FontAwesomeIconView glyphName="USERS" size="20" styleClass="nav-icon"/>
+            </graphic>
+            <text>Manage Suppliers</text>
+        </Button>
+
+        <Button styleClass="nav-button" fx:id="reportsBtn">
+            <graphic>
+                <FontAwesomeIconView glyphName="BAR_CHART" size="20" styleClass="nav-icon"/>
+            </graphic>
+            <text>Reports</text>
+        </Button>
+
+        <Button styleClass="nav-button" fx:id="settingsBtn">
+            <graphic>
+                <FontAwesomeIconView glyphName="COG" size="20" styleClass="nav-icon"/>
+            </graphic>
+            <text>Settings</text>
+        </Button>
+
+        <Region VBox.vgrow="ALWAYS"/>
+        <Button styleClass="nav-button, logout-button" fx:id="logoutBtn">
+            <graphic>
+                <FontAwesomeIconView glyphName="SIGN_OUT" size="20" styleClass="nav-icon"/>
+            </graphic>
+            <text>Logout</text>
+        </Button>
+    </VBox>
+
+    <!-- Main Content Area -->
+    <StackPane HBox.hgrow="ALWAYS" fx:id="contentArea">
+        <!-- Content will be loaded here dynamically -->
+    </StackPane>
+</HBox>
