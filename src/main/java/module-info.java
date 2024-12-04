@@ -6,6 +6,7 @@ module org.example.metropos {
     requires static lombok;
     requires com.fasterxml.jackson.databind;
     requires bcrypt;
+    requires io.github.cdimascio.dotenv.java;
 
 
     opens org.gate.metropos to javafx.fxml;
