@@ -9,6 +9,11 @@
       styleClass="report-container"
       stylesheets="@../styles/common.css,@../styles/global.css,@../styles/reports.css">
 
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Label text="Reports" styleClass="page-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <!--        <ComboBox fx:id="branchSelector" promptText="Select Branch" styleClass="branch-selector"/>-->
+    </HBox>
     <!-- Report Controls Section -->
     <HBox spacing="15" styleClass="report-controls">
         <padding><Insets top="15" right="15"  bottom="15" left="15"/></padding>

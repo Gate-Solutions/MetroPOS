@@ -169,6 +169,12 @@ public class BranchService {
             );
         }
     }
+    public ServiceResponse<String> getManagerName (Long branchID) {
+        if (branchID == null ) {
+            return new ServiceResponse<>  (false,404,"Branch id is null or empty", null);
+        }
+        return new ServiceResponse<>(true,200,"Manager got Successfully",branchRepository.getManagerName(branchID));
+    }
 
 }
 
