@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -57,16 +58,19 @@ public class SplashScreenController implements Initializable {
     private void loadLoginScreen() {
         try {
             // Load the login FXML
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos/login.fxml"));
             Parent loginRoot = loader.load();
 
-
+            // Get the current stage (splash screen stage)
             Stage currentStage = (Stage) loadingProgress.getScene().getWindow();
+            currentStage.hide();
+            currentStage = new Stage();
+            // Load the login scene
             Scene loginScene = new Scene(loginRoot);
-
-
             currentStage.setScene(loginScene);
-            currentStage.centerOnScreen(); // Center the window
+            currentStage.centerOnScreen();
+            currentStage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -84,6 +88,22 @@ public class SplashScreenController implements Initializable {
             loadingLabel.setText("Almost ready...");
         } else {
             loadingLabel.setText("Welcome to MetroPOS!");
+        }
+    }
+
+    // Method to launch the splash screen
+    public static void showSplashScreen() {
+        try {
+            FXMLLoader loader = new FXMLLoader(SplashScreenController.class.getResource("/org/gate/metropos/splashScreen.fxml"));
+            Parent splashRoot = loader.load();
+
+            // Set up the stage
+            Stage splashStage = new Stage();
+            splashStage.initStyle(StageStyle.UNDECORATED); // Remove the top bar
+            splashStage.setScene(new Scene(splashRoot));
+            splashStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -1,39 +1,69 @@
 .root {
-    -fx-background-color: linear-gradient(to right bottom, -primary-color, -secondary-color);
+    -fx-background-color: white;
 }
 
-.login-panel {
-    -fx-background-color: rgba(255, 255, 255, 0.95);
-    -fx-background-radius: 15;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 0);
-    -fx-max-width: 360;
-    -fx-max-height: 400;
+.decorative-shape {
+    -fx-background-color: -primary-dark;
+    -fx-min-width: 400;
+    -fx-min-height: 600;
+    -fx-shape: "M 0 0 L 500 0 L 300 600 L 0 600 Z";
+}
+
+.main-container {
+    -fx-min-height: 600;
+}
+
+.brand-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-dark;
 }
 
 .title-label {
-    -fx-font-size: 28px;
+    -fx-font-size: 32px;
     -fx-font-weight: bold;
-    -fx-text-fill: -primary-color;
+    -fx-text-fill: -primary-dark;
+}
+
+.subtitle-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: -primary-light;
 }
 
 .input-field {
-    -fx-background-radius: 5;
-    -fx-border-radius: 5;
-    -fx-font-size: 14px;
-    -fx-padding: 10;
-    -fx-pref-width: 280;
+    -fx-background-color: -background;
+    -fx-background-radius: 8;
+    -fx-padding: 12;
+    -fx-pref-width: 320;
+}
+
+.input-field:focused {
+    -fx-background-color: white;
+    -fx-border-color: -primary;
+    -fx-border-radius: 8;
+    -fx-border-width: 2;
 }
 
 .login-button {
-    -fx-background-color: -primary-color;
-    -fx-text-fill: -background-color;
+    -fx-background-color: -primary-dark;
+    -fx-text-fill: white;
     -fx-font-size: 14px;
+    -fx-font-weight: bold;
     -fx-padding: 12;
-    -fx-background-radius: 5;
+    -fx-background-radius: 8;
     -fx-cursor: hand;
-    -fx-pref-width: 280;
+    -fx-pref-width: 320;
 }
 
 .login-button:hover {
-    -fx-background-color: -primary-color-dark;
+    -fx-background-color: derive(-primary-dark, 10%);
+}
+
+.combo-box {
+    -fx-padding: 5;
+    -fx-background-radius: 8;
+}
+
+.combo-box .list-cell {
+    -fx-padding: 5;
 }
