@@ -9,7 +9,6 @@ import org.jooq.DSLContext;
 import static org.jooq.impl.DSL.*;
 import static org.jooq.impl.SQLDataType.*;
 
-// TODO: Modify inherited table queries to add non inherited constraints
 public class DatabaseInitializer {
     private final DSLContext dsl;
     boolean isLocal = true;
@@ -32,10 +31,11 @@ public class DatabaseInitializer {
 //        Add All the tables
         createSyncTrackingTable();
         createUserTable();
-        createEmployeeTable();
         createSuperAdminTable();
         createBranchTable();
+        createEmployeeTable();
         createSupplierTable();
+        createCategoryTable();
         createProductTables();
         createPurchaseInvoiceTables();
         createSalesTables();
@@ -53,7 +53,7 @@ public class DatabaseInitializer {
                 .column(SyncTrackingFields.OPERATION.getColumnName(), VARCHAR(50))
                 .column(SyncTrackingFields.FIELD_VALUES.getColumnName(), JSONB)
                 .column(SyncTrackingFields.SYNC_STATUS.getColumnName(), BOOLEAN.defaultValue(false))
-                .column(SyncTrackingFields.CREATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()))
+                .column(SyncTrackingFields.CREATED_AT.getColumnName(), TIMESTAMPWITHTIMEZONE.defaultValue(currentOffsetDateTime()))
                 .primaryKey(SyncTrackingFields.ID.getColumnName())
                 .execute();
     }
@@ -65,8 +65,8 @@ public class DatabaseInitializer {
                 .column(UserFields.EMAIL.getColumnName(), VARCHAR(255))
                 .column(UserFields.PASSWORD.getColumnName(), VARCHAR(255))
                 .column(UserFields.ROLE.getColumnName(), VARCHAR(20))
-                .column(UserFields.CREATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()))
-                .column(UserFields.UPDATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()))
+                .column(UserFields.CREATED_AT.getColumnName(), TIMESTAMPWITHTIMEZONE.defaultValue(currentOffsetDateTime()))
+                .column(UserFields.UPDATED_AT.getColumnName(), TIMESTAMPWITHTIMEZONE.defaultValue(currentOffsetDateTime()))
                 .constraints(
                         primaryKey(UserFields.ID.getColumnName()),
                         unique(UserFields.EMAIL.getColumnName()),
@@ -79,7 +79,7 @@ public class DatabaseInitializer {
     public void createSuperAdminTable() {
         String sql = """
     CREATE TABLE IF NOT EXISTS super_admin (
-        id BIGINT GENERATED ALWAYS AS IDENTITY
+        id BIGINT PRIMARY KEY  GENERATED ALWAYS AS IDENTITY
     ) INHERITS (users);
 """;
         dsl.execute(sql);
@@ -117,8 +117,8 @@ public class DatabaseInitializer {
         salary DECIMAL(10,2),
         branch_id BIGINT,
         CONSTRAINT employee_no_unique UNIQUE (employee_no),
-        CONSTRAINT salary_check CHECK (salary > 0)
---        CONSTRAINT branch_fk FOREIGN KEY (branch_id) REFERENCES branches(id)
+        CONSTRAINT salary_check CHECK (salary > 0),
+        CONSTRAINT branch_fk FOREIGN KEY (branch_id) REFERENCES branches(id)
     ) INHERITS (users);
     """;
         dsl.execute(sql);
@@ -134,8 +134,8 @@ public class DatabaseInitializer {
                 .column(BranchFields.PHONE.getColumnName(), VARCHAR(20).notNull())
                 .column(BranchFields.IS_ACTIVE.getColumnName(), BOOLEAN.defaultValue(true).notNull())
                 .column(BranchFields.NUMBER_OF_EMPLOYEES.getColumnName(), INTEGER.defaultValue(0).notNull())
-                .column(BranchFields.CREATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()).notNull())
-                .column(BranchFields.UPDATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()).notNull())
+                .column(BranchFields.CREATED_AT.getColumnName(), TIMESTAMPWITHTIMEZONE.defaultValue(currentOffsetDateTime()).notNull())
+                .column(BranchFields.UPDATED_AT.getColumnName(), TIMESTAMPWITHTIMEZONE.defaultValue(currentOffsetDateTime()).notNull())
                 .constraints(
                         primaryKey(BranchFields.ID.getColumnName()),
                         unique(BranchFields.BRANCH_CODE.getColumnName()),
@@ -154,8 +154,8 @@ public class DatabaseInitializer {
 
                 .column(SupplierFields.NTN_NUMBER.getColumnName(), VARCHAR(50))
                 .column(SupplierFields.IS_ACTIVE.getColumnName(), BOOLEAN.defaultValue(true))
-                .column(SupplierFields.CREATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()))
-                .column(SupplierFields.UPDATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()))
+                .column(SupplierFields.CREATED_AT.getColumnName(), TIMESTAMPWITHTIMEZONE.defaultValue(currentOffsetDateTime()))
+                .column(SupplierFields.UPDATED_AT.getColumnName(), TIMESTAMPWITHTIMEZONE.defaultValue(currentOffsetDateTime()))
                 .constraints(
                         primaryKey(SupplierFields.ID.getColumnName()),
                         unique(SupplierFields.NTN_NUMBER.getColumnName()),
@@ -165,7 +165,6 @@ public class DatabaseInitializer {
     }
 
     public void createProductTables() {
-        createCategoryTable();
 
         dsl.createTableIfNotExists("products")
                 .column("id", BIGINT.identity(true))
@@ -268,8 +267,8 @@ public class DatabaseInitializer {
                 .column(SaleFields.DISCOUNT.getColumnName(), DECIMAL(10, 2).notNull())
                 .column(SaleFields.NET_AMOUNT.getColumnName(), DECIMAL(10, 2).notNull())
                 .column(SaleFields.NOTES.getColumnName(), VARCHAR(500))
-                .column(SaleFields.CREATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()).notNull())
-                .column(SaleFields.UPDATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()).notNull())
+                .column(SaleFields.CREATED_AT.getColumnName(), TIMESTAMPWITHTIMEZONE.defaultValue(currentOffsetDateTime()).notNull())
+                .column(SaleFields.UPDATED_AT.getColumnName(), TIMESTAMPWITHTIMEZONE.defaultValue(currentOffsetDateTime()).notNull())
                 .constraints(
                         primaryKey(SaleFields.ID.getColumnName()),
                         unique(SaleFields.INVOICE_NUMBER.getColumnName()),
@@ -297,6 +296,5 @@ public class DatabaseInitializer {
                 )
                 .execute();
     }
-
 
 }
