@@ -9,6 +9,11 @@
 
 }
 
+.text-field:disabled{
+
+    -fx-text-fill: -primary-dark;
+
+}
 .Splash-background {
     -fx-background-color: -primary-dark;
 }

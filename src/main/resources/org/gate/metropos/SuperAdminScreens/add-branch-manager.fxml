@@ -8,7 +8,9 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.gate.metropos.Controllers.SuperAdminControllers.AddBranchController"
             stylesheets="@../styles/global.css,@../styles/common.css   , @../styles/SuperAdmin/branches.css"
-            prefWidth="700" prefHeight="700">
+            prefWidth="700" prefHeight="500">
+
+
 
     <VBox spacing="15" styleClass="add-branch-container" AnchorPane.topAnchor="0"
           AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
@@ -21,21 +23,43 @@
         <Label text="Enter manager details below" styleClass="subtitle-label"/>
 
         <VBox spacing="15">
-            <!-- Disabled Branch Info -->
             <HBox spacing="10">
-                <TextField fx:id="managerBranchCodeField" promptText="Branch Code"
-                           styleClass="input-field" HBox.hgrow="ALWAYS" disable="true"/>
-                <TextField fx:id="branchIdField" promptText="Branch Name"
-                           styleClass="input-field" HBox.hgrow="ALWAYS" disable="true"/>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Branch Code" styleClass="field-label"/>
+                    <TextField fx:id="managerBranchCodeField" styleClass="input-field" disable="true"/>
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Branch ID" styleClass="field-label"/>
+                    <TextField fx:id="branchIdField" styleClass="input-field" disable="true"/>
+                </VBox>
             </HBox>
 
-            <!-- Manager Info -->
-            <TextField fx:id="usernameField" promptText="Username" styleClass="input-field"/>
-            <TextField fx:id="emailField" promptText="Email" styleClass="input-field"/>
-            <TextField fx:id="managerNameField" promptText="Full Name" styleClass="input-field"/>
-            <TextField fx:id="employeeNoField" promptText="Employee Number" styleClass="input-field"/>
-            <TextField fx:id="salaryField" promptText="Salary" styleClass="input-field"/>
+            <VBox spacing="5">
+                <Label text="Username" styleClass="field-label"/>
+                <TextField fx:id="usernameField" styleClass="input-field"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Email" styleClass="field-label"/>
+                <TextField fx:id="emailField" styleClass="input-field"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Full Name" styleClass="field-label"/>
+                <TextField fx:id="managerNameField" styleClass="input-field"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Employee Number" styleClass="field-label"/>
+                <TextField fx:id="employeeNoField" styleClass="input-field"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Salary" styleClass="field-label"/>
+                <TextField fx:id="salaryField" styleClass="input-field"/>
+            </VBox>
         </VBox>
+
 
         <HBox spacing="10" alignment="CENTER_RIGHT">
             <Button fx:id="cancelBtn" text="Cancel" styleClass="secondary-button"/>

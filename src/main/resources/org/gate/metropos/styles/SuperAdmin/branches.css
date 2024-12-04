@@ -27,3 +27,15 @@
     -fx-border-radius: 4;
     -fx-border-width: 1;
 }
+.field-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: -primary-dark;
+    -fx-font-weight: bold;
+}
+
+.input-field {
+    -fx-background-color: -background;
+    -fx-background-radius: 4;
+    -fx-padding: 10;
+    -fx-prompt-text-fill: transparent; /* Remove placeholder text */
+}
