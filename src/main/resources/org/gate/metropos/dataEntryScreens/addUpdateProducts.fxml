@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.gate.metropos.Controllers.DataEntryOperator.AddUpdateProductController"
+            stylesheets="@../styles/global.css,@../styles/common.css"
+            prefWidth="700" prefHeight="600">
+
+    <VBox spacing="15" styleClass="add-branch-container" AnchorPane.topAnchor="0"
+          AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+
+        <padding>
+            <Insets top="30" right="40" bottom="30" left="40"/>
+        </padding>
+
+        <Label text="Add New Product" fx:id="Main_Label" styleClass="title-label"/>
+        <Label text="Fill in the product information" styleClass="subtitle-label"/>
+
+        <VBox spacing="15">
+            <VBox spacing="5">
+                <Label text="Product Code" styleClass="field-label"/>
+                <TextField fx:id="codeField" styleClass="input-field" promptText="Enter product code"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Name" styleClass="field-label"/>
+                <TextField fx:id="nameField" styleClass="input-field" promptText="Enter product name"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Category" styleClass="field-label"/>
+                <HBox spacing="10">
+                    <ComboBox fx:id="categoryComboBox" styleClass="input-field" promptText="Select category" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="addCategoryBtn" styleClass="secondary-button">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="PLUS" size="14"/>
+                        </graphic>
+                        <text>Add Category</text>
+                    </Button>
+                </HBox>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Original Price" styleClass="field-label"/>
+                <TextField fx:id="originalPriceField" styleClass="input-field" promptText="Enter original price"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Sale Price" styleClass="field-label"/>
+                <TextField fx:id="salePriceField" styleClass="input-field" promptText="Enter sale price"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Carton Price" styleClass="field-label"/>
+                <TextField fx:id="cartonPriceField" styleClass="input-field" promptText="Enter carton price"/>
+            </VBox>
+
+            <CheckBox fx:id="activeCheckBox" text="Active" />
+        </VBox>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button fx:id="cancelBtn" text="Cancel" styleClass="secondary-button"/>
+            <Button fx:id="createProductBtn" text="Create Product" styleClass="primary-button">
+                <graphic>
+                    <FontAwesomeIconView glyphName="CHECK" size="14" fill="WHITE"/>
+                </graphic>
+            </Button>
+        </HBox>
+    </VBox>
+</AnchorPane>

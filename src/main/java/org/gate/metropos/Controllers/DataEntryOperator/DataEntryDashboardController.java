@@ -52,7 +52,7 @@ public class DataEntryDashboardController {
 
     private void showProducts() {
         contentArea.getChildren().clear();
-        // TODO: Load products view
+        loadView("/dataEntryScreens/manage-products.fxml");
         updateActiveButton(productsBtn);
     }
 
