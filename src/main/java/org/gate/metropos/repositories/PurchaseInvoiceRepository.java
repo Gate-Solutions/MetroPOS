@@ -13,6 +13,7 @@ import org.jooq.*;
 import org.jooq.impl.DSL;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -51,7 +52,7 @@ public class PurchaseInvoiceRepository {
                 .orderBy(PurchaseInvoiceFields.CREATED_AT.toField().desc())
                 .fetch();
 
-        return records.map(e-> mapToPurchaseInvoice(e, false));
+        return records.map(e-> mapToPurchaseInvoice(e, true));
     }
 
     public List<PurchaseInvoiceItem> getInvoiceItems(Long invoiceId) {
@@ -147,7 +148,7 @@ public class PurchaseInvoiceRepository {
                 .supplierId(record.get(PurchaseInvoiceFields.SUPPLIER_ID.toField(), Long.class))
                 .branchId(record.get(PurchaseInvoiceFields.BRANCH_ID.toField(), Long.class))
                 .createdBy(record.get(PurchaseInvoiceFields.CREATED_BY.toField(), Long.class))
-//                .invoiceDate(record.get(PurchaseInvoiceFields.INVOICE_DATE.toField(), LocalDate.class))
+                .invoiceDate(record.get(PurchaseInvoiceFields.INVOICE_DATE.toField(), Date.class).toLocalDate())
                 .totalAmount(record.get(PurchaseInvoiceFields.TOTAL_AMOUNT.toField(), BigDecimal.class))
                 .notes(record.get(PurchaseInvoiceFields.NOTES.toField(), String.class))
                 .createdAt(record.get(PurchaseInvoiceFields.CREATED_AT.toField(), OffsetDateTime.class).toLocalDateTime())
