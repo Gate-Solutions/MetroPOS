@@ -146,20 +146,23 @@ public class BranchRepository {
     public List<Branch> getBranchesWithoutActiveManagers() {
         return dsl.select()
                 .from(BranchFields.BranchTable.toTableField())
-                .where(BranchFields.ID.toField().notIn(
-                        // Subquery to find branches with active managers
-                        dsl.select(EmployeeFields.BRANCH_ID.toField())
-                                .from(EmployeeFields.toTableField())
-                                .where(UserFields.ROLE.toField().eq(UserRole.BRANCH_MANAGER.toString()))
-                                .and(EmployeeFields.IS_ACTIVE.toField().eq(true))
-                ))
-                .and(BranchFields.ID.toField().in(
-                        // Subquery to ensure branch has at least one inactive manager
-                        dsl.select(EmployeeFields.BRANCH_ID.toField())
-                                .from(EmployeeFields.toTableField())
-                                .where(UserFields.ROLE.toField().eq(UserRole.BRANCH_MANAGER.toString()))
-                                .and(EmployeeFields.IS_ACTIVE.toField().eq(false))
-                ))
+                .where(
+                        // Case 1: Branch has no managers at all
+                        BranchFields.ID.toField().notIn(
+                                        dsl.select(EmployeeFields.BRANCH_ID.toField())
+                                                .from(EmployeeFields.toTableField())
+                                                .where(UserFields.ROLE.toField().eq(UserRole.BRANCH_MANAGER.toString()))
+                                )
+                                .or(
+                                        // Case 2: Branch has no active managers but might have inactive ones
+                                        BranchFields.ID.toField().notIn(
+                                                dsl.select(EmployeeFields.BRANCH_ID.toField())
+                                                        .from(EmployeeFields.toTableField())
+                                                        .where(UserFields.ROLE.toField().eq(UserRole.BRANCH_MANAGER.toString()))
+                                                        .and(EmployeeFields.IS_ACTIVE.toField().eq(true))
+                                        )
+                                )
+                )
                 .fetchInto(Branch.class);
     }
 
