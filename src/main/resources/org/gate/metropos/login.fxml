@@ -2,50 +2,56 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.Insets?>
 
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="org.gate.metropos.Controllers.LoginController"
-           stylesheets="@styles/login.css,@styles/global.css"
-           prefHeight="600.0" prefWidth="800.0">
+           stylesheets="@styles/global.css, @styles/login.css"
+           prefHeight="600.0" prefWidth="900.0">
 
-    <VBox alignment="CENTER" spacing="15" styleClass="login-panel">
-        <padding>
-            <Insets top="30" right="40" bottom="30" left="40"/>
-        </padding>
+    <AnchorPane>
+        <!-- Decorative Shape -->
+        <Pane styleClass="decorative-shape" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"/>
 
-        <Label text="Metro POS System" styleClass="title-label">
-            <VBox.margin>
-                <Insets bottom="20"/>
-            </VBox.margin>
-        </Label>
+        <!-- Main Content -->
+        <VBox alignment="CENTER_RIGHT" spacing="30" styleClass="main-container"
+              AnchorPane.rightAnchor="80" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0">
+            <padding>
+                <Insets left="80" right="20"/>
+            </padding>
 
-        <VBox spacing="15" alignment="CENTER">
-            <ComboBox fx:id="userTypeComboBox"
-                      promptText="Select User Type"
-                      styleClass="input-field"
-                      maxWidth="280"/>
+            <!-- Logo and Title Section -->
+            <HBox alignment="CENTER_RIGHT" spacing="15">
+                <ImageView fitHeight="50" preserveRatio="true">
+                    <Image url="@assets/logo.png"/>
+                </ImageView>
+            </HBox>
 
-            <TextField fx:id="usernameField"
-                       promptText="Username"
-                       styleClass="input-field"
-                       maxWidth="280"/>
+            <!-- Login Form -->
+            <VBox spacing="25" maxWidth="320">
+                <Label text="Welcome Back" styleClass="title-label"/>
+                <Label text="Sign in to your account" styleClass="subtitle-label"/>
 
-            <PasswordField fx:id="passwordField"
-                           promptText="Password"
-                           styleClass="input-field"
-                           maxWidth="280"/>
+                <VBox spacing="20">
+                    <ComboBox fx:id="userTypeComboBox"
+                              promptText="Select User Type"
+                              styleClass="input-field"/>
 
-            <Button fx:id="loginButton"
-                    text="Login"
-                    styleClass="login-button"
-                    maxWidth="280">
-                <VBox.margin>
-                    <Insets top="10"/>
-                </VBox.margin>
-            </Button>
+                    <TextField fx:id="usernameField"
+                               promptText="Username"
+                               styleClass="input-field"/>
+
+                    <PasswordField fx:id="passwordField"
+                                   promptText="Password"
+                                   styleClass="input-field"/>
+
+                    <Button fx:id="loginButton"
+                            text="Sign In"
+                            styleClass="login-button"/>
+                </VBox>
+            </VBox>
         </VBox>
-    </VBox>
+    </AnchorPane>
 </StackPane>

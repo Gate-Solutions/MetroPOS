@@ -1,7 +1,46 @@
-.root {
-    -primary-color: #2193b0;
-    -primary-color-dark: #1a7a8c;
-    -secondary-color: #6dd5ed;
+* {
+    -primary-dark: #2C3A45;
+    -primary: #394956;
+    -primary-light: #5D6B75;
+
     -text-color: #333333;
-    -background-color: white;
+    -accent: #4A90E2;
+    -background: #F0F2F4;
+
 }
+
+.Splash-background {
+    -fx-background-color: -primary-dark;
+}
+#loadingProgress {
+    -fx-accent:-primary;
+}
+
+.combo-box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: -primary;
+    -fx-border-radius: 5;          /* Rounded corners */
+    -fx-font-size: 14px;
+    -fx-text-fill: white;        /* Dark text color */
+}
+
+/* Style the dropdown options (list cells) */
+.combo-box .list-cell {
+    -fx-background-color: white;      /* Default background */
+    -fx-text-fill: #333333;           /* Default text color */
+    -fx-padding: 5px;                 /* Padding around text */
+    -fx-font-size: 14px;
+}
+
+.combo-box .list-cell:filled:selected:hover {
+    -fx-background-color: -primary-dark;    /* Light blue for selected option */
+    -fx-text-fill: white;             /* White text for selected option */
+}
+
+/* Style list cells on hover */
+.combo-box .list-cell:hover {
+    -fx-background-color: -primary;    /* Light blue on hover */
+    -fx-text-fill: white;           /* Dark text color */
+}
+
+
