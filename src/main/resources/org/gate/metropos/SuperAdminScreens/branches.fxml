@@ -3,10 +3,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.gate.metropos.Controllers.SuperAdminControllers.BranchesController"
-      stylesheets="@../styles/global.css, @../styles/SuperAdmin/branches.css , @../styles/SuperAdmin/common.css"
+      stylesheets="@../styles/global.css, @../styles/SuperAdmin/common.css, @../styles/SuperAdmin/branches.css"
       spacing="20">
 
     <padding>
@@ -16,7 +17,12 @@
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Label text="Manage Branches" styleClass="page-title"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button text="Add New Branch" styleClass="primary-button" fx:id="addBranchBtn"/>
+        <Button styleClass="primary-button" fx:id="addBranchBtn">
+            <graphic>
+                <FontAwesomeIconView glyphName="PLUS" size="14" fill="WHITE"/>
+            </graphic>
+            <text>Add New Branch</text>
+        </Button>
     </HBox>
 
     <HBox spacing="10">

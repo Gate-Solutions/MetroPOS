@@ -36,7 +36,7 @@ public class SplashScreenController implements Initializable {
         Timeline timeline = new Timeline();
 
         KeyValue keyValue = new KeyValue(loadingProgress.progressProperty(), 1);
-        KeyFrame keyFrame = new KeyFrame(Duration.seconds(5), event -> {
+        KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), event -> {
             updateLoadingText(loadingProgress.getProgress());
         }, keyValue);
 

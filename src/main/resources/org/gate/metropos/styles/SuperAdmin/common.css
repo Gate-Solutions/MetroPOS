@@ -4,16 +4,20 @@
 }
 
 .primary-button {
-    -fx-background-color: -primary-color;
+    -fx-background-color: -primary;
     -fx-text-fill: white;
-    -fx-padding: 8 15;
+    -fx-padding: 8 15 8 15;
+    -fx-graphic-text-gap: 8;
     -fx-cursor: hand;
+}
+.primary-button:hover {
+    -fx-background-color: -primary-dark;
 }
 
 .secondary-button {
     -fx-background-color: transparent;
-    -fx-border-color: -primary-color;
-    -fx-text-fill: -primary-color;
+    -fx-border-color: -primary;
+    -fx-text-fill: -primary;
     -fx-padding: 8 15;
     -fx-cursor: hand;
 }

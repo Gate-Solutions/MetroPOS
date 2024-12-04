@@ -1,8 +1,20 @@
 package org.gate.metropos.Controllers;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import org.gate.metropos.models.Employee;
+import org.gate.metropos.models.User;
+import org.gate.metropos.services.EmployeeService;
+import org.gate.metropos.services.SuperAdminService;
+import org.gate.metropos.utils.ServiceResponse;
+
+import java.io.IOException;
+
 
 public class LoginController {
     @FXML
@@ -13,6 +25,14 @@ public class LoginController {
     private PasswordField passwordField;
     @FXML
     private Button loginButton;
+
+    private final SuperAdminService superAdminService ;
+    private final EmployeeService employeeService ;
+
+    public LoginController () {
+        superAdminService = new SuperAdminService();
+        employeeService = new EmployeeService();
+    }
 
     @FXML
     public void initialize() {
@@ -27,6 +47,7 @@ public class LoginController {
     }
 
     private void handleLogin() {
+        showAdminDashboard();
         if (!validateInputs()) {
             return;
         }
@@ -36,8 +57,67 @@ public class LoginController {
         String password = passwordField.getText();
 
         System.out.println(userType + " " + username + " " + password);
-        // Add login logic here
+
+        User user;
+        ServiceResponse<Employee> response;
+
+        if (userType.equals("Super Admin")) {
+            user = superAdminService.login(username, password);
+            if (user != null) {
+                showAdminDashboard();
+            } else {
+                // Show invalid credentials pop up
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Login Error");
+                alert.setHeaderText("Invalid Credentials");
+                alert.setContentText("Please check your username and password.");
+                alert.showAndWait();
+            }
+        } else {
+            response = employeeService.login(username, password);
+            if (!response.isSuccess()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Login Error");
+                alert.setHeaderText("Login Failed");
+                alert.setContentText(response.getMessage());
+                alert.showAndWait();
+            }
+        }
     }
+
+
+
+    private void showAdminDashboard() {
+        try {
+            // Load the Dashboard FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos/SuperAdminScreens/Dashboard.fxml"));
+            Parent dashboardRoot = loader.load();
+
+            // Get the current stage from any control (using loginButton here)
+            Stage currentStage = (Stage) loginButton.getScene().getWindow();
+            currentStage.setTitle("Metro POS | Admin Dashboard");
+            // Create new scene with dashboard
+            Scene dashboardScene = new Scene(dashboardRoot);
+
+            // Set the new scene on current stage
+            currentStage.setScene(dashboardScene);
+            currentStage.show();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Navigation Error");
+            alert.setHeaderText("Could not load Dashboard");
+            alert.setContentText("An error occurred while loading the Dashboard: " + e.getMessage());
+            alert.showAndWait();
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+
+
+
 
     private boolean validateInputs() {
         StringBuilder errorMessage = new StringBuilder();
