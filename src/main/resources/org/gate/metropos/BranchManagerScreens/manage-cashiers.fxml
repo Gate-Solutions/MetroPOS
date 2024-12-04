@@ -19,11 +19,11 @@
         <!-- Header Section -->
         <HBox spacing="10" alignment="CENTER_LEFT">
             <VBox>
-                <Label text="Cashiers" styleClass="page-title"/>
-                <Label text="Manage branch cashiers" styleClass="subtitle-label"/>
+                <Label text="Employees" styleClass="page-title"/>
+                <Label text="Manage branch employees" styleClass="subtitle-label"/>
             </VBox>
             <Region HBox.hgrow="ALWAYS"/>
-            <Button fx:id="addCashierBtn" text="Add Cashier" styleClass="primary-button">
+            <Button fx:id="addCashierBtn" text="Add Employee" styleClass="primary-button">
                 <graphic>
                     <FontAwesomeIconView glyphName="PLUS" size="14" fill="WHITE"/>
                 </graphic>
@@ -35,6 +35,7 @@
             <TextField fx:id="searchField" promptText="Search cashiers..."
                        styleClass="search-field" HBox.hgrow="ALWAYS"/>
             <ComboBox fx:id="statusFilter" styleClass="filter-combo"/>
+            <ComboBox fx:id="roleFilter" styleClass="filter-combo"/>
         </HBox>
 
         <!-- Table Section -->
