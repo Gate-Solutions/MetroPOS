@@ -19,7 +19,11 @@ public class BranchProductRepository {
     }
 
     public BranchProduct addProductToBranch(Long branchId, Long productId, Integer quantity) {
-        Record record = dsl.insertInto(BranchProductFields.BranchProductTable.toTableField())
+        return addProductToBranch(dsl, branchId, productId, quantity);
+    }
+
+    public BranchProduct addProductToBranch(DSLContext ctx, Long branchId, Long productId, Integer quantity) {
+        Record record = ctx.insertInto(BranchProductFields.toTableField())
                 .set(BranchProductFields.BRANCH_ID.toField(), branchId)
                 .set(BranchProductFields.PRODUCT_ID.toField(), productId)
                 .set(BranchProductFields.QUANTITY.toField(), quantity)
@@ -30,7 +34,11 @@ public class BranchProductRepository {
     }
 
     public void updateQuantity(Long branchId, Long productId, Integer quantity) {
-        dsl.update(BranchProductFields.BranchProductTable.toTableField())
+        updateQuantity(dsl, branchId, productId, quantity);
+    }
+
+    public void updateQuantity(DSLContext ctx, Long branchId, Long productId, Integer quantity) {
+        ctx.update(BranchProductFields.toTableField())
                 .set(BranchProductFields.QUANTITY.toField(), quantity)
                 .where(BranchProductFields.BRANCH_ID.toField().eq(branchId))
                 .and(BranchProductFields.PRODUCT_ID.toField().eq(productId))
@@ -39,7 +47,7 @@ public class BranchProductRepository {
 
     public List<BranchProduct> getProductsByBranch(Long branchId) {
         Result<Record> records = dsl.select()
-                .from(BranchProductFields.BranchProductTable.toTableField())
+                .from(BranchProductFields.toTableField())
                 .where(BranchProductFields.BRANCH_ID.toField().eq(branchId))
                 .fetch();
         return records.map(this::mapToBranchProduct);
