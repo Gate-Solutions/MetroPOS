@@ -1,0 +1,138 @@
+/* Report Container */
+.report-container {
+    -fx-background-color: -background;
+    -fx-padding: 20;
+}
+
+/* Report Combo Box */
+.report-combo {
+    -fx-min-width: 150px;
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 4px;
+}
+
+.report-combo:focused {
+    -fx-border-color: -primary;
+}
+
+/* Report Date Picker */
+.report-date-picker {
+    -fx-min-width: 150px;
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 4px;
+}
+
+.report-date-picker:focused {
+    -fx-border-color: -primary;
+}
+
+/* Report Tabs */
+.report-tabs {
+    -fx-background-color: transparent;
+}
+
+/* Chart Box */
+.chart-box {
+    -fx-background-color: white;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
+    -fx-background-radius: 5px;
+    -fx-min-height: 300px;
+    -fx-min-width: 400px;
+    -fx-padding: 0;
+}
+
+/* Details Container */
+.details-container {
+    -fx-background-color: transparent;
+}
+
+/* Make charts responsive */
+.chart-box .chart {
+    -fx-min-height: 250px;
+    -fx-pref-height: 100%;
+    -fx-max-height: infinity;
+    -fx-min-width: 350px;
+    -fx-pref-width: 100%;
+    -fx-max-width: infinity;
+}
+.chart {
+    -fx-legend-visible: false;
+    -fx-padding: 10px;
+}
+
+/* Table styling */
+.table-view {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
+    -fx-background-radius: 5px;
+}
+
+/* Currency formatting for amount columns */
+.table-cell.amount-column {
+    -fx-alignment: CENTER-RIGHT;
+}
+
+/* Additional hover effects for interactive elements */
+.report-combo:hover, .report-date-picker:hover {
+    -fx-border-color: derive(-primary, 50%);
+}
+
+
+/* Report Controls Section */
+.report-controls {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+    -fx-alignment: center-left;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
+    -fx-background-radius: 5px;
+    -fx-min-height: 80px;
+    -fx-wrap-text: true;
+}
+
+/* Chart Container */
+.chart-container {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-spacing: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
+    -fx-background-radius: 5px;
+    -fx-min-height: 600px;
+}
+
+/* Summary Section Styling */
+.summary-grid {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-hgap: 30px;
+    -fx-vgap: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
+    -fx-background-radius: 5px;
+    -fx-alignment: center;
+}
+
+.summary-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-dark;
+    -fx-padding: 5px;
+}
+
+.summary-value {
+    -fx-font-size: 16px;
+    -fx-text-fill: -primary;
+    -fx-font-weight: bold;
+    -fx-padding: 5px;
+}
+
+.primary-button {
+    -fx-min-width: 100px;
+}
+@media screen and (max-width: 1200px) {
+    .report-controls {
+        -fx-wrap: wrap;
+    }
+}

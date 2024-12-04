@@ -3,6 +3,7 @@ package org.gate.metropos.models.Reports;
 import lombok.*;
 import org.gate.metropos.models.Branch;
 import org.gate.metropos.models.Employee;
+import org.gate.metropos.models.PurchaseInvoice.PurchaseInvoice;
 import org.gate.metropos.models.Sale;
 
 import java.math.BigDecimal;
@@ -23,4 +24,5 @@ public class SalesReport {
     private BigDecimal netAmount;
     private BigDecimal totalSales;
     private List<Sale> details;
+    private List<PurchaseInvoice> purchaseInvoices;
 }
