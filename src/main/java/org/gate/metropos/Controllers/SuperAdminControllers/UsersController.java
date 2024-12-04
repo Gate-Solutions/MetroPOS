@@ -48,7 +48,6 @@ public class UsersController {
         if (response.isSuccess()) {
             allEmployees.clear();
             allEmployees.addAll(response.getData());
-            allEmployees.forEach(emp -> System.out.println("Employee: " + emp.getName() + ", Branch ID: " + emp.getBranchId()));
         } else {
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to load employees: " + response.getMessage());
         }
@@ -130,14 +129,11 @@ public class UsersController {
         );
 
 
-
-
-
         employeesTable.setRowFactory(tv -> {
             TableRow<Employee> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
-                if (!row.isEmpty() && event.getClickCount() == 1) {
-//                    openUpdateEmployeeWindow(row.getItem());
+                if (!row.isEmpty() && event.getClickCount() == 2) {
+                    openUpdateManagerWindow(row.getItem());
                 }
             });
             return row;
@@ -241,6 +237,24 @@ public class UsersController {
         }
     }
 
+    private void openUpdateManagerWindow(Employee employee) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos/SuperAdminScreens/update-manager.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Update Manager");
+            stage.setScene(new Scene(loader.load()));
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            UpdateManagerController controller = loader.getController();
+            controller.setEmployee(employee);
+
+            stage.showAndWait();
+
+            loadEmployees(); // Refresh the table after update
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 
 
 }
