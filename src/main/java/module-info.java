@@ -5,6 +5,7 @@ module org.example.metropos {
     requires com.zaxxer.hikari;
     requires static lombok;
     requires com.fasterxml.jackson.databind;
+    requires bcrypt;
 
 
     opens org.gate.metropos to javafx.fxml;
