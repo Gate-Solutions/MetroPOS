@@ -23,17 +23,22 @@ public class DashBoardController {
         branchesBtn.setOnAction(e -> loadView("branches.fxml"));
         usersBtn.setOnAction(e -> loadView("users.fxml"));
         reportsBtn.setOnAction(e -> loadView("reports.fxml"));
-//        settingsBtn.setOnAction(e -> loadView("settings.fxml"));
+        settingsBtn.setOnAction(e -> loadView("settings.fxml"));
         logoutBtn.setOnAction(e -> handleLogout());
     }
 
     private void loadView(String fxml) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/metropos/SuperAdminScreens/"+fxml ));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos/SuperAdminScreens/" + fxml));
+            if (loader.getLocation() == null) {
+                System.err.println("Could not find FXML file: " + fxml);
+                return;
+            }
             contentArea.getChildren().clear();
             contentArea.getChildren().add(loader.load());
         } catch (IOException e) {
             e.printStackTrace();
+            System.err.println("Error loading " + fxml + ": " + e.getMessage());
         }
     }
 

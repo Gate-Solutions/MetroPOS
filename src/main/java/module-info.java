@@ -11,6 +11,8 @@ module org.example.metropos {
 
     opens org.gate.metropos to javafx.fxml;
     opens org.gate.metropos.Controllers to javafx.fxml;
+    opens org.gate.metropos.Controllers.SuperAdminControllers to javafx.fxml;
     exports org.gate.metropos.Controllers to javafx.fxml;
+    exports org.gate.metropos.Controllers.SuperAdminControllers to javafx.fxml;
     exports org.gate.metropos;
 }
