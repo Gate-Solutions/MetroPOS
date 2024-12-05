@@ -171,7 +171,7 @@ public class ManagePurchaseInvoicesController {
     }
 
     private void loadInvoices() {
-        ServiceResponse<List<PurchaseInvoice>> response = invoiceService.getInvoicesByBranch(1L);
+        ServiceResponse<List<PurchaseInvoice>> response = invoiceService.getInvoicesByBranch(EmployeeService.getLoggedInEmployee().getBranchId());
         if (response.isSuccess()) {
             allInvoices.clear();
             allInvoices.addAll(response.getData());

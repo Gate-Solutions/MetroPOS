@@ -51,7 +51,12 @@ public class LoginController {
     }
 
     private void handleLogin() {
-
+//        ServiceResponse<Employee> resp = employeeService.login("rehan@gmail.com", "password");
+//        if(resp.isSuccess()) {
+//            showBranchManagerDashboard();
+//            SessionManager.initEmployeeSession(resp.getData());
+//            return;
+//        }
 
         if (!validateInputs()) {
             return;

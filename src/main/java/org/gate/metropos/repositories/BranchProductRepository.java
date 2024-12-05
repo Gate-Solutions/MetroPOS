@@ -1,21 +1,28 @@
 package org.gate.metropos.repositories;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.gate.metropos.config.DatabaseConfig;
 import org.gate.metropos.enums.BranchProductFields;
 import org.gate.metropos.models.BranchProduct;
+import org.gate.metropos.services.SyncService;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 public class BranchProductRepository {
     private final DSLContext dsl;
+    private final SyncService syncService;
 
     public BranchProductRepository() {
         dsl = DatabaseConfig.getLocalDSL();
+        syncService = new SyncService();
     }
 
     public BranchProduct addProductToBranch(Long branchId, Long productId, Integer quantity) {
@@ -30,6 +37,26 @@ public class BranchProductRepository {
                 .returning()
                 .fetchOne();
 
+        if(record == null) return null;
+        int id = record.get(BranchProductFields.BRANCH_ID.toField(), Integer.class);
+
+        try {
+            Map<String, Object> fieldValues = new HashMap<>();
+            fieldValues.put("branch_id", branchId);
+            fieldValues.put("product_id", productId);
+            fieldValues.put("quantity", quantity);
+
+            syncService.trackChange(
+                    ctx,
+                    "branch_products",
+                    id,
+                    "insert",
+                    new ObjectMapper().writeValueAsString(fieldValues)
+            );
+        } catch (JsonProcessingException e) {
+            System.out.println(e);
+        }
+
         return mapToBranchProduct(record);
     }
 
@@ -43,6 +70,22 @@ public class BranchProductRepository {
                 .where(BranchProductFields.BRANCH_ID.toField().eq(branchId))
                 .and(BranchProductFields.PRODUCT_ID.toField().eq(productId))
                 .execute();
+
+        try {
+            BranchProduct branchProduct = getProductById(ctx, branchId, productId);
+            Map<String, Object> fieldValues = new HashMap<>();
+            fieldValues.put("quantity", quantity);
+
+            syncService.trackChange(
+                    ctx,
+                    "branch_products",
+                    branchProduct.getId().intValue(),
+                    "update",
+                    new ObjectMapper().writeValueAsString(fieldValues)
+            );
+        } catch (JsonProcessingException e) {
+            System.out.println(e);
+        }
     }
 
     public List<BranchProduct> getProductsByBranch(Long branchId) {

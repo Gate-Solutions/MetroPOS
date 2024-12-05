@@ -3,6 +3,8 @@ package org.gate.metropos.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.gate.metropos.config.DatabaseConfig;
 import org.gate.metropos.enums.SyncTrackingFields;
 import org.gate.metropos.models.SyncTracking;
@@ -11,6 +13,7 @@ import org.jooq.*;
 import org.jooq.Record;
 import org.jooq.impl.DSL;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -20,10 +23,20 @@ import java.util.Map;
 public class SyncService {
     private final DSLContext localContext = DatabaseConfig.getLocalDSL();
     private final DSLContext remoteContext = DatabaseConfig.getRemoteDSL();
-
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
     public void trackChange(String tableName, Integer recordId, String operation, String fieldNames ) {
         localContext.insertInto(SyncTrackingFields.SyncTrackingFieldsTable.toTableField())
+                .set(SyncTrackingFields.TABLE_NAME.toField(), tableName)
+                .set(SyncTrackingFields.RECORD_ID.toField(), recordId)
+                .set(SyncTrackingFields.FIELD_VALUES.toField(), DSL.field("?::jsonb", String.class, fieldNames))
+                .set(SyncTrackingFields.OPERATION.toField(), operation)
+                .execute();
+    }
+    public void trackChange(DSLContext ctx, String tableName, Integer recordId, String operation, String fieldNames ) {
+        ctx.insertInto(SyncTrackingFields.SyncTrackingFieldsTable.toTableField())
                 .set(SyncTrackingFields.TABLE_NAME.toField(), tableName)
                 .set(SyncTrackingFields.RECORD_ID.toField(), recordId)
                 .set(SyncTrackingFields.FIELD_VALUES.toField(), DSL.field("?::jsonb", String.class, fieldNames))
@@ -52,6 +65,7 @@ public class SyncService {
                 System.out.println(syncTracking.toString());
             }
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
         }
 
@@ -81,14 +95,17 @@ public class SyncService {
         Map<String, Object> fieldValues = syncRecord.getFieldValues();
 
         for (Map.Entry<String, Object> entry : fieldValues.entrySet()) {
-            insertMap.put(DSL.field(entry.getKey()), entry.getValue());
+            Object value = entry.getValue();
+            if (entry.getKey().equals("invoice_date")) {
+                value = Date.valueOf(value.toString());
+            }
+            insertMap.put(DSL.field(entry.getKey()), value);
         }
 
         insert.set(insertMap).execute();
     }
 
     private void handleUpdate(SyncTracking syncRecord) {
-//  !      Haven't tested yet. GPT says it works
         Map<String, Object> fieldValues = syncRecord.getFieldValues();
 
         UpdateConditionStep<?> update = remoteContext
@@ -107,13 +124,12 @@ public class SyncService {
     }
 
     private SyncTracking mapToSyncTracking(Record record) {
-        ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> fieldValuesMap = null;
 
         String fieldValuesJson = record.get(SyncTrackingFields.FIELD_VALUES.toField(), String.class);
         if (fieldValuesJson != null) {
             try {
-                fieldValuesMap = mapper.readValue(fieldValuesJson, new TypeReference<Map<String, Object>>() {});
+                fieldValuesMap = objectMapper.readValue(fieldValuesJson, new TypeReference<Map<String, Object>>() {});
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
