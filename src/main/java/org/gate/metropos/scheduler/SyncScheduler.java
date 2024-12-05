@@ -15,8 +15,8 @@ public class SyncScheduler {
         scheduler.scheduleAtFixedRate(
                 syncService::syncWithRemote,
                 0,
-                5,
-                TimeUnit.MINUTES
+                30,
+                TimeUnit.SECONDS
         );
     }
 
