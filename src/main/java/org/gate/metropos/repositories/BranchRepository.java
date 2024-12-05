@@ -64,7 +64,16 @@ public class BranchRepository {
                 .set(BranchFields.PHONE.toField(), phone)
                 .set(BranchFields.IS_ACTIVE.toField(), true)
                 .set(BranchFields.NUMBER_OF_EMPLOYEES.toField(), 0)
-                .returning()
+                .returning(
+                        BranchFields.ID.toField(),
+                        BranchFields.BRANCH_CODE.toField(),
+                        BranchFields.NAME.toField(),
+                        BranchFields.CITY.toField(),
+                        BranchFields.ADDRESS.toField(),
+                        BranchFields.PHONE.toField(),
+                        BranchFields.IS_ACTIVE.toField(),
+                        BranchFields.NUMBER_OF_EMPLOYEES.toField()
+                        )
                 .fetchOne();
 
         return mapToBranch(record);
@@ -120,8 +129,7 @@ public class BranchRepository {
                 .phone(record.get(BranchFields.PHONE.toField(), String.class))
                 .isActive(record.get(BranchFields.IS_ACTIVE.toField(), Boolean.class))
                 .numberOfEmployees(record.get(BranchFields.NUMBER_OF_EMPLOYEES.toField(), Integer.class))
-                // .createdAt(record.get(BranchFields.CREATED_AT.toField(), LocalDateTime.class))
-                // .updatedAt(record.get(BranchFields.UPDATED_AT.toField(), LocalDateTime.class))
+
                 .build();
     }
 

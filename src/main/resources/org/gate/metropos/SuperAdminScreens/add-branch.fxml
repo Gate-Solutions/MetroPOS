@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.gate.metropos.Controllers.SuperAdminControllers.AddBranchController"
+            stylesheets="@../styles/global.css, @../styles/common.css ,@../styles/SuperAdmin/branches.css"
+            prefWidth="700" prefHeight="700"
+>
+
+    <VBox spacing="20" styleClass="add-branch-container" AnchorPane.topAnchor="0"
+          AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+
+        <padding>
+            <Insets top="30" right="40" bottom="30" left="40"/>
+        </padding>
+
+        <Label text="Add New Branch" styleClass="title-label"/>
+        <Label text="Enter branch details below" styleClass="subtitle-label"/>
+
+        <VBox spacing="15">
+            <TextField fx:id="branchCodeField" promptText="Branch Code" styleClass="input-field"/>
+            <TextField fx:id="nameField" promptText="Branch Name" styleClass="input-field"/>
+            <TextField fx:id="cityField" promptText="City" styleClass="input-field"/>
+            <TextField fx:id="addressField" promptText="Address" styleClass="input-field"/>
+            <TextField fx:id="phoneField" promptText="Phone Number" styleClass="input-field"/>
+        </VBox>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button fx:id="cancelBtn" text="Cancel" styleClass="secondary-button"/>
+            <Button fx:id="saveBtn" text="Save Branch" styleClass="primary-button">
+                <graphic>
+                    <FontAwesomeIconView glyphName="CHECK" size="14" fill="WHITE"/>
+                </graphic>
+            </Button>
+        </HBox>
+    </VBox>
+</AnchorPane>
+
