@@ -174,8 +174,9 @@ public class AddUpdateCashierController {
         StringBuilder errorMessage = new StringBuilder();
 
         // Username validation
-        String username = usernameField.getText().trim();
-        if (username.isEmpty()) {
+//        TODO: fix input fields
+        String username = usernameField.getText();
+        if (username == null || (username = username.trim()).isEmpty()) {
             errorMessage.append("Username is required\n");
         } else if (username.length() < 3) {
             errorMessage.append("Username must be at least 3 characters\n");

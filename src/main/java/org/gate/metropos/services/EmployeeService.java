@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.gate.metropos.enums.UserRole;
+import org.gate.metropos.models.Branch;
 import org.gate.metropos.models.Employee;
+import org.gate.metropos.repositories.BranchRepository;
 import org.gate.metropos.repositories.EmployeeRepository;
 import org.gate.metropos.utils.PasswordEncoder;
 import org.gate.metropos.utils.ServiceResponse;
@@ -16,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class EmployeeService {
     private EmployeeRepository employeeRepository;
+    private BranchService branchService;
     private PasswordEncoder passwordEncoder;
     @Getter
     private static Employee loggedInEmployee = null;
@@ -23,6 +26,7 @@ public class EmployeeService {
 
     public EmployeeService() {
         employeeRepository = new EmployeeRepository();
+        branchService = new BranchService();
         passwordEncoder = new PasswordEncoder();
     }
 
@@ -39,11 +43,18 @@ public class EmployeeService {
         if (employee.getSalary().compareTo(BigDecimal.ZERO) <= 0) {
             return new ServiceResponse<>(false, 400, "Salary must be greater than zero", null);
         }
-
+        if(employee.getBranchId() == null) {
+            return new ServiceResponse<>(false, 400, "Branch id is required", null);
+        }
+        ServiceResponse<Branch> resp = branchService.getBranch(employee.getBranchId());
+        if(!resp.isSuccess()) {
+            return new ServiceResponse<>(false, 400, "Branch not found", null);
+        }
         employee.setPassword(passwordEncoder.encode("password"));
         employee.setFirstTime(true);
         employee.setActive(true);
         Employee savedEmployee = employeeRepository.addEmployee(employee);
+        branchService.incrementBranchEmployeeCount(employee.getBranchId());
         return new ServiceResponse<>(true, 200, "Employee created successfully", savedEmployee);
     }
 
@@ -74,12 +85,7 @@ public class EmployeeService {
 
 
     public ServiceResponse<Employee> updateEmployee(Employee employee) {
-        System.out.println("THIS IS SENT ENMPLOYEE : "+employee.getUsername());
         Employee existingEmployee = employeeRepository.getEmployee(employee.getId());
-        System.out.println("THIS IS EXISTING ENMPLOYEE : "+existingEmployee.getUsername());
-        if (existingEmployee == null) {
-            return new ServiceResponse<>(false, 404, "Employee not found", null);
-        }
 
         if (!existingEmployee.getEmail().equals(employee.getEmail())
                 && employeeRepository.findByEmail(employee.getEmail()) != null) {
@@ -93,8 +99,24 @@ public class EmployeeService {
                 && employeeRepository.findByEmployeeNo(employee.getEmployeeNo()) != null) {
             return new ServiceResponse<>(false, 400, "Employee number already exists", null);
         }
+        boolean isExistingEmployeeActive = existingEmployee.isActive();
+//        if employee role is manager and branch already has a manager than do not activate employee
+
+        if(employee.getRole() == UserRole.BRANCH_MANAGER && isExistingEmployeeActive != employee.isActive()) {
+            if(employee.isActive()) {
+                List<Employee> employees = employeeRepository.getEmployeesByBranchAndRole(employee.getBranchId(), UserRole.BRANCH_MANAGER);
+                if (!employees.isEmpty())
+                    return new ServiceResponse<>(false, 400, "Manager already exists for this branch", null);
+            }
+        }
 
         Employee updatedEmployee = employeeRepository.updateEmployee(employee);
+        if (isExistingEmployeeActive != employee.isActive()) {
+            if(employee.isActive())
+                branchService.incrementBranchEmployeeCount(employee.getBranchId());
+            else
+                branchService.decrementBranchEmployeeCount(employee.getBranchId());
+        }
         return new ServiceResponse<>(true, 200, "Employee updated successfully", updatedEmployee);
     }
 
@@ -125,6 +147,12 @@ public class EmployeeService {
             return new ServiceResponse<>(false, 404, "Employee not found", null);
         }
         employeeRepository.setEmployeeStatus(id, isActive);
+        if(isActive != employee.isActive()) {
+            if(isActive)
+                branchService.incrementBranchEmployeeCount(employee.getBranchId());
+            else
+                branchService.decrementBranchEmployeeCount(employee.getBranchId());
+        }
         String status = isActive ? "activated" : "deactivated";
         return new ServiceResponse<>(true, 200, "Employee " + status + " successfully", null);
     }
@@ -180,11 +208,6 @@ public class EmployeeService {
         }
         return new ServiceResponse<>(true, 200, "First time status retrieved", loggedInEmployee.isFirstTime());
     }
-
-
-
-
-
 
 
 }

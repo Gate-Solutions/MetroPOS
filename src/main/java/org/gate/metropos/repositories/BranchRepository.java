@@ -8,11 +8,14 @@ import org.gate.metropos.enums.UserFields;
 import org.gate.metropos.enums.UserRole;
 import org.gate.metropos.models.Branch;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.Result;
 import org.jooq.Record;
+import org.jooq.impl.DSL;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 public class BranchRepository {
@@ -26,7 +29,7 @@ public class BranchRepository {
 
     public Branch findById(Long id) {
         Record record = dsl.select()
-                .from(BranchFields.BranchTable.toTableField())
+                .from(BranchFields.toTableField())
                 .where(BranchFields.ID.toField().eq(id))
                 .fetchOne();
         return mapToBranch(record);
@@ -35,7 +38,7 @@ public class BranchRepository {
 
     public Branch findByBranchCode(String branchCode) {
         Record record = dsl.select()
-                .from(BranchFields.BranchTable.toTableField())
+                .from(BranchFields.toTableField())
                 .where(BranchFields.BRANCH_CODE.toField().eq(branchCode))
                 .fetchOne();
 
@@ -44,7 +47,7 @@ public class BranchRepository {
 
 
     public Branch createBranch(Branch branch) {
-        Record record = dsl.insertInto(BranchFields.BranchTable.toTableField())
+        Record record = dsl.insertInto(BranchFields.toTableField())
                 .set(BranchFields.BRANCH_CODE.toField(), branch.getBranchCode())
                 .set(BranchFields.NAME.toField(), branch.getName())
                 .set(BranchFields.CITY.toField(), branch.getCity())
@@ -64,7 +67,7 @@ public class BranchRepository {
 
 
     public Branch createBranch(String branchCode, String name, String city, String address, String phone) {
-        Record record = dsl.insertInto(BranchFields.BranchTable.toTableField())
+        Record record = dsl.insertInto(BranchFields.toTableField())
                 .set(BranchFields.BRANCH_CODE.toField(), branchCode)
                 .set(BranchFields.NAME.toField(), name)
                 .set(BranchFields.CITY.toField(), city)
@@ -87,29 +90,92 @@ public class BranchRepository {
         return mapToBranch(record);
     }
 
+    public Branch incrementEmployeeCount(Long branchId) {
+        Branch b = this.findById(branchId);
+        int employeeCount = Math.max(0, b.getNumberOfEmployees()+1);
 
-
-
-    public Branch updateBranch(Branch branch) {
-        Record record = dsl.update(BranchFields.BranchTable.toTableField())
-                .set(BranchFields.NAME.toField(), branch.getName())
-                .set(BranchFields.CITY.toField(), branch.getCity())
-                .set(BranchFields.ADDRESS.toField(), branch.getAddress())
-                .set(BranchFields.PHONE.toField(), branch.getPhone())
+        Record record = dsl.update(BranchFields.toTableField())
+                .set(BranchFields.NUMBER_OF_EMPLOYEES.toField(), employeeCount)
                 .set(BranchFields.UPDATED_AT.toField(), LocalDateTime.now())
-                .set(BranchFields.IS_ACTIVE.toField(),branch.isActive())
-                .where(BranchFields.ID.toField().eq(branch.getId()))
-                .returning()
+                .where(BranchFields.ID.toField().eq(branchId))
+                .returning(
+                        BranchFields.ID.toField(),
+                        BranchFields.BRANCH_CODE.toField(),
+                        BranchFields.NAME.toField(),
+                        BranchFields.CITY.toField(),
+                        BranchFields.ADDRESS.toField(),
+                        BranchFields.PHONE.toField(),
+                        BranchFields.IS_ACTIVE.toField(),
+                        BranchFields.NUMBER_OF_EMPLOYEES.toField()
+                )
                 .fetchOne();
 
         return mapToBranch(record);
     }
 
+    public Branch decrementEmployeeCount(Long branchId) {
 
+        Branch b = this.findById(branchId);
+        int employeeCount = Math.max(0, b.getNumberOfEmployees()-1);
+
+        Record record = dsl.update(BranchFields.toTableField())
+                .set(BranchFields.NUMBER_OF_EMPLOYEES.toField(),employeeCount)
+                .set(BranchFields.UPDATED_AT.toField(), LocalDateTime.now())
+                .where(BranchFields.ID.toField().eq(branchId))
+                .returning(
+                        BranchFields.ID.toField(),
+                        BranchFields.BRANCH_CODE.toField(),
+                        BranchFields.NAME.toField(),
+                        BranchFields.CITY.toField(),
+                        BranchFields.ADDRESS.toField(),
+                        BranchFields.PHONE.toField(),
+                        BranchFields.IS_ACTIVE.toField(),
+                        BranchFields.NUMBER_OF_EMPLOYEES.toField()
+                )
+                .fetchOne();
+
+        return mapToBranch(record);
+    }
+
+    public Branch updateBranch(Branch branch) {
+        return dsl.transactionResult(configuration -> {
+            DSLContext ctx = DSL.using(configuration);
+
+            if (!branch.isActive()) {
+                ctx.update(EmployeeFields.toTableField())
+                        .set(EmployeeFields.IS_ACTIVE.toField(), false)
+                        .where(EmployeeFields.BRANCH_ID.toField().eq(branch.getId()))
+                        .execute();
+                branch.setNumberOfEmployees(0);
+            }
+
+            Record record = ctx.update(BranchFields.toTableField())
+                    .set(BranchFields.NAME.toField(), branch.getName())
+                    .set(BranchFields.CITY.toField(), branch.getCity())
+                    .set(BranchFields.ADDRESS.toField(), branch.getAddress())
+                    .set(BranchFields.PHONE.toField(), branch.getPhone())
+                    .set(BranchFields.UPDATED_AT.toField(), LocalDateTime.now())
+                    .set(BranchFields.IS_ACTIVE.toField(), branch.isActive())
+                    .where(BranchFields.ID.toField().eq(branch.getId()))
+                    .returning(
+                            BranchFields.ID.toField(),
+                            BranchFields.BRANCH_CODE.toField(),
+                            BranchFields.NAME.toField(),
+                            BranchFields.CITY.toField(),
+                            BranchFields.ADDRESS.toField(),
+                            BranchFields.PHONE.toField(),
+                            BranchFields.IS_ACTIVE.toField(),
+                            BranchFields.NUMBER_OF_EMPLOYEES.toField()
+                    )
+                    .fetchOne();
+
+            return mapToBranch(record);
+        });
+    }
 
 
     public void setBranchStatus(Long branchId, boolean isActive) {
-        dsl.update(BranchFields.BranchTable.toTableField())
+        dsl.update(BranchFields.toTableField())
                 .set(BranchFields.IS_ACTIVE.toField(), isActive)
                 .set(BranchFields.UPDATED_AT.toField(), LocalDateTime.now())
                 .where(BranchFields.ID.toField().eq(branchId))
@@ -119,7 +185,7 @@ public class BranchRepository {
 
     public List<Branch> getAllBranches() {
         Result<org.jooq.Record> records = dsl.select()
-                .from(BranchFields.BranchTable.toTableField())
+                .from(BranchFields.toTableField())
                 .fetch();
 
         return records.map(this::mapToBranch);
