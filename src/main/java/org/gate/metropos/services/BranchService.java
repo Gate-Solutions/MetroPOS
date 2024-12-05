@@ -19,12 +19,15 @@ public class BranchService {
     }
     public ServiceResponse<Branch> createBranch(String branchCode, String name, String city, String address, String phone) {
 
-        if (branchRepository.findByBranchCode(branchCode) != null) {
-            return new ServiceResponse<>(false, 400, "Branch code already exists", null);
-        }
+        Branch branch = Branch.builder()
+                .branchCode(branchCode)
+                .name(name)
+                .city(city)
+                .address(address)
+                .phone(phone)
+                .build();
 
-        Branch branch = branchRepository.createBranch(branchCode, name, city, address, phone);
-        return new ServiceResponse<>(true, 200, "Branch created successfully", branch);
+        return this.createBranch(branch);
     }
 
     public ServiceResponse<Branch> updateBranch(Branch branch) {
@@ -121,6 +124,7 @@ public class BranchService {
         if (branch.getPhone() == null || !branch.getPhone().matches("\\d{10}")) {
             throw new IllegalArgumentException("Invalid phone number format");
         }
+
     }
 
 }

@@ -229,7 +229,7 @@ public class DatabaseInitializer {
                         foreignKey(PurchaseInvoiceFields.BRANCH_ID.getColumnName())
                                 .references(BranchFields.BranchTable.getColumnName(), BranchFields.ID.getColumnName()),
                         foreignKey(PurchaseInvoiceFields.CREATED_BY.getColumnName())
-                                .references(UserFields.UserTable.getColumnName(), UserFields.ID.getColumnName())
+                                .references(EmployeeFields.EmployeeTable.getColumnName(), UserFields.ID.getColumnName())
                 )
                 .execute();
 
