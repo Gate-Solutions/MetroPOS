@@ -1,14 +1,20 @@
 package org.gate.metropos.services;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.gate.metropos.models.SuperAdmin;
 import org.gate.metropos.repositories.SuperAdminRepository;
 
+@NoArgsConstructor
+@AllArgsConstructor
 public class SuperAdminService {
     SuperAdminRepository superAdminRepository = new SuperAdminRepository();
+    @Getter
     SuperAdmin superAdmin = null;
 
     public SuperAdmin login(String emailOrUsername, String password) {
-        Boolean isEmail = emailOrUsername.contains("@");
+        boolean isEmail = emailOrUsername.contains("@");
 
         if(isEmail) {
             SuperAdmin admin = superAdminRepository.findByEmail(emailOrUsername.toLowerCase());
@@ -18,7 +24,7 @@ public class SuperAdminService {
         }
         else {
             SuperAdmin admin = superAdminRepository.findByUsername(emailOrUsername.toLowerCase());
-            if(admin.getPassword().equals(password)) {
+            if(admin != null && admin.getPassword().equals(password)) {
                 this.superAdmin =  admin;
             }
         }
@@ -31,10 +37,6 @@ public class SuperAdminService {
 
     public void logout() {
         this.superAdmin = null;
-    }
-
-    public SuperAdmin getSuperAdmin() {
-        return this.superAdmin;
     }
 
 }
