@@ -1,4 +1,4 @@
-package org.gate.metropos.Controllers.DataEntryOperator;
+package org.gate.metropos.Controllers.CashierControllers;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -12,11 +12,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.gate.metropos.Controllers.BranchManagerControllers.AddUpdateSupplierController;
+import org.gate.metropos.Controllers.DataEntryOperator.AddUpdateProductController;
 import org.gate.metropos.models.BranchProduct;
 import org.gate.metropos.models.Category;
 import org.gate.metropos.models.Product;
-import org.gate.metropos.models.Supplier;
 import org.gate.metropos.services.CategoryService;
 import org.gate.metropos.services.EmployeeService;
 import org.gate.metropos.services.ProductService;
@@ -30,9 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ManageProductsController {
+public class ViewProductsController {
     @FXML private TableView<Product> productsTable;
-    @FXML private Button addProductBtn;
     @FXML private TextField searchField;
     @FXML private ComboBox<String> categoryFilter;
     @FXML private ComboBox<String> statusFilter;
@@ -43,7 +41,7 @@ public class ManageProductsController {
     private final CategoryService categoryService;
     private Map<Long, Integer> branchProductQuantities;
 
-    public ManageProductsController() {
+    public ViewProductsController() {
         productService = new ProductService();
         categoryService = new CategoryService();
         branchProductQuantities = new HashMap<>();
@@ -56,7 +54,6 @@ public class ManageProductsController {
         setupFilters();
         loadProducts();
         loadBranchProductQuantities();
-        addProductBtn.setOnAction(e -> openAddProductWindow());
     }
 
     private void setupTable() {
@@ -98,43 +95,11 @@ public class ManageProductsController {
             return new SimpleIntegerProperty(quantity).asObject();
         });
 
-
-        TableColumn<Product, Void> actionCol = new TableColumn<>("Action");
-        actionCol.setCellFactory(column -> new TableCell<>() {
-            private final Button removeButton = new Button("Remove");
-            {
-                removeButton.setOnAction(event -> {
-                    Product product = getTableView().getItems().get(getIndex());
-                    if (!product.isActive()) {
-                        AlertUtils.showError("Already Inactive");
-                        return;
-                    }
-//                    confirmAndRemoveProduct(product);
-                });
-                removeButton.getStyleClass().add("primary-table-button");
-            }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                setGraphic(empty ? null : removeButton);
-            }
-        });
-
         productsTable.getColumns().addAll(
                 idCol, codeCol, nameCol, categoryCol, originalPriceCol,
-                salePriceCol, cartonPriceCol, quantityCol, statusCol, actionCol
+                salePriceCol, cartonPriceCol, quantityCol, statusCol
         );
 
-        productsTable.setRowFactory(tv -> {
-            TableRow<Product> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (!row.isEmpty() && event.getClickCount() == 2) {
-                    openUpdateProductWindow(row.getItem());
-                }
-            });
-            return row;
-        });
     }
 
     private void setupFilters() {
@@ -215,40 +180,5 @@ public class ManageProductsController {
         }
         AlertUtils.showError("Failed to load Categories: " + response.getMessage());
     }
-
-    private void openAddProductWindow() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/org/gate/metropos/dataEntryScreens/addUpdateProducts.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Add New Product");
-            stage.setScene(new Scene(loader.load()));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-            loadProducts();
-        } catch (IOException ex) {
-            AlertUtils.showError("Error", "Failed to open add product window");
-        }
-    }
-
-    private void openUpdateProductWindow(Product product) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/org/gate/metropos/dataEntryScreens/addUpdateProducts.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Update Product");
-            stage.setScene(new Scene(loader.load()));
-            stage.initModality(Modality.APPLICATION_MODAL);
-
-            AddUpdateProductController controller = loader.getController();
-            controller.setProductToUpdate(product);
-
-            stage.showAndWait();
-            loadProducts();
-        } catch (IOException ex) {
-            AlertUtils.showError("Error", "Failed to open update product window");
-        }
-    }
-
 
 }
