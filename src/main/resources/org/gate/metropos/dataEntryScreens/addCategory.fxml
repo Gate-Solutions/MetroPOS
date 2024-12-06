@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.gate.metropos.Controllers.DataEntryOperator.AddCategoryController"
+            stylesheets="@../styles/global.css,@../styles/common.css"
+            prefWidth="400" prefHeight="250">
+
+    <VBox spacing="15" styleClass="add-branch-container" AnchorPane.topAnchor="0"
+          AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+
+        <padding>
+            <Insets top="30" right="40" bottom="30" left="40"/>
+        </padding>
+
+        <Label text="Add New Category" styleClass="title-label"/>
+        <Label text="Enter category name" styleClass="subtitle-label"/>
+
+        <VBox spacing="5">
+            <Label text="Category Name" styleClass="field-label"/>
+            <TextField fx:id="categoryNameField" styleClass="input-field" promptText="Enter category name"/>
+        </VBox>
+
+        <Region VBox.vgrow="ALWAYS"/>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button fx:id="cancelBtn" text="Cancel" styleClass="secondary-button"/>
+            <Button fx:id="createCategoryBtn" text="Create Category" styleClass="primary-button">
+                <graphic>
+                    <FontAwesomeIconView glyphName="CHECK" size="14" fill="WHITE"/>
+                </graphic>
+            </Button>
+        </HBox>
+    </VBox>
+</AnchorPane>
