@@ -121,7 +121,7 @@ public class BranchService {
         if (branch.getAddress() == null || branch.getAddress().trim().isEmpty()) {
             throw new IllegalArgumentException("Address cannot be empty");
         }
-        if (branch.getPhone() == null || !branch.getPhone().matches("\\d{10}")) {
+        if (branch.getPhone() == null || !branch.getPhone().matches("\\d{11}")) {
             throw new IllegalArgumentException("Invalid phone number format");
         }
 
