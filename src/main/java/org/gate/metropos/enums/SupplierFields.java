@@ -13,6 +13,7 @@ public enum SupplierFields {
     NTN_NUMBER("ntn_number"),
     IS_ACTIVE("is_active"),
     CREATED_AT("created_at"),
+    COMPANY_NAME("company_name"),
     UPDATED_AT("updated_at");
 
     private final String columnName;
