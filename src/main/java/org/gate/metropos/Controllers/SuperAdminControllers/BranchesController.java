@@ -5,7 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -16,7 +15,6 @@ import org.gate.metropos.services.BranchService;
 import org.gate.metropos.utils.ServiceResponse;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -120,7 +118,7 @@ public class BranchesController {
         branchesTable.setRowFactory(tv -> {
             TableRow<Branch> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
-                if (!row.isEmpty() && event.getClickCount() == 1) {
+                if (!row.isEmpty() && event.getClickCount() == 2) {
                     openUpdateBranchWindow(row.getItem());
                 }
             });
