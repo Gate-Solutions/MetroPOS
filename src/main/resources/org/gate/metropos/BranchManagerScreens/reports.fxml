@@ -5,23 +5,21 @@
 <?import javafx.geometry.Insets?>
 
 <VBox fx:id="reportContainer" spacing="20" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="org.gate.metropos.Controllers.Reports.AdminReportsController"
+      fx:controller="org.gate.metropos.Controllers.Reports.BranchReportsController"
       styleClass="report-container"
       stylesheets="@../styles/common.css,@../styles/global.css,@../styles/reports.css">
 
     <!-- Report Controls Section -->
     <HBox spacing="15" styleClass="report-controls">
-        <padding><Insets top="15" right="15"  bottom="15" left="15"/></padding>
-        <ComboBox fx:id="branchSelector" promptText="Select Branch" styleClass="report-combo"/>
+        <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
         <ComboBox fx:id="reportTypeComboBox" styleClass="report-combo"/>
         <ComboBox fx:id="yearComboBox" styleClass="report-combo"/>
         <ComboBox fx:id="monthComboBox" styleClass="report-combo"/>
         <DatePicker fx:id="startDatePicker" styleClass="report-date-picker"/>
         <DatePicker fx:id="endDatePicker" styleClass="report-date-picker"/>
-        <Button fx:id="generateReportBtn" text="Generate Report" styleClass="primary-button" minWidth="110"/>
+        <Button fx:id="generateReportBtn" text="Generate Report" styleClass="primary-button"/>
         <Button text="Export Report" styleClass="primary-button"/>
     </HBox>
-
 
     <!-- Report Content -->
     <TabPane fx:id="reportTabs" VBox.vgrow="ALWAYS" styleClass="report-tabs">

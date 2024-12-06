@@ -36,12 +36,13 @@ public class SupplierRepository {
     }
 
     public Supplier createSupplier(Supplier supplier) {
-        Record record = dsl.insertInto(SupplierFields.SupplierTable.toTableField())
+        Record record = dsl.insertInto(SupplierFields.toTableField())
                 .set(SupplierFields.NAME.toField(), supplier.getName())
                 .set(SupplierFields.EMAIL.toField(), supplier.getEmail())
                 .set(SupplierFields.PHONE.toField(), supplier.getPhone())
                 .set(SupplierFields.NTN_NUMBER.toField(), supplier.getNtnNumber())
                 .set(SupplierFields.IS_ACTIVE.toField(), true)
+                .set(SupplierFields.COMPANY_NAME.toField(), supplier.getCompanyName())
 
                 .returning(
                         SupplierFields.ID.toField(),
