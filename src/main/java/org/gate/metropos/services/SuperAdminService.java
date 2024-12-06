@@ -6,13 +6,17 @@ import lombok.NoArgsConstructor;
 import org.gate.metropos.models.SuperAdmin;
 import org.gate.metropos.repositories.SuperAdminRepository;
 
-@NoArgsConstructor
+//@NoArgsConstructor
 @AllArgsConstructor
 public class SuperAdminService {
-    SuperAdminRepository superAdminRepository = new SuperAdminRepository();
+    SuperAdminRepository superAdminRepository ;
+
     @Getter
     SuperAdmin superAdmin = null;
 
+    public SuperAdminService(){
+        superAdminRepository = new SuperAdminRepository();
+    }
     public SuperAdmin login(String emailOrUsername, String password) {
         boolean isEmail = emailOrUsername.contains("@");
 
