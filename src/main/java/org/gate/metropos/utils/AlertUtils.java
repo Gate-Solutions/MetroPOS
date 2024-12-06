@@ -25,6 +25,10 @@ public class AlertUtils {
         showAlert(Alert.AlertType.INFORMATION, "Success", null, content);
     }
 
+    public static void showSuccess(String title, String content) {
+        showAlert(Alert.AlertType.INFORMATION, title, null, content);
+    }
+
     public static void showWarning(String content) {
         showAlert(Alert.AlertType.WARNING, "Warning", null, content);
     }

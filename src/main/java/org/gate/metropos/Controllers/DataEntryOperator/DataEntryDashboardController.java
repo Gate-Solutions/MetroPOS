@@ -64,7 +64,7 @@ public class DataEntryDashboardController {
 
     private void showPurchaseInvoices() {
         contentArea.getChildren().clear();
-        // TODO: Load purchase invoices view
+        loadView("/dataEntryScreens/managePurchaseInvoices.fxml");
         updateActiveButton(purchaseInvoicesBtn);
     }
 

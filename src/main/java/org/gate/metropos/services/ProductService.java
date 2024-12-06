@@ -64,6 +64,13 @@ public class ProductService {
         return new ServiceResponse<>(true, 200, "Product added to branch successfully", branchProduct);
     }
 
+    public ServiceResponse<Product> findById(Long id) {
+        Product product = productRepository.findById(id);
+        if (product == null) {
+            return new ServiceResponse<>(false, 404, "Product not found with ID: " + id, null);
+        }
+        return new ServiceResponse<>(true, 200, "Product found successfully", product);
+    }
 
     public ServiceResponse<List<Product>> getAllProducts() {
         List<Product> products = productRepository.getAllProducts();
