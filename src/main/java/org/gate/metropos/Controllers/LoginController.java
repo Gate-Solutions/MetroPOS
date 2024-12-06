@@ -51,6 +51,7 @@ public class LoginController {
     }
 
     private void handleLogin() {
+        showDataEntryDashboard();
         if (!validateInputs()) {
             return;
         }
@@ -90,7 +91,7 @@ public class LoginController {
                             showCashierScreen();
                             break;
                         case DATA_ENTRY_OPERATOR:
-                            showDataEntryOperatorScreen();
+                            showDataEntryDashboard();
                             break;
                     }
 
@@ -197,8 +198,30 @@ public class LoginController {
     private void showCashierScreen() {
 
     }
-    private void showDataEntryOperatorScreen() {
+    private void showDataEntryDashboard() {
+        try {
+            // Load the Data Entry Dashboard FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos/DataEntryScreens/DataEntryDashboard.fxml"));
+            Parent dashboardRoot = loader.load();
 
+            // Get the current stage from loginButton
+            Stage currentStage = (Stage) loginButton.getScene().getWindow();
+            currentStage.setTitle("Metro POS | Data Entry Dashboard");
+
+            // Create new scene with dashboard
+            Scene dashboardScene = new Scene(dashboardRoot);
+
+            // Set the new scene on current stage
+            currentStage.setScene(dashboardScene);
+            currentStage.show();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Navigation Error");
+            alert.setHeaderText("Could not load Data Entry Dashboard");
+            alert.setContentText("An error occurred while loading the Dashboard: " + e.getMessage());
+            alert.showAndWait();
+            e.printStackTrace();
+        }
     }
 
     private void showUpdateYourPassword() {
