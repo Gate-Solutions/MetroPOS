@@ -7,9 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class BranchProduct {
+public class Category {
     private Long id;
-    private Long branchId;
-    private Long productId;
-    private Integer quantity;
+    private String name;
 }

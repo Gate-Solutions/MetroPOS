@@ -15,11 +15,14 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@NoArgsConstructor
+
 @AllArgsConstructor
 public class EmployeeRepository {
-    private DSLContext dsl = DatabaseConfig.getLocalDSL();
+    private DSLContext dsl;
 
+    public EmployeeRepository () {
+        dsl = DatabaseConfig.getLocalDSL();
+    }
     public Employee findByEmail(String email) {
         Record record = dsl.select()
                 .from(EmployeeFields.EmployeeTable.toTableField())

@@ -4,19 +4,14 @@ import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 
-public enum ProductFields {
-    ProductTable("products"),
+public enum CategoryFields {
+    CategoryTable("categories"),
     ID("id"),
-    NAME("name"),
-    CODE("code"),
-    CATEGORY_ID("category_id"),
-    ORIGINAL_PRICE("original_price"),
-    SALE_PRICE("sale_price"),
-    IS_ACTIVE("is_active"),
-    PRICE_OF_CARTON("price_of_carton");
+    NAME("name");
+
     private final String columnName;
 
-    ProductFields(String columnName) {
+    CategoryFields(String columnName) {
         this.columnName = columnName;
     }
 
@@ -29,6 +24,6 @@ public enum ProductFields {
     }
 
     public static Table<?> toTableField() {
-        return DSL.table(ProductTable.getColumnName());
+        return DSL.table(CategoryTable.getColumnName());
     }
 }
