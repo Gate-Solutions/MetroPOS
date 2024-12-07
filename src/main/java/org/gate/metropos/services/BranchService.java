@@ -176,6 +176,22 @@ public class BranchService {
         return new ServiceResponse<>(true,200,"Manager got Successfully",branchRepository.getManagerName(branchID));
     }
 
+    public ServiceResponse<Branch> incrementBranchEmployeeCount(Long branchId) {
+        Branch updatedBranch = branchRepository.incrementEmployeeCount(branchId);
+        if (updatedBranch == null) {
+            return new ServiceResponse<>(false, 404, "Branch not found", null);
+        }
+        return new ServiceResponse<>(true, 200, "Employee count incremented successfully", updatedBranch);
+    }
+
+    public ServiceResponse<Branch> decrementBranchEmployeeCount(Long branchId) {
+        Branch updatedBranch = branchRepository.decrementEmployeeCount(branchId);
+        if (updatedBranch == null) {
+            return new ServiceResponse<>(false, 404, "Branch not found", null);
+        }
+        return new ServiceResponse<>(true, 200, "Employee count decremented successfully", updatedBranch);
+    }
+
 }
 
 

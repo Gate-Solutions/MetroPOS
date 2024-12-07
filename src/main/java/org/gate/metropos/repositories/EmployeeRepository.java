@@ -114,6 +114,18 @@ public class EmployeeRepository {
         return records.map(this::mapToEmployee);
     }
 
+    public List<Employee> getEmployeesByBranchAndRole(Long branchId, UserRole role) {
+        Result<Record> result = dsl.select()
+                .from(EmployeeFields.toTableField())
+                .where(EmployeeFields.BRANCH_ID.toField().eq(branchId))
+                .and(UserFields.ROLE.toField().eq(role.name()))
+                .and(EmployeeFields.IS_ACTIVE.toField().eq(true))
+                .fetch();
+
+        return result.map(this::mapToEmployee);
+    }
+
+
     public void setEmployeeStatus(Long employeeId, boolean isActive) {
         dsl.update(EmployeeFields.toTableField())
                 .set(EmployeeFields.IS_ACTIVE.toField(), isActive)
