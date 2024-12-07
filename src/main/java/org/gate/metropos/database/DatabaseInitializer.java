@@ -163,11 +163,13 @@ public class DatabaseInitializer {
     }
 
     public void createProductTables() {
+        createCategoryTable();
+
         dsl.createTableIfNotExists("products")
                 .column("id", BIGINT.identity(true))
                 .column("name", VARCHAR(255).notNull())
                 .column("code", VARCHAR(50).notNull())
-                .column("category", VARCHAR(100))
+                .column("category_id", BIGINT)
                 .column("original_price", DECIMAL(10, 2).notNull())
                 .column("sale_price", DECIMAL(10, 2).notNull())
                 .column("is_active", BOOLEAN.defaultValue(true))
@@ -175,6 +177,7 @@ public class DatabaseInitializer {
                 .constraints(
                         primaryKey("id"),
                         unique("code"),
+                        foreignKey("category_id").references("categories", "id"),
                         check(field("sale_price").greaterThan(field("original_price")))
                 )
                 .execute();
@@ -194,4 +197,15 @@ public class DatabaseInitializer {
                 .execute();
     }
 
+
+    public void createCategoryTable() {
+        dsl.createTableIfNotExists("categories")
+                .column("id", BIGINT.identity(true))
+                .column("name", VARCHAR(100).notNull())
+                .constraints(
+                        primaryKey("id"),
+                        unique("name")
+                )
+                .execute();
+    }
 }

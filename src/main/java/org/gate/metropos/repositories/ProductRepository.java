@@ -31,7 +31,7 @@ public class ProductRepository {
         Record record = dsl.insertInto(ProductFields.ProductTable.toTableField())
                 .set(ProductFields.NAME.toField(), product.getName())
                 .set(ProductFields.CODE.toField(), product.getCode())
-                .set(ProductFields.CATEGORY.toField(), product.getCategory())
+                .set(ProductFields.CATEGORY_ID.toField(), product.getCategoryId())
                 .set(ProductFields.ORIGINAL_PRICE.toField(), product.getOriginalPrice())
                 .set(ProductFields.SALE_PRICE.toField(), product.getSalePrice())
                 .set(ProductFields.IS_ACTIVE.toField(), true)
@@ -55,11 +55,11 @@ public class ProductRepository {
                 .id(record.get(ProductFields.ID.toField(), Long.class))
                 .name(record.get(ProductFields.NAME.toField(), String.class))
                 .code(record.get(ProductFields.CODE.toField(), String.class))
-                .category(record.get(ProductFields.CATEGORY.toField(), String.class))
+                .categoryId(record.get(ProductFields.CATEGORY_ID.toField(), Long.class))
                 .originalPrice(record.get(ProductFields.ORIGINAL_PRICE.toField(), BigDecimal.class))
                 .salePrice(record.get(ProductFields.SALE_PRICE.toField(), BigDecimal.class))
                 .priceOfCarton(record.get(ProductFields.PRICE_OF_CARTON.toField(), BigDecimal.class))
-                .isActive(record.get(ProductFields.IS_ACTIVE.toField(), Boolean.class))
                 .build();
     }
+
 }

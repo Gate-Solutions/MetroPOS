@@ -9,7 +9,7 @@ public enum ProductFields {
     ID("id"),
     NAME("name"),
     CODE("code"),
-    CATEGORY("category"),
+    CATEGORY_ID("category_id"),
     ORIGINAL_PRICE("original_price"),
     SALE_PRICE("sale_price"),
     IS_ACTIVE("is_active"),
