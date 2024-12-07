@@ -1,14 +1,12 @@
 package org.gate.metropos.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class BranchProduct {
     private Long id;
     private Long branchId;

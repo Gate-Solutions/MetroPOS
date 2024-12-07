@@ -80,12 +80,12 @@ public class ProductService {
         if (product.getPriceOfCarton() == null || product.getPriceOfCarton().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Carton price must be greater than zero");
         }
-        if (product.getCategoryId() == null) {
+        if (product.getCategory().getId() == null) {
             throw new IllegalArgumentException("Category ID cannot be null");
         }
-        Category category = categoryRepository.findById(product.getCategoryId());
+        Category category = categoryRepository.findById(product.getCategory().getId());
         if (category == null) {
-            throw new IllegalArgumentException("Invalid category ID: " + product.getCategoryId());
+            throw new IllegalArgumentException("Invalid category ID: " + product.getCategory().getId());
         }
     }
 }
