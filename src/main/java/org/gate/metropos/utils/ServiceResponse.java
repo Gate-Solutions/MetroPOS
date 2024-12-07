@@ -9,7 +9,7 @@ import lombok.Data;
 @Builder
 public class ServiceResponse<T> {
     boolean success;
-    int code; // just in case
+    int code;
     String message;
     T data;
 }

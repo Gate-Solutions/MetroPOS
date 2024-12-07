@@ -1,9 +1,6 @@
 package org.gate.metropos.database;
 
-import org.gate.metropos.enums.SuperAdminFields;
-import org.gate.metropos.enums.SyncTrackingFields;
-import org.gate.metropos.enums.UserFields;
-import org.gate.metropos.enums.UserRole;
+import org.gate.metropos.enums.*;
 import org.gate.metropos.models.SuperAdmin;
 import org.jooq.DSLContext;
 
@@ -27,17 +24,22 @@ public class DatabaseInitializer {
     public void initialize() {
         createTables();
         initializeSuperAdmin();
-        createEmployeeTable();
+
+
     }
 
     public void createTables() {
-//        Add All the tables
+//        Adding All the tables
         createSyncTrackingTable();
         createUserTable();
+        createEmployeeTable();
         createSuperAdminTable();
+        createBranchTable();
+        createSupplierTable();
+        createProductTables();
     }
 
-//    Add functions to create tables
+//    functions to create tables
     public void createSyncTrackingTable() {
         if(!isLocal)
             return;
@@ -118,6 +120,78 @@ public class DatabaseInitializer {
     ) INHERITS (users);
     """;
         dsl.execute(sql);
+    }
+
+    public void createBranchTable() {
+        dsl.createTableIfNotExists(BranchFields.BranchTable.getColumnName())
+                .column(BranchFields.ID.getColumnName(), BIGINT.identity(true).notNull())
+                .column(BranchFields.BRANCH_CODE.getColumnName(), VARCHAR(50).notNull())
+                .column(BranchFields.NAME.getColumnName(), VARCHAR(255).notNull())
+                .column(BranchFields.CITY.getColumnName(), VARCHAR(100).notNull())
+                .column(BranchFields.ADDRESS.getColumnName(), VARCHAR(500).notNull())
+                .column(BranchFields.PHONE.getColumnName(), VARCHAR(20).notNull())
+                .column(BranchFields.IS_ACTIVE.getColumnName(), BOOLEAN.defaultValue(true).notNull())
+                .column(BranchFields.NUMBER_OF_EMPLOYEES.getColumnName(), INTEGER.defaultValue(0).notNull())
+                .column(BranchFields.CREATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()).notNull())
+                .column(BranchFields.UPDATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()).notNull())
+                .constraints(
+                        primaryKey(BranchFields.ID.getColumnName()),
+                        unique(BranchFields.BRANCH_CODE.getColumnName()),
+                        check(field(BranchFields.NUMBER_OF_EMPLOYEES.getColumnName()).greaterOrEqual(0))
+                )
+                .execute();
+    }
+
+    public void createSupplierTable() {
+        dsl.createTableIfNotExists(SupplierFields.SupplierTable.getColumnName())
+                .column(SupplierFields.ID.getColumnName(), BIGINT.identity(true))
+                .column(SupplierFields.NAME.getColumnName(), VARCHAR(255).notNull())
+
+                .column(SupplierFields.EMAIL.getColumnName(), VARCHAR(255))
+                .column(SupplierFields.PHONE.getColumnName(), VARCHAR(20).notNull())
+
+                .column(SupplierFields.NTN_NUMBER.getColumnName(), VARCHAR(50))
+                .column(SupplierFields.IS_ACTIVE.getColumnName(), BOOLEAN.defaultValue(true))
+                .column(SupplierFields.CREATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()))
+                .column(SupplierFields.UPDATED_AT.getColumnName(), TIMESTAMP.defaultValue(currentTimestamp()))
+                .constraints(
+                        primaryKey(SupplierFields.ID.getColumnName()),
+                        unique(SupplierFields.NTN_NUMBER.getColumnName()),
+                        unique(SupplierFields.EMAIL.getColumnName())
+                )
+                .execute();
+    }
+
+    public void createProductTables() {
+        dsl.createTableIfNotExists("products")
+                .column("id", BIGINT.identity(true))
+                .column("name", VARCHAR(255).notNull())
+                .column("code", VARCHAR(50).notNull())
+                .column("category", VARCHAR(100))
+                .column("original_price", DECIMAL(10, 2).notNull())
+                .column("sale_price", DECIMAL(10, 2).notNull())
+                .column("is_active", BOOLEAN.defaultValue(true))
+                .column("price_of_carton", DECIMAL(10, 2).notNull())
+                .constraints(
+                        primaryKey("id"),
+                        unique("code"),
+                        check(field("sale_price").greaterThan(field("original_price")))
+                )
+                .execute();
+
+        dsl.createTableIfNotExists("branch_products")
+                .column("id", BIGINT.identity(true))
+                .column("branch_id", BIGINT.notNull())
+                .column("product_id", BIGINT.notNull())
+                .column("quantity", INTEGER.notNull().defaultValue(0))
+                .constraints(
+                        primaryKey("id"),
+                        unique("branch_id", "product_id"),
+                        foreignKey("branch_id").references("branches", "id"),
+                        foreignKey("product_id").references("products", "id"),
+                        check(field("quantity").greaterOrEqual(0))
+                )
+                .execute();
     }
 
 }
