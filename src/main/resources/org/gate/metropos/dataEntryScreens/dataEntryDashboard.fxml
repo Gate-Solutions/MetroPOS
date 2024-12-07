@@ -56,7 +56,7 @@
             <HBox styleClass="header">
                 <Text text="DEO Dashboard" styleClass="header-text"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button fx:id="logoutBtn" styleClass="logout-button">
+                <Button fx:id="logoutBtn" styleClass="logout-button, clickable">
                     <graphic>
                         <FontAwesomeIconView glyphName="SIGN_OUT" size="16" styleClass="nav-icon"/>
                     </graphic>
