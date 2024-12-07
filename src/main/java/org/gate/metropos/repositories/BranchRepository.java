@@ -166,6 +166,25 @@ public class BranchRepository {
                 .fetchInto(Branch.class);
     }
 
+    public String getManagerName(Long branchId) {
+        Record record = dsl.select(
+                        EmployeeFields.NAME.toField())
+                .from(EmployeeFields.toTableField())
+                .where(EmployeeFields.BRANCH_ID.toField().eq(branchId))
+                .and(UserFields.ROLE.toField().eq(UserRole.BRANCH_MANAGER.toString()))
+                .and(EmployeeFields.IS_ACTIVE.toField().eq(true))
+                .fetchOne();
+
+        if (record != null) {
+            return record.get(EmployeeFields.NAME.toField(),String.class);
+        }
+
+        return "Not Assigned";
+    }
+
+
+
+
 
 
 }
