@@ -17,6 +17,4 @@ public class Supplier {
     private String phone;
     private String ntnNumber;
     private boolean isActive;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }
