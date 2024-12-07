@@ -133,10 +133,13 @@ public class AddUpdateCashierController {
                 cashierToUpdate.setEmail(emailField.getText().trim());
                 cashierToUpdate.setName(cashierNameField.getText().trim());
                 cashierToUpdate.setEmployeeNo(employeeNoField.getText().trim());
+                cashierToUpdate.setUsername(usernameField.getText().trim());
                 cashierToUpdate.setSalary(salary);
 //                cashierToUpdate.setRole(roleComboBox.getValue());
                 cashierToUpdate.setActive(activeCheckBox.isSelected());
+                System.out.println("This is from addUpdate Controller"+cashierToUpdate);
                 response = employeeService.updateEmployee(cashierToUpdate);
+                System.out.println(response);
             } else {
 
                 response = employeeService.createEmployee(
@@ -164,6 +167,7 @@ public class AddUpdateCashierController {
         } catch (Exception e) {
             AlertUtils.showError("Error " + (isUpdateMode ? "updating" : "creating") +
                     " cashier: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 

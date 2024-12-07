@@ -32,7 +32,7 @@
 
         <!-- Filters Section -->
         <HBox spacing="10" alignment="CENTER_LEFT">
-            <TextField fx:id="searchField" promptText="Search cashiers..."
+            <TextField fx:id="searchField" promptText="Search employees..."
                        styleClass="search-field" HBox.hgrow="ALWAYS"/>
             <ComboBox fx:id="statusFilter" styleClass="filter-combo"/>
             <ComboBox fx:id="roleFilter" styleClass="filter-combo"/>
