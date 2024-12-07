@@ -15,12 +15,16 @@ public class CategoryService {
         this.categoryRepository = new CategoryRepository();
     }
 
-    public ServiceResponse<Category> createCategory(Category category) {
-        if (category.getName() == null || category.getName().trim().isEmpty()) {
+    public ServiceResponse<Category> createCategory(String categoryName) {
+
+        if (categoryName == null || categoryName.trim().isEmpty()) {
             return new ServiceResponse<>(false, 400, "Category name cannot be empty", null);
         }
-
-        Category newCategory = categoryRepository.createCategory(category);
+        Category existingCategory = categoryRepository.findByName(categoryName);
+        if (existingCategory != null) {
+            return new ServiceResponse<>(false, 400, "Category with this name already exists", null);
+        }
+        Category newCategory = categoryRepository.createCategory(categoryName);
         return new ServiceResponse<>(true, 200, "Category created successfully", newCategory);
     }
 
