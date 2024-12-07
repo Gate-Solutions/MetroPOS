@@ -1,11 +1,10 @@
 package org.gate.metropos.Controllers.BranchManagerControllers;
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import org.gate.metropos.enums.UserRole;
 import org.gate.metropos.models.Employee;
 import org.gate.metropos.services.EmployeeService;
@@ -26,6 +25,7 @@ public class AddUpdateCashierController {
     @FXML private CheckBox activeCheckBox;
     @FXML private Label Main_Label;
     @FXML private Button cancelBtn;
+    @FXML private ComboBox<UserRole> roleComboBox;
 
     private final EmployeeService employeeService;
     private Employee currentManager;
@@ -58,6 +58,7 @@ public class AddUpdateCashierController {
         if (branchId != null) {
             branchIdField.setText(branchId.toString());
             setupButtonActions();
+            setupRoleComboBox();
 //            setupInputValidation();
         }
     }
@@ -65,7 +66,28 @@ public class AddUpdateCashierController {
     public void setEmployeeForUpdate(Employee employee) {
         this.cashierToUpdate = employee;
         this.isUpdateMode = true;
+        roleComboBox.setDisable(true);
         populateFields();
+    }
+
+    private void setupRoleComboBox() {
+        roleComboBox.setItems(FXCollections.observableArrayList(
+                UserRole.CASHIER,
+                UserRole.DATA_ENTRY_OPERATOR
+        ));
+
+        roleComboBox.setConverter(new StringConverter<UserRole>() {
+            @Override
+            public String toString(UserRole role) {
+                return role == UserRole.DATA_ENTRY_OPERATOR ? "Data Entry Operator" : "Cashier";
+            }
+
+            @Override
+            public UserRole fromString(String string) {
+                return null;
+            }
+        });
+        roleComboBox.setValue(UserRole.CASHIER);
     }
 
     private void populateFields() {
@@ -75,8 +97,10 @@ public class AddUpdateCashierController {
             cashierNameField.setText(cashierToUpdate.getName());
             employeeNoField.setText(cashierToUpdate.getEmployeeNo());
             salaryField.setText(cashierToUpdate.getSalary().toString());
+            roleComboBox.setValue(cashierToUpdate.getRole());
             activeCheckBox.setSelected(cashierToUpdate.isActive());
 
+            employeeNoField.setDisable(true);
             usernameField.setDisable(false);
             activeCheckBox.setVisible(true);
             createCashierBtn.setText("Update Cashier");
@@ -110,6 +134,7 @@ public class AddUpdateCashierController {
                 cashierToUpdate.setName(cashierNameField.getText().trim());
                 cashierToUpdate.setEmployeeNo(employeeNoField.getText().trim());
                 cashierToUpdate.setSalary(salary);
+//                cashierToUpdate.setRole(roleComboBox.getValue());
                 cashierToUpdate.setActive(activeCheckBox.isSelected());
                 response = employeeService.updateEmployee(cashierToUpdate);
             } else {
@@ -118,7 +143,7 @@ public class AddUpdateCashierController {
                         usernameField.getText().trim(),
                         emailField.getText().trim(),
                         "",
-                        UserRole.CASHIER,
+                        roleComboBox.getValue(),
                         cashierNameField.getText().trim(),
                         employeeNoField.getText().trim(),
                         salary,

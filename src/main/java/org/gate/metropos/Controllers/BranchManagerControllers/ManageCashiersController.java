@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import org.gate.metropos.enums.UserRole;
 import org.gate.metropos.models.Employee;
 import org.gate.metropos.services.EmployeeService;
@@ -17,6 +18,8 @@ import org.gate.metropos.utils.AlertUtils;
 import org.gate.metropos.utils.ServiceResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ManageCashiersController {
@@ -25,6 +28,7 @@ public class ManageCashiersController {
     @FXML private Button addCashierBtn;
     @FXML private TextField searchField;
     @FXML private ComboBox<String> statusFilter;
+    @FXML private ComboBox<UserRole> roleFilter;
 
     private ObservableList<Employee> allCashiers = FXCollections.observableArrayList();
     private FilteredList<Employee> filteredCashiers;
@@ -44,13 +48,17 @@ public class ManageCashiersController {
     }
 
     private void loadCashiers() {
-        ServiceResponse<List<Employee>> response = employeeService.getEmployeesByRole(UserRole.CASHIER);
-        if (response.isSuccess()) {
-            allCashiers.clear();
-            allCashiers.addAll(response.getData());
-        } else {
-            AlertUtils.showError("Failed to load cashiers: " + response.getMessage());
+        List<UserRole> roles = Arrays.asList(UserRole.CASHIER, UserRole.DATA_ENTRY_OPERATOR);
+        List<Employee> employees = new ArrayList<>();
+        for (UserRole role : roles) {
+            ServiceResponse<List<Employee>> response = employeeService.getEmployeesByRole(role);
+            if (response.isSuccess()) {
+                employees.addAll(response.getData());
+            }
         }
+        allCashiers.clear();
+        allCashiers.addAll(employees);
+        updateFilters();
     }
 
     private void setupTable() {
@@ -69,6 +77,20 @@ public class ManageCashiersController {
         TableColumn<Employee, String> emailCol = new TableColumn<>("Email");
         emailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
 
+        TableColumn<Employee, UserRole> roleCol = new TableColumn<>("Role");
+        roleCol.setCellValueFactory(new PropertyValueFactory<>("role"));
+        roleCol.setCellFactory(column -> new TableCell<Employee, UserRole>() {
+            @Override
+            protected void updateItem(UserRole role, boolean empty) {
+                super.updateItem(role, empty);
+                if (empty || role == null) {
+                    setText(null);
+                } else {
+                    setText(role.equals(UserRole.DATA_ENTRY_OPERATOR) ? "Data Entry" : "Cashier");
+                }
+            }
+        });
+
         TableColumn<Employee, Boolean> statusCol = new TableColumn<>("Status");
         statusCol.setCellValueFactory(new PropertyValueFactory<>("active"));
         statusCol.setCellFactory(column -> new TableCell<Employee, Boolean>() {
@@ -81,14 +103,14 @@ public class ManageCashiersController {
 
         TableColumn<Employee, Void> actionCol = new TableColumn<>("Action");
         actionCol.setCellFactory(column -> new TableCell<>() {
-            private final Button removeButton = new Button("Remove Cashier");
+            private final Button removeButton = new Button("Remove Employee");
             {
                 removeButton.setMaxWidth(Double.MAX_VALUE);
                 removeButton.getStyleClass().add("primary-table-button");
                 removeButton.setOnAction(event -> {
                     Employee cashier = getTableView().getItems().get(getIndex());
                     if (!cashier.isActive()) {
-                        AlertUtils.showError("Already Inactive", "This cashier is already inactive");
+                        AlertUtils.showError("Already Inactive", "This employee is already inactive");
                         return;
                     }
                     confirmAndRemoveCashier(cashier);
@@ -104,7 +126,7 @@ public class ManageCashiersController {
 
         actionCol.setPrefWidth(150);
         cashiersTable.getColumns().addAll(
-                idCol, empNoCol, nameCol, usernameCol, emailCol, statusCol, actionCol
+                idCol, empNoCol, nameCol, usernameCol, emailCol, roleCol, statusCol, actionCol
         );
 
         cashiersTable.setRowFactory(tv -> {
@@ -122,6 +144,22 @@ public class ManageCashiersController {
         statusFilter.setItems(FXCollections.observableArrayList("All", "Active", "Inactive"));
         statusFilter.setValue("Active");
 
+        roleFilter.setItems(FXCollections.observableArrayList(
+                UserRole.CASHIER, UserRole.DATA_ENTRY_OPERATOR
+        ));
+        roleFilter.setConverter(new StringConverter<UserRole>() {
+            @Override
+            public String toString(UserRole role) {
+                if (role == null) return "All";
+                return role.equals(UserRole.DATA_ENTRY_OPERATOR) ? "Data Entry" : "Cashier";
+            }
+
+            @Override
+            public UserRole fromString(String string) {
+                return null;
+            }
+        });
+
         filteredCashiers = new FilteredList<>(allCashiers, p -> true);
         searchField.textProperty().addListener((observable, oldValue, newValue) -> updateFilters());
         statusFilter.valueProperty().addListener((observable, oldValue, newValue) -> updateFilters());
@@ -133,6 +171,7 @@ public class ManageCashiersController {
         filteredCashiers.setPredicate(cashier -> {
             boolean matchesSearch = true;
             boolean matchesStatus = true;
+            boolean matchesRole = true;
 
             if (searchField.getText() != null && !searchField.getText().isEmpty()) {
                 String searchText = searchField.getText().toLowerCase();
@@ -149,15 +188,20 @@ public class ManageCashiersController {
                 matchesStatus = !cashier.isActive();
             }
 
-            return matchesSearch && matchesStatus;
+            UserRole selectedRole = roleFilter.getValue();
+            if (selectedRole != null) {
+                matchesRole = cashier.getRole().equals(selectedRole);
+            }
+
+            return matchesSearch && matchesStatus && matchesRole;
         });
     }
 
     private void confirmAndRemoveCashier(Employee cashier) {
-        if (AlertUtils.showConfirmation("Are you sure you want to remove " + cashier.getName() + " as cashier?")) {
+        if (AlertUtils.showConfirmation("Are you sure you want to remove employee " + cashier.getName() + "?")) {
             ServiceResponse<Void> response = employeeService.setEmployeeStatus(cashier.getId(), false);
             if (response.isSuccess()) {
-                AlertUtils.showSuccess("Cashier removed successfully");
+                AlertUtils.showSuccess("Employee removed successfully");
                 loadCashiers();
             } else {
                 AlertUtils.showError(response.getMessage());
@@ -170,14 +214,14 @@ public class ManageCashiersController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/org/gate/metropos/BranchManagerScreens/add-update-cashier.fxml"));
             Stage stage = new Stage();
-            stage.setTitle("Add New Cashier");
+            stage.setTitle("Add New Employee");
             stage.setScene(new Scene(loader.load()));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
             loadCashiers();
         } catch (IOException ex) {
             ex.printStackTrace();
-            AlertUtils.showError("Failed to open add cashier window");
+            AlertUtils.showError("Failed to open add employee window");
         }
     }
 
@@ -186,7 +230,7 @@ public class ManageCashiersController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/org/gate/metropos/BranchManagerScreens/add-update-cashier.fxml"));
             Stage stage = new Stage();
-            stage.setTitle("Update Cashier");
+            stage.setTitle("Update Employee");
             stage.setScene(new Scene(loader.load()));
             stage.initModality(Modality.APPLICATION_MODAL);
 
@@ -197,7 +241,7 @@ public class ManageCashiersController {
             loadCashiers();
         } catch (IOException ex) {
             ex.printStackTrace();
-            AlertUtils.showError("Failed to open update cashier window");
+            AlertUtils.showError("Failed to open update employee window");
         }
     }
 }

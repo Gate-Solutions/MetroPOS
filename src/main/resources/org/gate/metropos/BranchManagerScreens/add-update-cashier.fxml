@@ -50,8 +50,18 @@
                 <Label text="Salary" styleClass="field-label"/>
                 <TextField fx:id="salaryField" styleClass="input-field" promptText="Enter salary amount"/>
             </VBox>
+
+            <VBox spacing="5">
+                <Label text="Role" styleClass="field-label"/>
+                <ComboBox fx:id="roleComboBox" styleClass="input-field"/>
+            </VBox>
+
+
+
             <CheckBox fx:id="activeCheckBox" text="Active" />
         </VBox>
+
+
 
         <HBox spacing="10" alignment="CENTER_RIGHT">
             <Button fx:id="cancelBtn" text="Cancel" styleClass="secondary-button">
