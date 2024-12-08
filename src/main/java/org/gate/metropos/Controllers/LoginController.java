@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.gate.metropos.models.Employee;
 import org.gate.metropos.models.User;
@@ -47,11 +48,9 @@ public class LoginController {
     }
 
     private void handleLogin() {
-        showAdminDashboard();
         if (!validateInputs()) {
             return;
         }
-
         String userType = userTypeComboBox.getValue();
         String username = usernameField.getText();
         String password = passwordField.getText();
@@ -82,10 +81,42 @@ public class LoginController {
                 alert.setContentText(response.getMessage());
                 alert.showAndWait();
             }
+//            response.getData().isFirstTime()
+            else  {
+            showUpdateYourPassword();
+            }
+
+
         }
     }
 
 
+    private boolean validateInputs() {
+        StringBuilder errorMessage = new StringBuilder();
+
+        if (userTypeComboBox.getValue() == null) {
+            errorMessage.append("Please select a user type\n");
+        }
+
+        if (usernameField.getText().trim().isEmpty()) {
+            errorMessage.append("Username cannot be empty\n");
+        }
+
+        if (passwordField.getText().trim().isEmpty()) {
+            errorMessage.append("Password cannot be empty\n");
+        }
+
+        if (!errorMessage.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Validation Error");
+            alert.setHeaderText("Please correct the following errors:");
+            alert.setContentText(errorMessage.toString());
+            alert.showAndWait();
+            return false;
+        }
+
+        return true;
+    }
 
     private void showAdminDashboard() {
         try {
@@ -115,34 +146,32 @@ public class LoginController {
 
 
 
+    private void showUpdateYourPassword() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos/EmployeeScreens/change-password.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Change Password");
+            stage.setScene(new Scene(loader.load()));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
 
+            // After password change, proceed to appropriate dashboard
+            // Add your dashboard navigation logic here
 
-
-
-    private boolean validateInputs() {
-        StringBuilder errorMessage = new StringBuilder();
-
-        if (userTypeComboBox.getValue() == null) {
-            errorMessage.append("Please select a user type\n");
-        }
-
-        if (usernameField.getText().trim().isEmpty()) {
-            errorMessage.append("Username cannot be empty\n");
-        }
-
-        if (passwordField.getText().trim().isEmpty()) {
-            errorMessage.append("Password cannot be empty\n");
-        }
-
-        if (!errorMessage.isEmpty()) {
+        } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Validation Error");
-            alert.setHeaderText("Please correct the following errors:");
-            alert.setContentText(errorMessage.toString());
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Could not load password change window");
             alert.showAndWait();
-            return false;
+            e.printStackTrace();
         }
-
-        return true;
     }
+
+
+
+
+
+
+
 }
