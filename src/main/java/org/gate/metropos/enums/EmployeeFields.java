@@ -17,13 +17,14 @@ public enum EmployeeFields {
     SALARY("salary"),
     BRANCH_ID("branch_id");
 
+
     private final String columnName;
 
     public Field<Object> toField() {
         return DSL.field(columnName);
     }
 
-    public Table<?> toTableField() {
+    public static Table<?> toTableField() {
         return DSL.table(EmployeeTable.getColumnName());
     }
 }
