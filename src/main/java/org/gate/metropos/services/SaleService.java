@@ -1,6 +1,7 @@
 package org.gate.metropos.services;
 
 import lombok.AllArgsConstructor;
+import org.gate.metropos.enums.UserRole;
 import org.gate.metropos.models.*;
 import org.gate.metropos.repositories.BranchProductRepository;
 import org.gate.metropos.repositories.BranchRepository;
@@ -27,6 +28,17 @@ public class SaleService {
 
     public ServiceResponse<Sale> createSale(Sale sale) {
 
+        User user = employeeRepository.findById(sale.getCreatedBy());
+        if (user == null) {
+            return new ServiceResponse<>(false, 400, "Invalid user ID: User does not exist", null);
+        }
+
+        if (user.getRole()!=UserRole.CASHIER) {
+
+            return new ServiceResponse<>(false, 400, "Invalid user role: Cashier", null);
+        }
+
+
         if (sale.getBranchId() == null || sale.getCreatedBy() == null) {
             return new ServiceResponse<>(false, 400, "Branch ID and Created By are required", null);
         }
@@ -36,25 +48,10 @@ public class SaleService {
         if (branch == null) {
             return new ServiceResponse<>(false, 400, "Invalid branch ID: Branch does not exist", null);
         }
+        
 
-        // Validating user exists
-        User user = employeeRepository.findById(sale.getCreatedBy());
-        if (user == null) {
-            return new ServiceResponse<>(false, 400, "Invalid user ID: User does not exist", null);
-        }
         if (sale.getItems() == null || sale.getItems().isEmpty()) {
             return new ServiceResponse<>(false, 400, "Sale items cannot be empty", null);
-        }
-
-        for (SaleItem item : sale.getItems()) {
-            ServiceResponse<Void> stockResponse = validateAndUpdateStock(
-                    sale.getBranchId(),
-                    item.getProductId(),
-                    item.getQuantity()
-            );
-            if (!stockResponse.isSuccess()) {
-                return new ServiceResponse<>(false, 400, stockResponse.getMessage(), null);
-            }
         }
 
         sale.setInvoiceNumber(generateInvoiceNumber());
@@ -67,30 +64,6 @@ public class SaleService {
         return new ServiceResponse<>(true, 200, "Sale created successfully", newSale);
     }
 
-    private ServiceResponse<Void> validateAndUpdateStock(Long branchId, Long productId, int quantity) {
-        List<BranchProduct> branchProducts = branchProductRepository.getProductsByBranch(branchId);
-
-        BranchProduct branchProduct = branchProducts.stream()
-                .filter(bp -> bp.getProductId().equals(productId))
-                .findFirst()
-                .orElse(null);
-
-        if (branchProduct == null) {
-            return new ServiceResponse<>(false, 400,
-                    "Product not available in this branch", null);
-        }
-
-        if (branchProduct.getQuantity() < quantity) {
-            return new ServiceResponse<>(false, 400,
-                    "Insufficient stock. Available: " + branchProduct.getQuantity(), null);
-        }
-
-        // Updating stock
-        int newQuantity = branchProduct.getQuantity() - quantity;
-        branchProductRepository.updateQuantity(branchId, productId, newQuantity);
-
-        return new ServiceResponse<>(true, 200, "Stock updated successfully", null);
-    }
 
 
     private String generateInvoiceNumber() {
@@ -124,70 +97,60 @@ public class SaleService {
         return new ServiceResponse<>(true, 200, "Invoice retrieved successfully", sale);
     }
 
+
+
+
+
+
+
+    public ServiceResponse<Sale> updateInvoice(Sale sale) {
+        // 1. Validate sale exists
+        Sale existingSale = saleRepository.findById(sale.getId());
+        if (existingSale == null) {
+            return new ServiceResponse<>(false, 404, "Sale not found", null);
+        }
+
+        // 2. Validate user permissions
+        User user = employeeRepository.findById(sale.getCreatedBy());
+        if (user == null) {
+            return new ServiceResponse<>(false, 400, "Invalid user ID", null);
+        }
+        if (user.getRole() != UserRole.CASHIER) {
+            return new ServiceResponse<>(false, 403, "Only cashiers can update sales", null);
+        }
+
+        // 3. Validate branch
+        Branch branch = branchRepository.findById(sale.getBranchId());
+        if (branch == null) {
+            return new ServiceResponse<>(false, 400, "Invalid branch ID", null);
+        }
+
+        // 4. Validate items
+        if (sale.getItems() == null || sale.getItems().isEmpty()) {
+            return new ServiceResponse<>(false, 400, "Sale items cannot be empty", null);
+        }
+
+        try {
+            Sale updatedSale = saleRepository.updateSale(sale);
+            return new ServiceResponse<>(true, 200, "Sale updated successfully", updatedSale);
+        } catch (IllegalStateException e) {
+            return new ServiceResponse<>(false, 400, e.getMessage(), null);
+        }
+    }
+
     public ServiceResponse<Void> deleteInvoice(Long invoiceId) {
-        // Check if invoice exists
+        // 1. Validate sale exists
         Sale existingSale = saleRepository.findById(invoiceId);
         if (existingSale == null) {
-            return new ServiceResponse<>(false, 404, "Invoice not found", null);
+            return new ServiceResponse<>(false, 404, "Sale not found", null);
         }
 
-        // Restore stock quantities
-        for (SaleItem item : existingSale.getItems()) {
-            restoreStock(existingSale.getBranchId(), item.getProductId(), item.getQuantity());
-        }
-
-        saleRepository.deleteSale(invoiceId);
-        return new ServiceResponse<>(true, 200, "Invoice deleted successfully", null);
-    }
-
-    public ServiceResponse<Sale> updateInvoice(Sale invoice) {
-        // Validate invoice exists
-        Sale existingSale = saleRepository.findById(invoice.getId());
-        if (existingSale == null) {
-            return new ServiceResponse<>(false, 404, "Invoice not found", null);
-        }
-
-        // Restore old quantities
-        for (SaleItem item : existingSale.getItems()) {
-            restoreStock(existingSale.getBranchId(), item.getProductId(), item.getQuantity());
-        }
-
-
-        for (SaleItem item : invoice.getItems()) {
-            ServiceResponse<Void> stockResponse = validateAndUpdateStock(
-                    invoice.getBranchId(),
-                    item.getProductId(),
-                    item.getQuantity()
-            );
-            if (!stockResponse.isSuccess()) {
-                // Rollback restored quantities
-                for (SaleItem oldItem : existingSale.getItems()) {
-                    validateAndUpdateStock(
-                            existingSale.getBranchId(),
-                            oldItem.getProductId(),
-                            oldItem.getQuantity()
-                    );
-                }
-                return new ServiceResponse<>(false, 400, stockResponse.getMessage(), null);
-            }
-        }
-
-        Sale updatedSale = saleRepository.updateSale(invoice);
-        return new ServiceResponse<>(true, 200, "Invoice updated successfully", updatedSale);
-    }
-
-
-    //helper function for updateInvoice and deleteInvoice
-    private void restoreStock(Long branchId, Long productId, int quantity) {
-        List<BranchProduct> branchProducts = branchProductRepository.getProductsByBranch(branchId);
-        BranchProduct branchProduct = branchProducts.stream()
-                .filter(bp -> bp.getProductId().equals(productId))
-                .findFirst()
-                .orElse(null);
-
-        if (branchProduct != null) {
-            int newQuantity = branchProduct.getQuantity() + quantity;
-            branchProductRepository.updateQuantity(branchId, productId, newQuantity);
+        try {
+            saleRepository.deleteSale(invoiceId);
+            return new ServiceResponse<>(true, 200, "Sale deleted successfully", null);
+        } catch (Exception e) {
+            return new ServiceResponse<>(false, 500, "Error deleting sale: " + e.getMessage(), null);
         }
     }
+
 }

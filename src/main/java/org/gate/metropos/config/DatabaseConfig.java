@@ -30,7 +30,7 @@ public class DatabaseConfig {
         HikariConfig localConfig = new HikariConfig();
         localConfig.setJdbcUrl("jdbc:postgresql://localhost:5432/local_db");
         localConfig.setUsername("postgres");
-        localConfig.setPassword("asad123");
+        localConfig.setPassword("12345678");
         localDataSource = new HikariDataSource(localConfig);
         localDsl = DSL.using(localDataSource, SQLDialect.POSTGRES);
     }
