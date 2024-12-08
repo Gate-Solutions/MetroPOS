@@ -3,6 +3,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.gate.metropos.Controllers.SuperAdminControllers.DashBoardController"
@@ -10,16 +13,52 @@
 
     <!-- Sidebar -->
     <VBox styleClass="sidebar">
-        <Label text="Metro POS" styleClass="brand-label"/>
+        <HBox styleClass="logo-container">
+            <ImageView fitWidth="150" fitHeight="50" preserveRatio="true">
+                <Image url="@../assets/logo.png"/>
+            </ImageView>
+        </HBox>
 
-        <Button text="Dashboard" styleClass="nav-button" fx:id="dashboardBtn"/>
-        <Button text="Manage Branches" styleClass="nav-button" fx:id="branchesBtn"/>
-        <Button text="Manage Users" styleClass="nav-button" fx:id="usersBtn"/>
-        <Button text="Reports" styleClass="nav-button" fx:id="reportsBtn"/>
-        <Button text="Settings" styleClass="nav-button" fx:id="settingsBtn"/>
+        <Button styleClass="nav-button" fx:id="dashboardBtn">
+            <graphic>
+                <FontAwesomeIconView glyphName="DASHBOARD" size="20" styleClass="nav-icon"/>
+            </graphic>
+            <text>Dashboard</text>
+        </Button>
+        <Button styleClass="nav-button" fx:id="branchesBtn">
+            <graphic>
+                <FontAwesomeIconView glyphName="BUILDING" size="20" styleClass="nav-icon"/>
+            </graphic>
+            <text>Manage Branches</text>
+        </Button>
+        <Button styleClass="nav-button" fx:id="usersBtn">
+            <graphic>
+                <FontAwesomeIconView glyphName="USERS" size="20" styleClass="nav-icon"/>
+            </graphic>
+            <text>Manage Users</text>
+        </Button>
+
+        <Button styleClass="nav-button" fx:id="reportsBtn">
+            <graphic>
+                <FontAwesomeIconView glyphName="BAR_CHART" size="20" styleClass="nav-icon"/>
+            </graphic>
+            <text>Reports</text>
+        </Button>
+
+        <Button styleClass="nav-button" fx:id="settingsBtn">
+            <graphic>
+                <FontAwesomeIconView glyphName="COG" size="20" styleClass="nav-icon"/>
+            </graphic>
+            <text>Settings</text>
+        </Button>
 
         <Region VBox.vgrow="ALWAYS"/>
-        <Button text="Logout" styleClass="nav-button, logout-button" fx:id="logoutBtn"/>
+        <Button styleClass="nav-button, logout-button" fx:id="logoutBtn">
+            <graphic>
+                <FontAwesomeIconView glyphName="SIGN_OUT" size="20" styleClass="nav-icon"/>
+            </graphic>
+            <text>Logout</text>
+        </Button>
     </VBox>
 
     <!-- Main Content Area -->
