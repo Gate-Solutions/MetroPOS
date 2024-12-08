@@ -8,14 +8,13 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.gate.metropos.Controllers.EmployeeControllers.FirstTimePasswordController;
 import org.gate.metropos.enums.UserRole;
 import org.gate.metropos.models.Employee;
 import org.gate.metropos.models.User;
 import org.gate.metropos.services.EmployeeService;
 import org.gate.metropos.services.SuperAdminService;
-import org.gate.metropos.utils.AlertUtils;
-import org.gate.metropos.utils.ServiceResponse;
-import org.gate.metropos.utils.SessionManager;
+import org.gate.metropos.utils.*;
 
 import java.io.IOException;
 
@@ -29,6 +28,8 @@ public class LoginController {
     private PasswordField passwordField;
     @FXML
     private Button loginButton;
+
+
 
     private final SuperAdminService superAdminService ;
     private final EmployeeService employeeService ;
@@ -46,7 +47,6 @@ public class LoginController {
                 "Cashier",
                 "Data Entry Operator"
         );
-
         loginButton.setOnAction(e -> handleLogin());
     }
 
@@ -81,18 +81,19 @@ public class LoginController {
                 SessionManager.initEmployeeSession(employee);
 
                 if (employee.isFirstTime()) {
-//                    showUpdateYourPassword();
+                    showUpdateYourPassword();
+                    return;
                 }
 
                     switch (employee.getRole()) {
                         case BRANCH_MANAGER:
-                            showBranchManagerDashboard();
+                           NavigationUtil.showBranchManagerDashboard((Stage)loginButton.getScene().getWindow());
                             break;
                         case CASHIER:
-                            showCashierScreen();
+                           NavigationUtil.showCashierScreen((Stage)loginButton.getScene().getWindow());
                             break;
                         case DATA_ENTRY_OPERATOR:
-                            showDataEntryDashboard();
+                            NavigationUtil.showDataEntryDashboard((Stage)loginButton.getScene().getWindow());
                             break;
                     }
 
@@ -148,6 +149,7 @@ public class LoginController {
         return true;
     }
 
+
     private void showAdminDashboard() {
         try {
             // Load the Dashboard FXML
@@ -174,98 +176,24 @@ public class LoginController {
 
     }
 
-    private void showBranchManagerDashboard() {
-        try {
-            // Load the Dashboard FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos/BranchManagerScreens/Dashboard.fxml"));
-            Parent dashboardRoot = loader.load();
-
-            // Get the current stage from any control (using loginButton here)
-            Stage currentStage = (Stage) loginButton.getScene().getWindow();
-            currentStage.setTitle("Metro POS | Branch Manager");
-            // Create new scene with dashboard
-            Scene dashboardScene = new Scene(dashboardRoot);
-
-            currentStage.setScene(dashboardScene);
-            currentStage.show();
-        } catch (IOException e) {
-            AlertUtils.showAlert(Alert.AlertType.ERROR , "Navigation Error" , "Could not load Dashboard" , "An error occurred while loading the Dashboard: " + e.getMessage());
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-
-    }
-
-    private void showCashierScreen() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos/CashierScreens/cashierDashboard.fxml"));
-            Parent dashboardRoot = loader.load();
-
-            // Get the current stage from loginButton
-            Stage currentStage = (Stage) loginButton.getScene().getWindow();
-            currentStage.setTitle("Metro POS | Cashier Dashboard");
-
-            // Create new scene with dashboard
-            Scene dashboardScene = new Scene(dashboardRoot);
-
-            // Set the new scene on current stage
-            currentStage.setScene(dashboardScene);
-            currentStage.show();
-        } catch (IOException e) {
-            AlertUtils.showError("Navigation Error", "An error occurred while loading the Cashier: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-    private void showDataEntryDashboard() {
-        try {
-            // Load the Data Entry Dashboard FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos/DataEntryScreens/DataEntryDashboard.fxml"));
-            Parent dashboardRoot = loader.load();
-
-            // Get the current stage from loginButton
-            Stage currentStage = (Stage) loginButton.getScene().getWindow();
-            currentStage.setTitle("Metro POS | Data Entry Dashboard");
-
-            // Create new scene with dashboard
-            Scene dashboardScene = new Scene(dashboardRoot);
-
-            // Set the new scene on current stage
-            currentStage.setScene(dashboardScene);
-            currentStage.show();
-        } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Navigation Error");
-            alert.setHeaderText("Could not load Data Entry Dashboard");
-            alert.setContentText("An error occurred while loading the Dashboard: " + e.getMessage());
-            alert.showAndWait();
-            e.printStackTrace();
-        }
-    }
 
     private void showUpdateYourPassword() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos/EmployeeScreens/change-password.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Change Password");
-            stage.setScene(new Scene(loader.load()));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos/EmployeeScreens/firs-time-password.fxml"));
+            Parent root = loader.load();
+            FirstTimePasswordController controller = loader.getController();
+            controller.setEmployee(SessionManager.getCurrentEmployee());
 
-            // After password change, proceed to appropriate dashboard
-            // Add your dashboard navigation logic here
-
+            Stage currentStage = (Stage) loginButton.getScene().getWindow();
+            currentStage.setTitle("Update password | " + SessionManager.getCurrentUserRole() );
+            Scene scene = new Scene(root);
+            currentStage.setScene(scene);
+            currentStage.show();
         } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Could not load password change window");
-            alert.showAndWait();
+            AlertUtils.showError("Could not load password change window: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
-
-
 
 
 
