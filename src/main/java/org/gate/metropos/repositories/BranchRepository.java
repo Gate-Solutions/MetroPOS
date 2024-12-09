@@ -89,6 +89,7 @@ public class BranchRepository {
                 .set(BranchFields.ADDRESS.toField(), branch.getAddress())
                 .set(BranchFields.PHONE.toField(), branch.getPhone())
                 .set(BranchFields.UPDATED_AT.toField(), LocalDateTime.now())
+                .set(BranchFields.IS_ACTIVE.toField(),branch.isActive())
                 .where(BranchFields.ID.toField().eq(branch.getId()))
                 .returning()
                 .fetchOne();
