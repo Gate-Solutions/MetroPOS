@@ -40,7 +40,7 @@ public class EmployeeService {
             return new ServiceResponse<>(false, 400, "Salary must be greater than zero", null);
         }
 
-        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
+        employee.setPassword(passwordEncoder.encode("password"));
         employee.setFirstTime(true);
         employee.setActive(true);
         Employee savedEmployee = employeeRepository.addEmployee(employee);

@@ -1,0 +1,29 @@
+.add-branch-container {
+    -fx-background-color: white;
+}
+
+.title-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-dark;
+}
+
+.subtitle-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: -primary-light;
+    -fx-padding: 0 0 10 0;
+}
+
+.input-field {
+    -fx-background-color: -background;
+    -fx-background-radius: 4;
+    -fx-padding: 10;
+    -fx-pref-width: 420;
+}
+
+.input-field:focused {
+    -fx-background-color: white;
+    -fx-border-color: -primary;
+    -fx-border-radius: 4;
+    -fx-border-width: 1;
+}

@@ -3,10 +3,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.gate.metropos.Controllers.SuperAdminControllers.BranchesController"
-      stylesheets="@../styles/global.css, @../styles/SuperAdmin/branches.css , @../styles/SuperAdmin/common.css"
+      stylesheets="@../styles/global.css, @../styles/common.css, @../styles/SuperAdmin/branches.css"
       spacing="20">
 
     <padding>
@@ -16,23 +17,30 @@
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Label text="Manage Branches" styleClass="page-title"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button text="Add New Branch" styleClass="primary-button" fx:id="addBranchBtn"/>
+        <Button styleClass="primary-button" fx:id="addBranchBtn">
+            <graphic>
+                <FontAwesomeIconView glyphName="PLUS" size="14" fill="WHITE"/>
+            </graphic>
+            <text>Add New Branch</text>
+        </Button>
     </HBox>
 
     <HBox spacing="10">
-        <TextField promptText="Search branches..." HBox.hgrow="ALWAYS"/>
-        <ComboBox promptText="Filter by Status"/>
+        <TextField fx:id="searchField" promptText="Search branches..." HBox.hgrow="ALWAYS"/>
+        <ComboBox fx:id="statusFilter" promptText="Filter by Status"/>
     </HBox>
 
-    <TableView VBox.vgrow="ALWAYS" fx:id="branchesTable">
+    <TableView VBox.vgrow="ALWAYS" fx:id="branchesTable"
+    >
+
         <columns>
-            <TableColumn text="Branch ID" fx:id="idColumn"/>
-            <TableColumn text="Branch Name" fx:id="nameColumn"/>
-            <TableColumn text="Location" fx:id="locationColumn"/>
-            <TableColumn text="Manager" fx:id="managerColumn"/>
-            <TableColumn text="Contact" fx:id="contactColumn"/>
-            <TableColumn text="Status" fx:id="statusColumn"/>
-            <TableColumn text="Actions" fx:id="actionsColumn"/>
+<!--            <TableColumn text="Branch ID" fx:id="idColumn"/>-->
+<!--            <TableColumn text="Branch Name" fx:id="nameColumn"/>-->
+<!--            <TableColumn text="Location" fx:id="locationColumn"/>-->
+<!--            <TableColumn text="Manager" fx:id="managerColumn"/>-->
+<!--            <TableColumn text="Contact" fx:id="contactColumn"/>-->
+<!--            <TableColumn text="Status" fx:id="statusColumn"/>-->
+<!--            <TableColumn text="Actions" fx:id="actionsColumn"/>-->
         </columns>
     </TableView>
 </VBox>

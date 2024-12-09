@@ -1,0 +1,128 @@
+.page-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.primary-button {
+    -fx-background-color: -primary;
+    -fx-text-fill: white;
+    -fx-padding: 8 15 8 15;
+    -fx-graphic-text-gap: 8;
+    -fx-cursor: hand;
+}
+.primary-button:hover {
+    -fx-background-color: -primary-dark;
+}
+
+.secondary-button {
+    -fx-background-color: transparent;
+    -fx-border-color: -primary;
+    -fx-text-fill: -primary;
+    -fx-padding: 8 15;
+    -fx-cursor: hand;
+}
+
+.report-card {
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
+}
+
+.card-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+
+
+
+
+.table-view {
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+
+}
+
+/* Table header styling */
+.table-view .column-header,
+.table-view .column-header .filler,
+.table-view .column-header-background {
+    -fx-background-color: -primary;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+
+}
+
+.table-view:focused {
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-border-width: 0;
+}
+
+.table-row-cell:filled:focused {
+    -fx-background-insets: 0;
+}
+
+/* Remove or modify hover state */
+.table-view .table-row-cell:filled:hover {
+    -fx-background-color: transparent; /* or white for completely default look */
+}
+
+/* Remove or modify selection color */
+.table-view .table-row-cell:filled:selected {
+    -fx-background-color: transparent;
+}
+
+
+
+/* Hover */
+.table-view .table-row-cell:filled:hover {
+    -fx-background-color: derive(-primary, 40%); /* 40% lighter than primary */
+}
+
+.table-view .table-row-cell:filled:hover .table-cell {
+    -fx-text-fill: white; /* Keep text in primary color for better contrast */
+}
+
+/* Selection state - darker/original shade */
+.table-view .table-row-cell:filled:selected {
+    -fx-background-color: -primary; /* Original primary color */
+    -fx-border-color: -primary;
+}
+
+.table-view .table-row-cell:filled:selected .table-cell {
+    -fx-text-fill: white; /* White text for selected state */
+    -fx-border-color: transparent;
+}
+
+
+
+/*//modifying text fields*/
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+    /* Remove default styles */
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.text-field:focused {
+    -fx-border-color: -primary;
+    -fx-border-width: 1px;
+    /* Override any internal JavaFX styling */
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    /*-fx-border-radius: ;*/
+
+}
+
+
+
+
+
+

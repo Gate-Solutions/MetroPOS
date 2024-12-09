@@ -1,5 +1,5 @@
 .sidebar {
-    -fx-background-color: -primary-color;
+    -fx-background-color: -primary;
     -fx-min-width: 250px;
     -fx-padding: 20px 10px;
     -fx-spacing: 10;
@@ -21,13 +21,24 @@
     -fx-alignment: CENTER_LEFT;
     -fx-min-width: 230px;
     -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-graphic-text-gap: 10;
 }
 
 .nav-button:hover {
-    -fx-background-color: -primary-color-dark;
+    -fx-background-color: -primary-dark;
     -fx-background-radius: 5;
 }
 
 .logout-button {
-    -fx-text-fill: #ff4444;
+    -fx-text-fill: white;
+}
+
+.logo-container {
+    -fx-padding: 10px;
+    -fx-alignment: center;
+}
+
+.nav-icon {
+    -fx-fill: white;
 }
