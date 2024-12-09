@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.gate.metropos.Controllers.SuperAdminControllers.AddManagerInUsersPageController"
+            stylesheets="@../styles/global.css,@../styles/common.css,@../styles/SuperAdmin/branches.css"
+            prefWidth="700" prefHeight="500">
+
+    <VBox spacing="15" styleClass="add-branch-container" AnchorPane.topAnchor="0"
+          AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+
+        <padding>
+            <Insets top="30" right="40" bottom="30" left="40"/>
+        </padding>
+
+        <Label text="Add New Branch Manager" styleClass="title-label"/>
+        <Label text="Enter manager details below" styleClass="subtitle-label"/>
+
+        <VBox spacing="15">
+            <VBox spacing="5">
+                <Label text="Select Branch" styleClass="field-label"/>
+                <ComboBox fx:id="branchComboBox" styleClass="input-field" maxWidth="Infinity"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Username" styleClass="field-label"/>
+                <TextField fx:id="usernameField" styleClass="input-field"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Email" styleClass="field-label"/>
+                <TextField fx:id="emailField" styleClass="input-field"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Full Name" styleClass="field-label"/>
+                <TextField fx:id="managerNameField" styleClass="input-field"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Employee Number" styleClass="field-label"/>
+                <TextField fx:id="employeeNoField" styleClass="input-field"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Salary" styleClass="field-label"/>
+                <TextField fx:id="salaryField" styleClass="input-field"/>
+            </VBox>
+        </VBox>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button fx:id="cancelBtn" text="Cancel" styleClass="secondary-button"/>
+            <Button fx:id="saveBtn" text="Save Manager" styleClass="primary-button">
+                <graphic>
+                    <FontAwesomeIconView glyphName="CHECK" size="14" fill="WHITE"/>
+                </graphic>
+            </Button>
+        </HBox>
+    </VBox>
+</AnchorPane>

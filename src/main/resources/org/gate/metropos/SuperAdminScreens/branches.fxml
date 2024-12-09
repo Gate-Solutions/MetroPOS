@@ -15,7 +15,11 @@
     </padding>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
-        <Label text="Manage Branches" styleClass="page-title"/>
+
+        <VBox>
+            <Label text="Manage Branches" styleClass="page-title"/>
+            <Label text="Manage all branches made till date" styleClass="subtitle-label"/>
+        </VBox>
         <Region HBox.hgrow="ALWAYS"/>
         <Button styleClass="primary-button" fx:id="addBranchBtn">
             <graphic>
@@ -26,7 +30,7 @@
     </HBox>
 
     <HBox spacing="10">
-        <TextField fx:id="searchField" promptText="Search branches..." HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="searchField" styleClass="search-field" promptText="Search branches..." HBox.hgrow="ALWAYS"/>
         <ComboBox fx:id="statusFilter" promptText="Filter by Status"/>
     </HBox>
 
