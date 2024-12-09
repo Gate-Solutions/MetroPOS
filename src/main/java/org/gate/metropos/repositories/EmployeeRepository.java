@@ -26,7 +26,7 @@ public class EmployeeRepository {
 
     public Employee findById(Long id) {
         Record record = dsl.select()
-                .from(EmployeeFields.EmployeeTable.toTableField())
+                .from(EmployeeFields.toTableField())
                 .where(UserFields.ID.toField().eq(id))
                 .fetchOne();
 
@@ -36,7 +36,7 @@ public class EmployeeRepository {
 
     public Employee findByEmail(String email) {
         Record record = dsl.select()
-                .from(EmployeeFields.EmployeeTable.toTableField())
+                .from(EmployeeFields.toTableField())
                 .where(UserFields.EMAIL.toField().eq(email))
                 .fetchOne();
 
@@ -46,7 +46,7 @@ public class EmployeeRepository {
 
     public Employee findByUsername(String username) {
         Record record = dsl.select()
-                .from(EmployeeFields.EmployeeTable.toTableField())
+                .from(EmployeeFields.toTableField())
                 .where(UserFields.USERNAME.toField().eq(username))
                 .fetchOne();
 
@@ -56,7 +56,7 @@ public class EmployeeRepository {
 
     public Employee findByEmployeeNo(String employeeNo) {
         Record record = dsl.select()
-                .from(EmployeeFields.EmployeeTable.toTableField())
+                .from(EmployeeFields.toTableField())
                 .where(EmployeeFields.EMPLOYEE_NO.toField().eq(employeeNo))
                 .fetchOne();
 
@@ -89,7 +89,7 @@ public class EmployeeRepository {
 
     public Employee getEmployee(Long id) {
         Record record = dsl.select()
-                .from(EmployeeFields.EmployeeTable.toTableField())
+                .from(EmployeeFields.toTableField())
                 .where(UserFields.ID.toField().eq(id))
                 .fetchOne();
 
@@ -99,7 +99,7 @@ public class EmployeeRepository {
 
     public List<Employee> getAllEmployeesByRole(UserRole role) {
         Result<Record> records = dsl.select()
-                .from(EmployeeFields.EmployeeTable.toTableField())
+                .from(EmployeeFields.toTableField())
                 .where(UserFields.ROLE.toField().eq(role.toString()))
                 .fetch();
 
@@ -108,14 +108,14 @@ public class EmployeeRepository {
 
     public List<Employee> getAllEmployees() {
         Result<Record> records = dsl.select()
-                .from(EmployeeFields.EmployeeTable.toTableField())
+                .from(EmployeeFields.toTableField())
                 .fetch();
 
         return records.map(this::mapToEmployee);
     }
 
     public void setEmployeeStatus(Long employeeId, boolean isActive) {
-        dsl.update(EmployeeFields.EmployeeTable.toTableField())
+        dsl.update(EmployeeFields.toTableField())
                 .set(EmployeeFields.IS_ACTIVE.toField(), isActive)
                 .set(UserFields.UPDATED_AT.toField(), LocalDateTime.now())
                 .where(UserFields.ID.toField().eq(employeeId))
@@ -123,7 +123,7 @@ public class EmployeeRepository {
     }
 
     public void updatePassword(Long employeeId, String newPassword) {
-        dsl.update(EmployeeFields.EmployeeTable.toTableField())
+        dsl.update(EmployeeFields.toTableField())
                 .set(UserFields.PASSWORD.toField(), newPassword)
                 .set(EmployeeFields.IS_FIRST_TIME.toField(), false)
                 .set(UserFields.UPDATED_AT.toField(), LocalDateTime.now())
@@ -132,7 +132,7 @@ public class EmployeeRepository {
     }
 
     public Employee updateEmployee(Employee employee) {
-        Record record = dsl.update(EmployeeFields.EmployeeTable.toTableField())
+        Record record = dsl.update(EmployeeFields.toTableField())
                 .set(UserFields.USERNAME.toField(), employee.getUsername())
                 .set(UserFields.EMAIL.toField(), employee.getEmail())
                 .set(UserFields.ROLE.toField(), employee.getRole().toString())

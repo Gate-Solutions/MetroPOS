@@ -127,6 +127,25 @@ public class BranchService {
 
     }
 
+    public ServiceResponse<List<Branch>> getBranchesWithoutActiveManagers() {
+        try {
+            List<Branch> branches = branchRepository.getBranchesWithoutActiveManagers();
+            return new ServiceResponse<>(
+                    true,
+                    200,
+                    "Successfully retrieved branches without active managers",
+                    branches
+            );
+        } catch (Exception e) {
+            return new ServiceResponse<>(
+                    false,
+                    500,
+                    "Error retrieving branches: " + e.getMessage(),
+                    null
+            );
+        }
+    }
+
 }
 
 
