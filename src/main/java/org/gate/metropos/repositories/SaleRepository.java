@@ -17,6 +17,7 @@ import org.jooq.impl.DSL;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -58,6 +59,7 @@ public class SaleRepository {
             }
 
             Long invoiceId = saleRecord.get(SaleFields.ID.toField(), Long.class);
+            sale.setId(invoiceId);
 
             // Insert sale items
             for (SaleItem item : sale.getItems()) {
@@ -120,7 +122,7 @@ public class SaleRepository {
         return records.map(this::mapToSaleItem);
     }
 
-    private Sale mapToSale(Record record) {
+    private  Sale mapToSale(Record record) {
         if (record == null) return null;
 
         Long branchId = record.get(SaleFields.BRANCH_ID.toField(), Long.class);
@@ -131,13 +133,13 @@ public class SaleRepository {
                 .invoiceNumber(record.get(SaleFields.INVOICE_NUMBER.toField(), String.class))
                 .branchId(branchId)
                 .createdBy(createdBy)
-//                .invoiceDate(record.get(SaleFields.INVOICE_DATE.toField(), LocalDate.class))
+                .invoiceDate(record.get(SaleFields.INVOICE_DATE.toField(), OffsetDateTime.class).toLocalDate())
                 .totalAmount(record.get(SaleFields.TOTAL_AMOUNT.toField(), BigDecimal.class))
                 .discount(record.get(SaleFields.DISCOUNT.toField(), BigDecimal.class))
                 .netAmount(record.get(SaleFields.NET_AMOUNT.toField(), BigDecimal.class))
                 .notes(record.get(SaleFields.NOTES.toField(), String.class))
-//                .createdAt(record.get(SaleFields.CREATED_AT.toField(), LocalDateTime.class))
-//                .updatedAt(record.get(SaleFields.UPDATED_AT.toField(), LocalDateTime.class))
+                .createdAt(record.get(SaleFields.CREATED_AT.toField(), OffsetDateTime.class).toLocalDateTime())
+                .updatedAt(record.get(SaleFields.UPDATED_AT.toField(), OffsetDateTime.class).toLocalDateTime())
                 .branch(branchRepository.findById(branchId))
                 .creator(employeeRepository.findById(createdBy))
                 .build();
@@ -170,9 +172,6 @@ public class SaleRepository {
             return sale;
         });
     }
-
-
-
 
     public void deleteSale(Long id) {
         dsl.transaction(configuration -> {
@@ -258,11 +257,6 @@ public class SaleRepository {
             branchProductRepository.updateQuantity(ctx, branchId, productId, newQuantity);
         }
     }
-
-
-
-
-
 
 
 }
