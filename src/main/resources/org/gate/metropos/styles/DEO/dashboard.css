@@ -1,0 +1,39 @@
+.root {
+    -fx-background-color: #f4f4f4;
+}
+
+.logo-container {
+    -fx-padding: 10px;
+    -fx-alignment: center;
+}
+
+.header {
+    -fx-padding: 20px;
+    -fx-background-color: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+.header-text {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.logout-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-padding: 8 15;
+}
+
+.dashboard-cards {
+    -fx-padding: 20px;
+}
+
+.card {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-min-width: 200px;
+    -fx-alignment: CENTER;
+    -fx-spacing: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+

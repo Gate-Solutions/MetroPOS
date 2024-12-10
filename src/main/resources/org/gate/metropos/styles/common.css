@@ -146,4 +146,36 @@
 }
 
 
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 15px 20px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-min-width: 230px;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-graphic-text-gap: 10;
+}
 
+.nav-button:hover {
+    -fx-background-color: -primary-dark;
+    -fx-background-radius: 5;
+}
+
+.sidebar {
+    -fx-background-color: -primary;
+    -fx-min-width: 250px;
+    -fx-padding: 20px 10px;
+    -fx-spacing: 10;
+}
+
+.nav-icon {
+    -fx-fill: white;
+}
+
+.nav-button.active {
+    -fx-background-color: -primary-dark;
+    -fx-border-width: 0 0 0 4px;
+    -fx-border-color: -accent;
+}

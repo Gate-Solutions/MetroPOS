@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      spacing="20">
+
+    <HBox spacing="20" styleClass="dashboard-cards">
+        <VBox styleClass="card">
+            <FontAwesomeIconView glyphName="SHOPPING_CART" size="30"/>
+            <Text fx:id="productCount" text="0"/>
+            <Text text="Total Products"/>
+        </VBox>
+
+        <VBox styleClass="card">
+            <FontAwesomeIconView glyphName="USERS" size="30"/>
+            <Text fx:id="supplierCount" text="0"/>
+            <Text text="Total Suppliers"/>
+        </VBox>
+
+        <VBox styleClass="card">
+            <FontAwesomeIconView glyphName="FILE_TEXT" size="30"/>
+            <Text fx:id="invoiceCount" text="0"/>
+            <Text text="Purchase Invoices"/>
+        </VBox>
+    </HBox>
+</VBox>

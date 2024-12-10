@@ -18,8 +18,7 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
     private PasswordEncoder passwordEncoder;
     @Getter
-    private Employee loggedInEmployee = null;
-
+    private static Employee loggedInEmployee = null;
 
 
     public EmployeeService() {
