@@ -17,6 +17,8 @@ import org.gate.metropos.utils.ServiceResponse;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class BranchesController {
@@ -48,9 +50,9 @@ public class BranchesController {
 
     private void loadBranches() {
         ServiceResponse<List<Branch>> response = branchService.getAllBranches();
-
         if (response.isSuccess()) {
             allBranches.clear();
+            Collections.sort(response.getData(), Comparator.comparing(Branch::getId));
             allBranches.addAll(response.getData());
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -60,6 +62,7 @@ public class BranchesController {
             alert.showAndWait();
         }
     }
+
 
 
 
@@ -111,6 +114,18 @@ public class BranchesController {
         branchesTable.getColumns().addAll(
                 idCol, codeCol, nameCol, cityCol, addressCol, phoneCol, statusCol, employeesCol
         );
+
+
+        //for update branch
+        branchesTable.setRowFactory(tv -> {
+            TableRow<Branch> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty() && event.getClickCount() == 1) {
+                    openUpdateBranchWindow(row.getItem());
+                }
+            });
+            return row;
+        });
     }
 
 
@@ -181,4 +196,27 @@ public class BranchesController {
 
 
     }
+
+
+
+    private void openUpdateBranchWindow(Branch branch) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos/SuperAdminScreens/update-branch.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Update Branch");
+            stage.setScene(new Scene(loader.load()));
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            UpdateBranchController controller = loader.getController();
+            controller.setBranch(branch);
+
+            stage.showAndWait();
+
+
+            loadBranches();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
 }

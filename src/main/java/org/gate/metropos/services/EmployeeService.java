@@ -109,8 +109,11 @@ public class EmployeeService {
 
     public ServiceResponse<List<Employee>> getEmployeesByRole(UserRole role) {
         List<Employee> employees = employeeRepository.getAllEmployeesByRole(role);
+
+
         return new ServiceResponse<>(true, 200, "Employees retrieved successfully", employees);
     }
+
 
     public ServiceResponse<Void> setEmployeeStatus(Long id, boolean isActive) {
         Employee employee = employeeRepository.getEmployee(id);
@@ -171,6 +174,8 @@ public class EmployeeService {
         }
         return new ServiceResponse<>(true, 200, "First time status retrieved", loggedInEmployee.isFirstTime());
     }
+
+
 
 
 

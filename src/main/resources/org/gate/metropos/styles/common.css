@@ -14,6 +14,15 @@
     -fx-background-color: -primary-dark;
 }
 
+.primary-table-button {
+    -fx-background-color: -primary;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+.primary-table-button:hover {
+    -fx-background-color: -primary-dark;
+}
+
 .secondary-button {
     -fx-background-color: transparent;
     -fx-border-color: -primary;
@@ -123,6 +132,18 @@
 
 
 
+
+.search-field {
+    -fx-pref-height: 30px;
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 4px;
+}
+.subtitle-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: -primary-light;
+    -fx-padding: 0 0 10 0;
+}
 
 
 

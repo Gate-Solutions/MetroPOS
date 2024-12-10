@@ -6,10 +6,9 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.gate.metropos.Controllers.SuperAdminControllers.AddBranchController"
-            stylesheets="@../styles/global.css, @../styles/common.css ,@../styles/SuperAdmin/branches.css"
-            prefWidth="700" prefHeight="500"
->
+            fx:controller="org.gate.metropos.Controllers.SuperAdminControllers.UpdateBranchController"
+            stylesheets="@../styles/global.css, @../styles/common.css, @../styles/SuperAdmin/branches.css"
+            prefWidth="700" prefHeight="500">
 
     <VBox spacing="20" styleClass="add-branch-container" AnchorPane.topAnchor="0"
           AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
@@ -18,13 +17,17 @@
             <Insets top="30" right="40" bottom="30" left="40"/>
         </padding>
 
-        <Label text="Add New Branch" styleClass="title-label"/>
-        <Label text="Enter branch details below" styleClass="subtitle-label"/>
+        <Label text="Update Branch" styleClass="title-label"/>
 
         <VBox spacing="15">
             <VBox spacing="5">
+                <Label text="Branch ID" styleClass="field-label"/>
+                <TextField fx:id="idField" styleClass="input-field" disable="true"/>
+            </VBox>
+
+            <VBox spacing="5">
                 <Label text="Branch Code" styleClass="field-label"/>
-                <TextField fx:id="branchCodeField" styleClass="input-field"/>
+                <TextField fx:id="codeField" styleClass="input-field" disable="true"/>
             </VBox>
 
             <VBox spacing="5">
@@ -34,7 +37,7 @@
 
             <VBox spacing="5">
                 <Label text="City" styleClass="field-label"/>
-                <TextField fx:id="cityField" styleClass="input-field"/>
+                <TextField fx:id="cityField" styleClass="input-field" disable="true"/>
             </VBox>
 
             <VBox spacing="5">
@@ -43,13 +46,19 @@
             </VBox>
 
             <VBox spacing="5">
-                <Label text="Phone Number" styleClass="field-label"/>
+                <Label text="Phone" styleClass="field-label"/>
                 <TextField fx:id="phoneField" styleClass="input-field"/>
             </VBox>
+
+            <VBox spacing="5">
+                <Label text="Status" styleClass="field-label"/>
+                <CheckBox fx:id="activeCheckBox" text="Active"/>
+            </VBox>
         </VBox>
+
         <HBox spacing="10" alignment="CENTER_RIGHT">
             <Button fx:id="cancelBtn" text="Cancel" styleClass="secondary-button"/>
-            <Button fx:id="saveBtn" text="Save Branch" styleClass="primary-button">
+            <Button fx:id="updateBtn" text="Update Branch" styleClass="primary-button">
                 <graphic>
                     <FontAwesomeIconView glyphName="CHECK" size="14" fill="WHITE"/>
                 </graphic>
@@ -57,4 +66,3 @@
         </HBox>
     </VBox>
 </AnchorPane>
-

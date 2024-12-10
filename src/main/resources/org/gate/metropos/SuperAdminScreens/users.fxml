@@ -2,38 +2,44 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="org.gate.metropos.Controllers.SuperAdminControllers.UsersController"
-      stylesheets="@../styles/global.css, @../styles/SuperAdmin/users.css , @../styles/common.css"
-      spacing="20">
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.gate.metropos.Controllers.SuperAdminControllers.UsersController"
+            stylesheets="@../styles/global.css, @../styles/common.css, @../styles/SuperAdmin/employees.css">
 
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
-    </padding>
+    <VBox spacing="20" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
 
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Label text="Manage Users" styleClass="page-title"/>
-        <Region HBox.hgrow="ALWAYS"/>
-        <Button text="Add New User" styleClass="primary-button" fx:id="addUserBtn"/>
-    </HBox>
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
 
-    <HBox spacing="10">
-        <TextField promptText="Search users..." HBox.hgrow="ALWAYS"/>
-        <ComboBox promptText="Filter by Role"/>
-        <ComboBox promptText="Filter by Branch"/>
-    </HBox>
+        <!-- Header Section -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <VBox>
+                <Label text="Branch Managers" styleClass="page-title"/>
+                <Label text="Manage all branch managers" styleClass="subtitle-label"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="addEmployeeBtn" text="Add Manager" styleClass="primary-button">
+                <graphic>
+                    <FontAwesomeIconView glyphName="PLUS" size="14" fill="WHITE"/>
+                </graphic>
+            </Button>
+        </HBox>
 
-    <TableView VBox.vgrow="ALWAYS" fx:id="usersTable">
-        <columns>
-            <TableColumn text="User ID" fx:id="userIdColumn"/>
-            <TableColumn text="Name" fx:id="nameColumn"/>
-            <TableColumn text="Role" fx:id="roleColumn"/>
-            <TableColumn text="Branch" fx:id="branchColumn"/>
-            <TableColumn text="Email" fx:id="emailColumn"/>
-            <TableColumn text="Status" fx:id="statusColumn"/>
-            <TableColumn text="Actions" fx:id="actionsColumn"/>
-        </columns>
-    </TableView>
-</VBox>
+        <!-- Filters Section -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <TextField fx:id="searchField" promptText="Search managers..."
+                       styleClass="search-field" HBox.hgrow="ALWAYS"/>
+            <ComboBox fx:id="statusFilter" styleClass="filter-combo"/>
+        </HBox>
+
+        <!-- Table Section -->
+        <TableView fx:id="employeesTable" VBox.vgrow="ALWAYS" styleClass="data-table">
+            <!-- Columns will be added programmatically -->
+        </TableView>
+    </VBox>
+</AnchorPane>

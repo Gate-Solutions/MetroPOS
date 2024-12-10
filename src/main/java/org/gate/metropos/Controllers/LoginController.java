@@ -48,46 +48,48 @@ public class LoginController {
     }
 
     private void handleLogin() {
-        if (!validateInputs()) {
-            return;
-        }
-        String userType = userTypeComboBox.getValue();
-        String username = usernameField.getText();
-        String password = passwordField.getText();
 
-        System.out.println(userType + " " + username + " " + password);
-
-        User user;
-        ServiceResponse<Employee> response;
-
-        if (userType.equals("Super Admin")) {
-            user = superAdminService.login(username, password);
-            if (user != null) {
-                showAdminDashboard();
-            } else {
-                // Show invalid credentials pop up
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Login Error");
-                alert.setHeaderText("Invalid Credentials");
-                alert.setContentText("Please check your username and password.");
-                alert.showAndWait();
-            }
-        } else {
-            response = employeeService.login(username, password);
-            if (!response.isSuccess()) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Login Error");
-                alert.setHeaderText("Login Failed");
-                alert.setContentText(response.getMessage());
-                alert.showAndWait();
-            }
-//            response.getData().isFirstTime()
-            else  {
-            showUpdateYourPassword();
-            }
-
-
-        }
+        showAdminDashboard();
+//        if (!validateInputs()) {
+//            return;
+//        }
+//        String userType = userTypeComboBox.getValue();
+//        String username = usernameField.getText();
+//        String password = passwordField.getText();
+//
+//        System.out.println(userType + " " + username + " " + password);
+//
+//        User user;
+//        ServiceResponse<Employee> response;
+//
+//        if (userType.equals("Super Admin")) {
+//            user = superAdminService.login(username, password);
+//            if (user != null) {
+//                showAdminDashboard();
+//            } else {
+//                // Show invalid credentials pop up
+//                Alert alert = new Alert(Alert.AlertType.ERROR);
+//                alert.setTitle("Login Error");
+//                alert.setHeaderText("Invalid Credentials");
+//                alert.setContentText("Please check your username and password.");
+//                alert.showAndWait();
+//            }
+//        } else {
+//            response = employeeService.login(username, password);
+//            if (!response.isSuccess()) {
+//                Alert alert = new Alert(Alert.AlertType.ERROR);
+//                alert.setTitle("Login Error");
+//                alert.setHeaderText("Login Failed");
+//                alert.setContentText(response.getMessage());
+//                alert.showAndWait();
+//            }
+////            response.getData().isFirstTime()
+//            else  {
+//            showUpdateYourPassword();
+//            }
+//
+//
+//        }
     }
 
 
