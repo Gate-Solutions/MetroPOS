@@ -3,11 +3,14 @@ package org.gate.metropos.services;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.gate.metropos.models.Branch;
+import org.gate.metropos.models.Employee;
 import org.gate.metropos.repositories.BranchRepository;
 import org.gate.metropos.utils.ServiceResponse;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @AllArgsConstructor
 
@@ -128,14 +131,35 @@ public class BranchService {
     }
 
     public ServiceResponse<List<Branch>> getBranchesWithoutActiveManagers() {
+        return getBranchesWithoutActiveManagers(null);
+    }
+
+    public ServiceResponse<List<Branch>> getBranchesWithoutActiveManagers(Employee employee) {
         try {
             List<Branch> branches = branchRepository.getBranchesWithoutActiveManagers();
+            if(employee != null) {
+                Long branchId = employee.getBranchId();
+                Branch branch = branchRepository.findById(branchId);
+
+                boolean isAlreadyPresent = false;
+                for (Branch br : branches) {
+                    if (Objects.equals(br.getId(), branch.getId())) {
+                        isAlreadyPresent = true;
+                        break;
+                    }
+                }
+                if (!isAlreadyPresent)
+                    branches.add(branch);
+            }
+
+
             return new ServiceResponse<>(
                     true,
                     200,
                     "Successfully retrieved branches without active managers",
                     branches
             );
+
         } catch (Exception e) {
             return new ServiceResponse<>(
                     false,
