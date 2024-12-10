@@ -28,7 +28,7 @@ public enum BranchFields {
         return DSL.field(columnName);
     }
 
-    public Table<?> toTableField() {
+    public static Table<?> toTableField() {
         return DSL.table(BranchTable.getColumnName());
     }
 }

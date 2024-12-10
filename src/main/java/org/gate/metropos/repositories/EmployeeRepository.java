@@ -76,10 +76,15 @@ public class EmployeeRepository {
                 .set(EmployeeFields.IS_FIRST_TIME.toField(), employee.isFirstTime())
                 .set(EmployeeFields.SALARY.toField(), employee.getSalary())
                 .set(EmployeeFields.BRANCH_ID.toField(), employee.getBranchId())
-                .returning()
+                .returning(
+                        UserFields.ID.toField()
+                )
                 .fetchOne();
 
-        return mapToEmployee(record);
+        if(record == null) return null;
+        Long id = record.get(UserFields.ID.toField(), Long.class);
+
+        return findById(id);
     }
 
     public Employee getEmployee(Long id) {
