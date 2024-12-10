@@ -3,6 +3,9 @@ package org.gate.metropos.repositories;
 import lombok.AllArgsConstructor;
 import org.gate.metropos.config.DatabaseConfig;
 import org.gate.metropos.enums.BranchFields;
+import org.gate.metropos.enums.EmployeeFields;
+import org.gate.metropos.enums.UserFields;
+import org.gate.metropos.enums.UserRole;
 import org.gate.metropos.models.Branch;
 import org.jooq.DSLContext;
 import org.jooq.Result;
@@ -89,6 +92,7 @@ public class BranchRepository {
                 .set(BranchFields.ADDRESS.toField(), branch.getAddress())
                 .set(BranchFields.PHONE.toField(), branch.getPhone())
                 .set(BranchFields.UPDATED_AT.toField(), LocalDateTime.now())
+                .set(BranchFields.IS_ACTIVE.toField(),branch.isActive())
                 .where(BranchFields.ID.toField().eq(branch.getId()))
                 .returning()
                 .fetchOne();
@@ -133,6 +137,26 @@ public class BranchRepository {
                 .build();
     }
 
+
+    public List<Branch> getBranchesWithoutActiveManagers() {
+        return dsl.select()
+                .from(BranchFields.BranchTable.toTableField())
+                .where(BranchFields.ID.toField().notIn(
+                        // Subquery to find branches with active managers
+                        dsl.select(EmployeeFields.BRANCH_ID.toField())
+                                .from(EmployeeFields.toTableField())
+                                .where(UserFields.ROLE.toField().eq(UserRole.BRANCH_MANAGER.toString()))
+                                .and(EmployeeFields.IS_ACTIVE.toField().eq(true))
+                ))
+                .and(BranchFields.ID.toField().in(
+                        // Subquery to ensure branch has at least one inactive manager
+                        dsl.select(EmployeeFields.BRANCH_ID.toField())
+                                .from(EmployeeFields.toTableField())
+                                .where(UserFields.ROLE.toField().eq(UserRole.BRANCH_MANAGER.toString()))
+                                .and(EmployeeFields.IS_ACTIVE.toField().eq(false))
+                ))
+                .fetchInto(Branch.class);
+    }
 
 
 

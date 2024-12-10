@@ -1,0 +1,14 @@
+/* Inherit styles from branches.css */
+
+
+.filter-combo {
+    -fx-pref-height: 35px;
+    -fx-min-width: 120px;
+}
+
+/*.data-table {*/
+/*    -fx-background-color: white;*/
+/*    -fx-border-color: #cccccc;*/
+/*    -fx-border-radius: 4px;*/
+/*}*/
+

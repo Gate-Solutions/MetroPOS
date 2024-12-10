@@ -73,6 +73,12 @@ public class AddBranchController {
         if (!validateManagerInputs()) {
             return;
         }
+        if (branchIdField.getText().equalsIgnoreCase("") || branchIdField.getText()==null) {
+            System.out.println("cant add manager");
+            return;
+        }else{
+            System.out.println("BRANCH ID : "+ branchIdField.getText());
+        }
         try {
             BigDecimal salary = new BigDecimal(salaryField.getText().trim());
 
@@ -84,7 +90,7 @@ public class AddBranchController {
                     managerNameField.getText().trim(),
                     employeeNoField.getText().trim(),
                     salary,
-                    createdBranchId
+                    Long.parseLong(branchIdField.getText().trim())
             );
 
             if (response.isSuccess()) {
@@ -188,18 +194,10 @@ public class AddBranchController {
 
 
         ServiceResponse<Branch> response = branchService.createBranch(branchCodeField.getText(),nameField.getText(),cityField.getText(),addressField.getText(),phoneField.getText());
-
-        System.out.println(response.toString());
         if (response.isSuccess()) {
-
-
             createdBranchId = response.getData().getId();
             createdBranchCode = response.getData().getBranchCode();
             loadManagerForm();
-
-
-
-
         } else {
             showAlert(Alert.AlertType.ERROR,"Error in adding branch" , response.getMessage());
             return;
@@ -213,25 +211,28 @@ public class AddBranchController {
         alert.setContentText(content);
         alert.showAndWait();
     }
+
     private void loadManagerForm() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos/SuperAdminScreens/add-branch-manager.fxml"));
             Scene scene = new Scene(loader.load());
 
-            // Get reference to this controller instance
             AddBranchController controller = loader.getController();
             controller.branchIdField.setText(createdBranchId.toString());
-            controller.managerBranchCodeField.setText(createdBranchCode);;
+            controller.managerBranchCodeField.setText(createdBranchCode);
 
-            Stage stage = (Stage) saveBtn.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setTitle("Add Branch Manager");
+            Stage currentStage = (Stage) saveBtn.getScene().getWindow();
+            Stage managerStage = new Stage();
+            managerStage.setScene(scene);
+            managerStage.setTitle("Add Branch Manager");
+            currentStage.close();
+            managerStage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Error loading manager form" , "");
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load manager form");
         }
     }
-
 
 
 
