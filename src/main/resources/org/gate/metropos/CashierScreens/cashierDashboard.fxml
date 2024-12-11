@@ -8,7 +8,7 @@
 <?import javafx.scene.text.*?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.gate.metropos.Controllers.DataEntryOperator.DataEntryDashboardController"
+            fx:controller="org.gate.metropos.Controllers.CashierControllers.CashierDashboardController"
             prefHeight="700.0" prefWidth="1000.0"
             stylesheets="@../styles/global.css, @../styles/common.css, @../styles/DEO/dashboard.css">
 
@@ -20,7 +20,7 @@
                     <Image url="@../assets/logo.png"/>
                 </ImageView>
             </HBox>
-<!--            <Text text="Metro POS" styleClass="logo-text"/>-->
+
             <Separator/>
             <Button fx:id="dashboardBtn" styleClass="nav-button">
                 <graphic>
@@ -34,17 +34,12 @@
                 </graphic>
                 <text>Products</text>
             </Button>
-            <Button fx:id="suppliersBtn" styleClass="nav-button" >
-                <graphic>
-                    <FontAwesomeIconView glyphName="USERS" size="20" styleClass="nav-icon"/>
-                </graphic>
-                <text>Suppliers</text>
-            </Button>
-            <Button fx:id="purchaseInvoicesBtn" styleClass="nav-button">
+
+            <Button fx:id="salesInvoicesBtn" styleClass="nav-button">
                 <graphic>
                     <FontAwesomeIconView glyphName="FILE_TEXT" size="20" styleClass="nav-icon"/>
                 </graphic>
-                <text>Purchase Invoices</text>
+                <text>Sales Invoices</text>
             </Button>
         </VBox>
     </left>
@@ -54,7 +49,7 @@
         <VBox>
             <!-- Top Header -->
             <HBox styleClass="header">
-                <Text text="DEO Dashboard" styleClass="header-text"/>
+                <Text text="Cashier Dashboard" styleClass="header-text"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Button fx:id="logoutBtn" styleClass="logout-button, clickable">
                     <graphic>

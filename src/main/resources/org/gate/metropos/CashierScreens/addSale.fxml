@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.gate.metropos.Controllers.CashierControllers.AddSaleController"
+            stylesheets="@../styles/global.css,@../styles/common.css"
+            prefWidth="800" prefHeight="600">
+
+    <VBox spacing="20" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+
+        <Label fx:id="titleLabel" text="Create Sale" styleClass="page-title"/>
+
+        <GridPane hgap="10" vgap="10">
+            <DatePicker fx:id="invoiceDatePicker" promptText="Invoice Date"
+                        GridPane.columnIndex="0"/>
+
+            <TextField fx:id="notesField" promptText="Notes"
+                       GridPane.columnIndex="0" GridPane.columnSpan="2"
+                       GridPane.rowIndex="1"/>
+        </GridPane>
+
+        <HBox spacing="10">
+            <Label text="Products" styleClass="section-header"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="addProductBtn" text="Add Product" styleClass="primary-button">
+                <graphic>
+                    <FontAwesomeIconView glyphName="PLUS" size="14" fill="WHITE"/>
+                </graphic>
+            </Button>
+        </HBox>
+
+        <TableView fx:id="productsTable" VBox.vgrow="ALWAYS"/>
+
+        <GridPane hgap="10" vgap="5" alignment="CENTER_RIGHT">
+            <Label text="Total Amount: " GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <Label fx:id="totalAmountLabel" styleClass="amount-label"
+                   GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <Label text="Discount: " GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <TextField fx:id="discountField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <Label text="Net Amount: " GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Label fx:id="netAmountLabel" styleClass="amount-label"
+                   GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        </GridPane>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button fx:id="cancelBtn" text="Cancel" styleClass="secondary-button"/>
+            <Button fx:id="saveSaleBtn" text="Save Sale" styleClass="primary-button"/>
+        </HBox>
+    </VBox>
+</AnchorPane>
