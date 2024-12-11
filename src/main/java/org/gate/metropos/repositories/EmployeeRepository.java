@@ -141,6 +141,7 @@ public class EmployeeRepository {
                 .set(EmployeeFields.EMPLOYEE_NO.toField(), employee.getEmployeeNo())
                 .set(EmployeeFields.SALARY.toField(), employee.getSalary())
                 .set(EmployeeFields.BRANCH_ID.toField(), employee.getBranchId())
+                .set(EmployeeFields.IS_ACTIVE.toField(), employee.isActive())
                 .where(UserFields.ID.toField().eq(employee.getId()))
                 .returning()
                 .fetchOne();

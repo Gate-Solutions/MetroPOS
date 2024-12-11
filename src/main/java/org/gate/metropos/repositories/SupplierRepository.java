@@ -42,13 +42,15 @@ public class SupplierRepository {
                 .set(SupplierFields.PHONE.toField(), supplier.getPhone())
                 .set(SupplierFields.NTN_NUMBER.toField(), supplier.getNtnNumber())
                 .set(SupplierFields.IS_ACTIVE.toField(), true)
+
                 .returning(
                         SupplierFields.ID.toField(),
                         SupplierFields.NAME.toField(),
                         SupplierFields.EMAIL.toField(),
                         SupplierFields.PHONE.toField(),
                         SupplierFields.NTN_NUMBER.toField(),
-                        SupplierFields.IS_ACTIVE.toField()
+                        SupplierFields.IS_ACTIVE.toField(),
+                        SupplierFields.COMPANY_NAME.toField()
                 )
                 .fetchOne();
 
@@ -71,6 +73,7 @@ public class SupplierRepository {
                         SupplierFields.EMAIL.toField(),
                         SupplierFields.PHONE.toField(),
                         SupplierFields.NTN_NUMBER.toField(),
+                        SupplierFields.COMPANY_NAME.toField(),
                         SupplierFields.IS_ACTIVE.toField())
                 .fetchOne();
 
@@ -104,6 +107,7 @@ public class SupplierRepository {
 
                 .ntnNumber(record.get(SupplierFields.NTN_NUMBER.toField(), String.class))
                 .isActive(record.get(SupplierFields.IS_ACTIVE.toField(), Boolean.class))
+                .companyName(record.get(SupplierFields.COMPANY_NAME.toField(), String.class))
 
 
                 .build();

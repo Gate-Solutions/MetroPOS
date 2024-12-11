@@ -2,9 +2,15 @@ package org.gate.metropos.Controllers.SuperAdminControllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+
 import java.io.IOException;
+import java.util.Optional;
 
 public class DashBoardController {
     @FXML private Button dashboardBtn;
@@ -43,6 +49,33 @@ public class DashBoardController {
     }
 
     private void handleLogout() {
-        System.out.println("Logout clicked");
+        Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmDialog.setTitle("Confirm Logout");
+        confirmDialog.setHeaderText(null);
+        confirmDialog.setContentText("Are you sure you want to logout?");
+
+        Optional<ButtonType> result = confirmDialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos/login.fxml"));
+                Scene loginScene = new Scene(loader.load());
+
+                Stage currentStage = (Stage) logoutBtn.getScene().getWindow();
+
+                currentStage.setScene(loginScene);
+                currentStage.setTitle("Login");
+                currentStage.centerOnScreen();
+
+
+
+            } catch (IOException e) {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setTitle("Error");
+                errorAlert.setHeaderText(null);
+                errorAlert.setContentText("Failed to load login screen");
+                errorAlert.showAndWait();
+            }
+        }
     }
 }
