@@ -16,6 +16,7 @@ module org.example.metropos {
     opens org.gate.metropos.Controllers.BranchManagerControllers to javafx.fxml;
 
     opens org.gate.metropos.Controllers.DataEntryOperator to javafx.fxml;
+    opens org.gate.metropos.Controllers.CashierControllers to javafx.fxml;
     opens org.gate.metropos.models to org.jooq,javafx.base;
     opens org.gate.metropos.models.PurchaseInvoice to javafx.base;
     opens org.gate.metropos.enums to org.jooq;
@@ -29,6 +30,7 @@ module org.example.metropos {
     exports org.gate.metropos.Controllers.EmployeeControllers to javafx.fxml;
     exports org.gate.metropos.Controllers.BranchManagerControllers to javafx.fxml;
     exports org.gate.metropos.Controllers.DataEntryOperator to javafx.fxml;
+    exports org.gate.metropos.Controllers.CashierControllers to javafx.fxml;
 
     exports org.gate.metropos;
 }
