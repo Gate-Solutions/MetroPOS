@@ -51,7 +51,8 @@ public class LoginController {
     }
 
     private void handleLogin() {
-        showDataEntryDashboard();
+
+
         if (!validateInputs()) {
             return;
         }
@@ -196,7 +197,24 @@ public class LoginController {
     }
 
     private void showCashierScreen() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos/CashierScreens/cashierDashboard.fxml"));
+            Parent dashboardRoot = loader.load();
 
+            // Get the current stage from loginButton
+            Stage currentStage = (Stage) loginButton.getScene().getWindow();
+            currentStage.setTitle("Metro POS | Cashier Dashboard");
+
+            // Create new scene with dashboard
+            Scene dashboardScene = new Scene(dashboardRoot);
+
+            // Set the new scene on current stage
+            currentStage.setScene(dashboardScene);
+            currentStage.show();
+        } catch (IOException e) {
+            AlertUtils.showError("Navigation Error", "An error occurred while loading the Cashier: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
     private void showDataEntryDashboard() {
         try {
