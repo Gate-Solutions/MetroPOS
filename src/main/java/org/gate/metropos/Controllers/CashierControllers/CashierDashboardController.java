@@ -3,9 +3,13 @@ package org.gate.metropos.Controllers.CashierControllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+import org.gate.metropos.services.EmployeeService;
+import org.gate.metropos.utils.AlertUtils;
 
 import java.io.IOException;
 
@@ -46,6 +50,7 @@ public class CashierDashboardController {
 
     private void showDashboard() {
         loadView("/CashierScreens/dashboardContent.fxml");
+        updateActiveButton(dashboardBtn);
     }
 
     private void showProducts() {
@@ -70,7 +75,17 @@ public class CashierDashboardController {
     }
 
     private void handleLogout() {
-        // TODO: Implement logout
+        EmployeeService em = new EmployeeService();
+        em.logout();
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos/login.fxml"));
+            Stage stage = (Stage) logoutBtn.getScene().getWindow();
+            stage.setScene(new Scene(loader.load()));
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            AlertUtils.showError("Error loading login screen");
+        }
     }
 
     private void showError(String message) {
