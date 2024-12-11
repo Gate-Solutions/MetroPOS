@@ -5,6 +5,7 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.gate.metropos.Controllers.DataEntryOperator.DashboardController"
       spacing="20">
 
     <HBox spacing="20" styleClass="dashboard-cards">
