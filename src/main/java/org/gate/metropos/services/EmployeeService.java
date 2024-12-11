@@ -12,6 +12,7 @@ import org.gate.metropos.utils.ServiceResponse;
 import java.math.BigDecimal;
 import java.util.List;
 
+
 @AllArgsConstructor
 public class EmployeeService {
     private EmployeeRepository employeeRepository;
@@ -71,8 +72,12 @@ public class EmployeeService {
         return createEmployee(newEmployee);
     }
 
+
+
     public ServiceResponse<Employee> updateEmployee(Employee employee) {
+        System.out.println("THIS IS SENT ENMPLOYEE : "+employee.getUsername());
         Employee existingEmployee = employeeRepository.getEmployee(employee.getId());
+        System.out.println("THIS IS EXISTING ENMPLOYEE : "+existingEmployee.getUsername());
         if (existingEmployee == null) {
             return new ServiceResponse<>(false, 404, "Employee not found", null);
         }
@@ -156,6 +161,8 @@ public class EmployeeService {
         }
 
         if(!passwordEncoder.matches(password, employee.getPassword())) {
+            System.out.println("Req pass: " + password);
+            System.out.println("Act pass: " + employee.getPassword());
             return new ServiceResponse<>(false, 401, "Invalid credentials", null);
         }
 

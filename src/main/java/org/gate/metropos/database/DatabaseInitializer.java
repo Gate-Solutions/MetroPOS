@@ -156,6 +156,7 @@ public class DatabaseInitializer {
                 .column(SupplierFields.IS_ACTIVE.getColumnName(), BOOLEAN.defaultValue(true))
                 .column(SupplierFields.CREATED_AT.getColumnName(), TIMESTAMPWITHTIMEZONE.defaultValue(currentOffsetDateTime()))
                 .column(SupplierFields.UPDATED_AT.getColumnName(), TIMESTAMPWITHTIMEZONE.defaultValue(currentOffsetDateTime()))
+                .column(SupplierFields.COMPANY_NAME.getColumnName(), VARCHAR(255).notNull())
                 .constraints(
                         primaryKey(SupplierFields.ID.getColumnName()),
                         unique(SupplierFields.NTN_NUMBER.getColumnName()),
