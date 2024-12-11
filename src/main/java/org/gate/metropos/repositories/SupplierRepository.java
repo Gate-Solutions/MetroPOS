@@ -36,11 +36,12 @@ public class SupplierRepository {
     }
 
     public Supplier createSupplier(Supplier supplier) {
-        Record record = dsl.insertInto(SupplierFields.SupplierTable.toTableField())
+        Record record = dsl.insertInto(SupplierFields.toTableField())
                 .set(SupplierFields.NAME.toField(), supplier.getName())
                 .set(SupplierFields.EMAIL.toField(), supplier.getEmail())
                 .set(SupplierFields.PHONE.toField(), supplier.getPhone())
                 .set(SupplierFields.NTN_NUMBER.toField(), supplier.getNtnNumber())
+                .set(SupplierFields.COMPANY_NAME.toField(), supplier.getCompanyName())
                 .set(SupplierFields.IS_ACTIVE.toField(), true)
 
                 .returning(
@@ -59,14 +60,14 @@ public class SupplierRepository {
 
 
     public Supplier updateSupplier(Supplier supplier) {
-        Record record = dsl.update(SupplierFields.SupplierTable.toTableField())
+        Record record = dsl.update(SupplierFields.toTableField())
                 .set(SupplierFields.NAME.toField(), supplier.getName())
 
                 .set(SupplierFields.EMAIL.toField(), supplier.getEmail())
                 .set(SupplierFields.PHONE.toField(), supplier.getPhone())
-
+                .set(SupplierFields.COMPANY_NAME.toField(), supplier.getCompanyName())
                 .set(SupplierFields.NTN_NUMBER.toField(), supplier.getNtnNumber())
-
+                .set(SupplierFields.IS_ACTIVE.toField(), supplier.isActive())
                 .where(SupplierFields.ID.toField().eq(supplier.getId()))
                 .returning(SupplierFields.ID.toField(),
                         SupplierFields.NAME.toField(),
@@ -82,14 +83,14 @@ public class SupplierRepository {
 
     public List<Supplier> getAllSuppliers() {
         Result<Record> records = dsl.select()
-                .from(SupplierFields.SupplierTable.toTableField())
+                .from(SupplierFields.toTableField())
                 .fetch();
 
         return records.map(this::mapToSupplier);
     }
 
     public void setSupplierStatus(Long id, boolean isActive) {
-        dsl.update(SupplierFields.SupplierTable.toTableField())
+        dsl.update(SupplierFields.toTableField())
                 .set(SupplierFields.IS_ACTIVE.toField(), isActive)
                 .where(SupplierFields.ID.toField().eq(id))
                 .execute();
