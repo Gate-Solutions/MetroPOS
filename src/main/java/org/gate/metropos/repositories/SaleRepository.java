@@ -15,6 +15,7 @@ import org.jooq.Result;
 import org.jooq.impl.DSL;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -133,7 +134,7 @@ public class SaleRepository {
                 .invoiceNumber(record.get(SaleFields.INVOICE_NUMBER.toField(), String.class))
                 .branchId(branchId)
                 .createdBy(createdBy)
-                .invoiceDate(record.get(SaleFields.INVOICE_DATE.toField(), OffsetDateTime.class).toLocalDate())
+                .invoiceDate(record.get(SaleFields.INVOICE_DATE.toField(), Date.class).toLocalDate())
                 .totalAmount(record.get(SaleFields.TOTAL_AMOUNT.toField(), BigDecimal.class))
                 .discount(record.get(SaleFields.DISCOUNT.toField(), BigDecimal.class))
                 .netAmount(record.get(SaleFields.NET_AMOUNT.toField(), BigDecimal.class))
@@ -168,7 +169,7 @@ public class SaleRepository {
                 .fetch();
         return records.map(record -> {
             Sale sale = mapToSale(record);
-//            sale.setItems(getSaleItems(sale.getId()));
+            sale.setItems(getSaleItems(sale.getId()));
             return sale;
         });
     }
