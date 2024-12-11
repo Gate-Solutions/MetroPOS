@@ -5,6 +5,7 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.gate.metropos.Controllers.CashierControllers.DashboardController"
       spacing="20">
 
     <HBox spacing="20" styleClass="dashboard-cards">
@@ -15,9 +16,9 @@
         </VBox>
 
         <VBox styleClass="card">
-            <FontAwesomeIconView glyphName="USERS" size="30"/>
-            <Text fx:id="supplierCount" text="0"/>
-            <Text text="Today's Profit"/>
+            <FontAwesomeIconView glyphName="MONEY" size="30"/>
+            <Text fx:id="saleAmount" text="0"/>
+            <Text text="Sales Amount"/>
         </VBox>
 
         <VBox styleClass="card">
