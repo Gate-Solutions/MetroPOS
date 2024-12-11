@@ -29,7 +29,7 @@
             <graphic>
                 <FontAwesomeIconView glyphName="BUILDING" size="20" styleClass="nav-icon"/>
             </graphic>
-            <text>Manage Cashiers</text>
+            <text>Manage Employees</text>
         </Button>
         <Button styleClass="nav-button" fx:id="usersBtn">
             <graphic>
