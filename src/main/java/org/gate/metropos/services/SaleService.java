@@ -59,9 +59,12 @@ public class SaleService {
         if (sale.getInvoiceDate() == null) {
             sale.setInvoiceDate(LocalDate.now());
         }
-
-        Sale newSale = saleRepository.createSale(sale);
-        return new ServiceResponse<>(true, 200, "Sale created successfully", newSale);
+        try {
+            Sale newSale = saleRepository.createSale(sale);
+            return new ServiceResponse<>(true, 200, "Sale created successfully", newSale);
+        } catch (Exception e) {
+            return new ServiceResponse<>(false, 400, e.getMessage(), null);
+        }
     }
 
 
