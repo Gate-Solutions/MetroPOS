@@ -23,7 +23,7 @@ public class ProductRepository {
 
     public Product findById(Long id) {
         Record record = dsl.select()
-                .from(ProductFields.ProductTable.toTableField())
+                .from(ProductFields.toTableField())
                 .where(ProductFields.ID.toField().eq(id))
                 .fetchOne();
         return mapToProduct(record);
@@ -31,20 +31,45 @@ public class ProductRepository {
 
     public Product checkExistence(String code) {
         Record record = dsl.select()
-                .from(ProductFields.ProductTable.toTableField())
+                .from(ProductFields.toTableField())
                 .where(ProductFields.CODE.toField().eq(code))
                 .fetchOne();
         return mapToProduct(record);
     }
+
     public Product createProduct(Product product) {
-        Record record = dsl.insertInto(ProductFields.ProductTable.toTableField())
+        Record record = dsl.insertInto(ProductFields.toTableField())
                 .set(ProductFields.NAME.toField(), product.getName())
                 .set(ProductFields.CODE.toField(), product.getCode())
                 .set(ProductFields.CATEGORY_ID.toField(), product.getCategory().getId())
                 .set(ProductFields.ORIGINAL_PRICE.toField(), product.getOriginalPrice())
                 .set(ProductFields.SALE_PRICE.toField(), product.getSalePrice())
                 .set(ProductFields.PRICE_OF_CARTON.toField(), product.getPriceOfCarton())
-                .set(ProductFields.IS_ACTIVE.toField(), true)
+                .set(ProductFields.IS_ACTIVE.toField(), product.isActive())
+                .returning(
+                        ProductFields.ID.toField(),
+                        ProductFields.NAME.toField(),
+                        ProductFields.CODE.toField(),
+                        ProductFields.CATEGORY_ID.toField(),
+                        ProductFields.ORIGINAL_PRICE.toField(),
+                        ProductFields.SALE_PRICE.toField(),
+                        ProductFields.PRICE_OF_CARTON.toField(),
+                        ProductFields.IS_ACTIVE.toField()
+                )
+                .fetchOne();
+
+        return mapToProduct(record);
+    }
+
+    public Product updateProduct(Product product) {
+        Record record = dsl.update(ProductFields.toTableField())
+                .set(ProductFields.NAME.toField(), product.getName())
+                .set(ProductFields.CATEGORY_ID.toField(), product.getCategory().getId())
+                .set(ProductFields.ORIGINAL_PRICE.toField(), product.getOriginalPrice())
+                .set(ProductFields.SALE_PRICE.toField(), product.getSalePrice())
+                .set(ProductFields.PRICE_OF_CARTON.toField(), product.getPriceOfCarton())
+                .set(ProductFields.IS_ACTIVE.toField(), product.isActive())
+                .where(ProductFields.ID.toField().eq(product.getId()))
                 .returning(
                         ProductFields.ID.toField(),
                         ProductFields.NAME.toField(),
@@ -62,7 +87,7 @@ public class ProductRepository {
 
     public List<Product> getAllProducts() {
         Result<Record> records = dsl.select()
-                .from(ProductFields.ProductTable.toTableField())
+                .from(ProductFields.toTableField())
                 .fetch();
         return records.map(this::mapToProduct);
     }

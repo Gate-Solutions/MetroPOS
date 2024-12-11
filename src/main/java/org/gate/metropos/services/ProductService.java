@@ -37,8 +37,16 @@ public class ProductService {
         return new ServiceResponse<>(true, 200, "Product created successfully", newProduct);
     }
 
+    public ServiceResponse<Product> updateProduct(Product product) {
+        try {
+            validateProductData(product);
+        } catch (IllegalArgumentException e) {
+            return new ServiceResponse<>(false, 400, e.getMessage(), null);
+        }
+        Product updatedProduct = productRepository.updateProduct(product);
+        return new ServiceResponse<>(true, 200, "Product updated successfully", updatedProduct);
+    }
 
-    //data entry operator will use this to add in the inventory
     public ServiceResponse<BranchProduct> addProductToBranch(Long branchId, Long productId, Integer quantity) {
 
         if (quantity <= 0) {
