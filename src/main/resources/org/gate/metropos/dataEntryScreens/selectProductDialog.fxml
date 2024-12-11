@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.gate.metropos.Controllers.DataEntryOperator.SelectProductDialogController"
+            stylesheets="@../styles/global.css,@../styles/common.css"
+            prefWidth="800" prefHeight="600">
+
+    <VBox spacing="20" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+
+        <Label text="Select Product" styleClass="page-title"/>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <TextField fx:id="searchField" promptText="Search products..."
+                       styleClass="search-field" HBox.hgrow="ALWAYS"/>
+            <ComboBox fx:id="categoryFilter" promptText="Filter by category"/>
+        </HBox>
+
+        <TableView fx:id="productsTable" VBox.vgrow="ALWAYS"/>
+    </VBox>
+</AnchorPane>
