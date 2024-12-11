@@ -29,19 +29,25 @@ public class DataEntryDashboardController {
         showDashboard();
     }
 
-    private void showDashboard() {
+    private void loadView(String fxml) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos/dataEntryScreens/dashboardContent.fxml"));
-            Parent dashboardContent = loader.load();
-
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos" + fxml));
+            if (loader.getLocation() == null) {
+                System.err.println("Could not find FXML file: " + fxml);
+                return;
+            }
             contentArea.getChildren().clear();
-            contentArea.getChildren().add(dashboardContent);
-
-            updateActiveButton(dashboardBtn);
+            contentArea.getChildren().add(loader.load());
         } catch (IOException e) {
             e.printStackTrace();
             showError("Error loading dashboard");
+            System.err.println("Error loading " + fxml + ": " + e.getMessage());
         }
+    }
+
+
+    private void showDashboard() {
+        loadView("/dataEntryScreens/dashboardContent.fxml");
     }
 
     private void showProducts() {
@@ -52,7 +58,7 @@ public class DataEntryDashboardController {
 
     private void showSuppliers() {
         contentArea.getChildren().clear();
-        // TODO: Load suppliers view
+        loadView("/BranchManagerScreens/manage-suppliers.fxml");
         updateActiveButton(suppliersBtn);
     }
 
