@@ -43,6 +43,7 @@ public class SupplierRepository {
                 .set(SupplierFields.NTN_NUMBER.toField(), supplier.getNtnNumber())
                 .set(SupplierFields.COMPANY_NAME.toField(), supplier.getCompanyName())
                 .set(SupplierFields.IS_ACTIVE.toField(), true)
+                .set(SupplierFields.COMPANY_NAME.toField(), supplier.getCompanyName())
 
                 .returning(
                         SupplierFields.ID.toField(),
