@@ -93,3 +93,6 @@
 }
 
 
+.clickable {
+    -fx-cursor: hand;
+}
