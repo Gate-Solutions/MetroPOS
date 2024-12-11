@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.gate.metropos.Controllers.CashierControllers.ViewProductsController"
+            stylesheets="@../styles/global.css, @../styles/common.css">
+
+    <VBox spacing="20" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <VBox>
+                <Label text="Products" styleClass="page-title"/>
+                <Label text="View Products" styleClass="subtitle-label"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+        </HBox>
+
+        <!-- Filters Section -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <TextField fx:id="searchField" promptText="Search products..."
+                       styleClass="search-field" HBox.hgrow="ALWAYS"/>
+            <ComboBox fx:id="categoryFilter" promptText="Category" styleClass="filter-combo"/>
+            <ComboBox fx:id="statusFilter" styleClass="filter-combo"/>
+        </HBox>
+
+        <!-- Table Section -->
+        <TableView fx:id="productsTable" VBox.vgrow="ALWAYS"/>
+    </VBox>
+</AnchorPane>
