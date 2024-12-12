@@ -4,9 +4,10 @@ module org.example.metropos {
     requires org.jooq;
     requires com.zaxxer.hikari;
     requires static lombok;
-    requires com.fasterxml.jackson.databind;
     requires bcrypt;
     requires io.github.cdimascio.dotenv.java;
+    requires com.fasterxml.jackson.datatype.jsr310;
+    requires com.fasterxml.jackson.databind;
 
 
     opens org.gate.metropos to javafx.fxml;

@@ -232,6 +232,7 @@ public class AddPurchaseInvoiceController {
         PurchaseInvoice invoice = new PurchaseInvoice();
         if (isUpdateMode) {
             invoice.setId(invoiceToUpdate.getId());
+            System.out.println(invoice.getId());
         }
         invoice.setSupplierId(supplierComboBox.getValue().getId());
         invoice.setInvoiceDate(invoiceDatePicker.getValue());
@@ -245,6 +246,7 @@ public class AddPurchaseInvoiceController {
 
         ServiceResponse<PurchaseInvoice> response;
         if (isUpdateMode) {
+
             response = invoiceService.updateInvoice(invoice);
         } else {
             response = invoiceService.createInvoice(invoice);
@@ -253,6 +255,7 @@ public class AddPurchaseInvoiceController {
             AlertUtils.showSuccess("Invoice created successfully");
             closeWindow();
         } else {
+            System.out.println(response);
             AlertUtils.showError("Failed to create invoice", response.getMessage());
         }
     }

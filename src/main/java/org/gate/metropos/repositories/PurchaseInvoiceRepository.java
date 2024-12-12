@@ -1,5 +1,8 @@
 package org.gate.metropos.repositories;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AllArgsConstructor;
 import org.gate.metropos.config.DatabaseConfig;
 import org.gate.metropos.enums.BranchProductFields;
@@ -8,6 +11,7 @@ import org.gate.metropos.enums.PurchaseInvoice.PurchaseInvoiceItemFields;
 import org.gate.metropos.enums.UserFields;
 import org.gate.metropos.models.PurchaseInvoice.PurchaseInvoice;
 import org.gate.metropos.models.PurchaseInvoice.PurchaseInvoiceItem;
+import org.gate.metropos.services.SyncService;
 import org.jooq.Record;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -17,7 +21,9 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 public class PurchaseInvoiceRepository {
@@ -27,6 +33,10 @@ public class PurchaseInvoiceRepository {
     private final EmployeeRepository employeeRepository;
     private final ProductRepository productRepository;
     private final BranchProductRepository branchProductRepository;
+    private final SyncService syncService;
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
     public PurchaseInvoiceRepository() {
         this.dsl = DatabaseConfig.getLocalDSL();
@@ -35,6 +45,7 @@ public class PurchaseInvoiceRepository {
         this.employeeRepository = new EmployeeRepository();
         this.productRepository = new ProductRepository();
         this.branchProductRepository = new BranchProductRepository();
+        syncService = new SyncService();
     }
 
     public PurchaseInvoice findById(Long id) {
@@ -88,6 +99,32 @@ public class PurchaseInvoiceRepository {
 
             Long invoiceId = record.get(PurchaseInvoiceFields.ID.toField(), Long.class);
 
+            try {
+                Map<String, Object> fieldValues = new HashMap<>();
+                fieldValues.put("invoice_number", invoice.getInvoiceNumber());
+                fieldValues.put("supplier_id", invoice.getSupplierId());
+                fieldValues.put("branch_id", invoice.getBranchId());
+                fieldValues.put("created_by", invoice.getCreatedBy());
+                fieldValues.put("invoice_date", invoice.getInvoiceDate());
+                fieldValues.put("total_amount", invoice.getTotalAmount());
+                fieldValues.put("notes", invoice.getNotes());
+
+                syncService.trackChange(
+                        ctx,
+                        "purchase_invoices",
+                        invoiceId.intValue(),
+                        "insert",
+                        objectMapper.writeValueAsString(fieldValues)
+                );
+
+                // Track invoice items
+                for (PurchaseInvoiceItem item : invoice.getItems()) {
+                    insertInvoiceItem(ctx, invoiceId, item);
+                }
+            } catch (JsonProcessingException e) {
+                System.out.println(e);
+            }
+
             for (PurchaseInvoiceItem item : invoice.getItems()) {
                 insertInvoiceItem(ctx, invoiceId, item);
                 updateBranchProductQuantity(ctx, invoice.getBranchId(), item.getProductId(), item.getQuantity());
@@ -98,14 +135,36 @@ public class PurchaseInvoiceRepository {
     }
 
     private void insertInvoiceItem(DSLContext ctx, Long invoiceId, PurchaseInvoiceItem item) {
-        ctx.insertInto(PurchaseInvoiceItemFields.toTableField())
+        Record record = ctx.insertInto(PurchaseInvoiceItemFields.toTableField())
                 .set(PurchaseInvoiceItemFields.INVOICE_ID.toField(), invoiceId)
                 .set(PurchaseInvoiceItemFields.PRODUCT_ID.toField(), item.getProductId())
                 .set(PurchaseInvoiceItemFields.QUANTITY.toField(), item.getQuantity())
                 .set(PurchaseInvoiceItemFields.UNIT_PRICE.toField(), item.getUnitPrice())
                 .set(PurchaseInvoiceItemFields.CARTON_PRICE.toField(), item.getCartonPrice())
                 .set(PurchaseInvoiceItemFields.TOTAL_PRICE.toField(), item.getTotalPrice())
-                .execute();
+                .returning(PurchaseInvoiceItemFields.ID.toField())
+                .fetchOne();
+
+        if (record != null) {
+            try {
+                Map<String, Object> fieldValues = new HashMap<>();
+                fieldValues.put("invoice_id", invoiceId);
+                fieldValues.put("product_id", item.getProductId());
+                fieldValues.put("quantity", item.getQuantity());
+                fieldValues.put("unit_price", item.getUnitPrice());
+                fieldValues.put("carton_price", item.getCartonPrice());
+                fieldValues.put("total_price", item.getTotalPrice());
+
+                syncService.trackChange(
+                        "purchase_invoice_items",
+                        record.get(PurchaseInvoiceItemFields.ID.toField(), Integer.class),
+                        "insert",
+                        objectMapper.writeValueAsString(fieldValues)
+                );
+            } catch (JsonProcessingException e) {
+                System.out.println(e);
+            }
+        }
     }
 
     private void updateBranchProductQuantity(DSLContext ctx, Long branchId, Long productId, Integer quantityChange) {
@@ -196,6 +255,20 @@ public class PurchaseInvoiceRepository {
                 this.updateBranchProductQuantity(ctx, invoice.getBranchId(),
                         item.getProductId(), -item.getQuantity());
             }
+            List<PurchaseInvoiceItem> items = getInvoiceItems(invoiceId);
+            for (PurchaseInvoiceItem item : items) {
+                try {
+                    syncService.trackChange(
+                            ctx,
+                            "purchase_invoice_items",
+                            item.getId().intValue(),
+                            "delete",
+                            objectMapper.writeValueAsString(new HashMap<>())
+                    );
+                } catch (JsonProcessingException e) {
+                    System.out.println(e);
+                }
+            }
 
             ctx.deleteFrom(PurchaseInvoiceItemFields.toTableField())
                     .where(PurchaseInvoiceItemFields.INVOICE_ID.toField().eq(invoiceId))
@@ -204,6 +277,18 @@ public class PurchaseInvoiceRepository {
             int deleted = ctx.deleteFrom(PurchaseInvoiceFields.toTableField())
                     .where(PurchaseInvoiceFields.ID.toField().eq(invoiceId))
                     .execute();
+
+            try {
+                syncService.trackChange(
+                        ctx,
+                        "purchase_invoices",
+                        invoiceId.intValue(),
+                        "delete",
+                        objectMapper.writeValueAsString(new HashMap<>())
+                );
+            } catch (JsonProcessingException e) {
+                System.out.println(e);
+            }
 
             return deleted > 0;
         });
@@ -216,7 +301,6 @@ public class PurchaseInvoiceRepository {
             List<PurchaseInvoiceItem> existingItems = getInvoiceItems(invoice.getId());
 
             Record record = ctx.update(PurchaseInvoiceFields.toTableField())
-                    .set(PurchaseInvoiceFields.INVOICE_NUMBER.toField(), invoice.getInvoiceNumber())
                     .set(PurchaseInvoiceFields.SUPPLIER_ID.toField(), invoice.getSupplierId())
                     .set(PurchaseInvoiceFields.TOTAL_AMOUNT.toField(), invoice.getTotalAmount())
                     .set(PurchaseInvoiceFields.NOTES.toField(), invoice.getNotes())
@@ -229,6 +313,37 @@ public class PurchaseInvoiceRepository {
                 throw new IllegalStateException("Invoice not found for update");
             }
 
+            try {
+                Map<String, Object> fieldValues = new HashMap<>();
+                fieldValues.put("supplier_id", invoice.getSupplierId());
+                fieldValues.put("total_amount", invoice.getTotalAmount());
+                fieldValues.put("notes", invoice.getNotes());
+
+                syncService.trackChange(
+                        ctx,
+                        "purchase_invoices",
+                        invoice.getId().intValue(),
+                        "update",
+                        objectMapper.writeValueAsString(fieldValues)
+                );
+            } catch (JsonProcessingException e) {
+                System.out.println(e);
+            }
+            List<PurchaseInvoiceItem> itemsToDelete = getInvoiceItems(invoice.getId());
+
+            for (PurchaseInvoiceItem item : itemsToDelete) {
+                try {
+                    syncService.trackChange(
+                            ctx,
+                            "purchase_invoice_items",
+                            item.getId().intValue(),
+                            "delete",
+                            objectMapper.writeValueAsString(new HashMap<>())
+                    );
+                } catch (JsonProcessingException e) {
+                    System.out.println(e);
+                }
+            }
             ctx.deleteFrom(PurchaseInvoiceItemFields.toTableField())
                     .where(PurchaseInvoiceItemFields.INVOICE_ID.toField().eq(invoice.getId()))
                     .execute();

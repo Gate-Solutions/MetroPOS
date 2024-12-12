@@ -1,22 +1,29 @@
 package org.gate.metropos.repositories;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.gate.metropos.config.DatabaseConfig;
 import org.gate.metropos.enums.SupplierFields;
 import org.gate.metropos.models.Supplier;
+import org.gate.metropos.services.SyncService;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 public class SupplierRepository {
     private final DSLContext dsl;
+    private final SyncService syncService;
 
     public SupplierRepository() {
         dsl = DatabaseConfig.getLocalDSL();
+        syncService = new SyncService();
     }
 
     public Supplier findById(Long id) {
@@ -56,6 +63,28 @@ public class SupplierRepository {
                 )
                 .fetchOne();
 
+        if(record == null) return null;
+        int id = record.get(SupplierFields.ID.toField(), Integer.class);
+
+        try {
+            Map<String, Object> fieldValues = new HashMap<>();
+            fieldValues.put("name", supplier.getName());
+            fieldValues.put("email", supplier.getEmail());
+            fieldValues.put("phone", supplier.getPhone());
+            fieldValues.put("ntn_number", supplier.getNtnNumber());
+            fieldValues.put("company_name", supplier.getCompanyName());
+            fieldValues.put("is_active", true);
+
+            syncService.trackChange(
+                    "suppliers",
+                    id,
+                    "insert",
+                    new ObjectMapper().writeValueAsString(fieldValues)
+            );
+        } catch (JsonProcessingException e) {
+            System.out.println(e);
+        }
+
         return mapToSupplier(record);
     }
 
@@ -79,6 +108,25 @@ public class SupplierRepository {
                         SupplierFields.IS_ACTIVE.toField())
                 .fetchOne();
 
+        try {
+            Map<String, Object> fieldValues = new HashMap<>();
+            fieldValues.put("name", supplier.getName());
+            fieldValues.put("email", supplier.getEmail());
+            fieldValues.put("phone", supplier.getPhone());
+            fieldValues.put("company_name", supplier.getCompanyName());
+            fieldValues.put("ntn_number", supplier.getNtnNumber());
+            fieldValues.put("is_active", supplier.isActive());
+
+            syncService.trackChange(
+                    "suppliers",
+                    supplier.getId().intValue(),
+                    "update",
+                    new ObjectMapper().writeValueAsString(fieldValues)
+            );
+        } catch (JsonProcessingException e) {
+            System.out.println(e);
+        }
+
         return mapToSupplier(record);
     }
 
@@ -95,6 +143,20 @@ public class SupplierRepository {
                 .set(SupplierFields.IS_ACTIVE.toField(), isActive)
                 .where(SupplierFields.ID.toField().eq(id))
                 .execute();
+
+        try {
+            Map<String, Object> fieldValues = new HashMap<>();
+            fieldValues.put("is_active", isActive);
+
+            syncService.trackChange(
+                    "suppliers",
+                    id.intValue(),
+                    "update",
+                    new ObjectMapper().writeValueAsString(fieldValues)
+            );
+        } catch (JsonProcessingException e) {
+            System.out.println(e);
+        }
     }
 
 

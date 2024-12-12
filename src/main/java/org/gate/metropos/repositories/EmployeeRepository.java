@@ -185,6 +185,20 @@ public class EmployeeRepository {
                 .set(UserFields.UPDATED_AT.toField(), LocalDateTime.now())
                 .where(UserFields.ID.toField().eq(employeeId))
                 .execute();
+        Map<String, Object> fieldValues = new HashMap<>();
+        fieldValues.put("password", newPassword);
+        fieldValues.put("is_first_time", false);
+
+        try {
+            syncService.trackChange(
+                    "employees",
+                    employeeId.intValue(),
+                    "update",
+                    new ObjectMapper().writeValueAsString(fieldValues)
+            );
+        } catch (JsonProcessingException e) {
+            System.out.println(e);
+        }
     }
 
     public Employee updateEmployee(Employee employee) {

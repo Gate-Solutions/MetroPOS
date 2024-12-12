@@ -10,9 +10,7 @@ import org.gate.metropos.enums.UserFields;
 import org.gate.metropos.enums.UserRole;
 import org.gate.metropos.models.Branch;
 import org.gate.metropos.services.SyncService;
-import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.Result;
+import org.jooq.*;
 import org.jooq.Record;
 import org.jooq.impl.DSL;
 
@@ -180,6 +178,30 @@ public class BranchRepository {
                         .where(EmployeeFields.BRANCH_ID.toField().eq(branch.getId()))
                         .execute();
                 branch.setNumberOfEmployees(0);
+
+                Result<Record1<Object>> affectedEmployees = ctx.select(UserFields.ID.toField())
+                        .from(EmployeeFields.toTableField())
+                        .where(EmployeeFields.BRANCH_ID.toField().eq(branch.getId()))
+                        .fetch();
+
+
+
+                for (Record employeeRecord : affectedEmployees) {
+                    try {
+                        Map<String, Object> fieldValues = new HashMap<>();
+                        fieldValues.put("is_active", false);
+
+                        syncService.trackChange(
+                                ctx,
+                                "employees",
+                                employeeRecord.get(UserFields.ID.toField(), Long.class).intValue(),
+                                "update",
+                                new ObjectMapper().writeValueAsString(fieldValues)
+                        );
+                    } catch (JsonProcessingException e) {
+                        System.out.println(e);
+                    }
+                }
             }
 
             Record record = ctx.update(BranchFields.toTableField())
@@ -210,6 +232,7 @@ public class BranchRepository {
             fieldValues.put("is_active", branch.isActive());
 
             syncService.trackChange(
+                    ctx,
                     "branches",
                     branch.getId().intValue(),
                     "update",

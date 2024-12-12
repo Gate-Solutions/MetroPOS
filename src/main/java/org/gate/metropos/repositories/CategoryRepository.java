@@ -1,21 +1,28 @@
 package org.gate.metropos.repositories;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.gate.metropos.config.DatabaseConfig;
 import org.gate.metropos.enums.CategoryFields;
 import org.gate.metropos.models.Category;
+import org.gate.metropos.services.SyncService;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 public class CategoryRepository {
     private final DSLContext dsl;
+    private final SyncService syncService;
 
     public CategoryRepository() {
         dsl = DatabaseConfig.getLocalDSL();
+        syncService = new SyncService();
     }
 
     public Category createCategory(String categoryName) {
@@ -23,6 +30,23 @@ public class CategoryRepository {
                 .set(CategoryFields.NAME.toField(), categoryName)
                 .returning(CategoryFields.ID.toField(), CategoryFields.NAME.toField())
                 .fetchOne();
+
+        Integer catId = record.get(CategoryFields.ID.toField(), Integer.class);
+
+        try {
+            Map<String, Object> fieldValues = new HashMap<>();
+            fieldValues.put("name", categoryName);
+
+            syncService.trackChange(
+                    "categories",
+                    catId.intValue(),
+                    "insert",
+                    new ObjectMapper().writeValueAsString(fieldValues)
+            );
+        } catch (JsonProcessingException e) {
+            System.out.println(e);
+        }
+
         return mapToCategory(record);
     }
     public Category findByName(String name) {
@@ -64,6 +88,8 @@ public class CategoryRepository {
                 .where(CategoryFields.ID.toField().eq(category.getId()))
                 .returning()
                 .fetchOne();
+
+
         return mapToCategory(record);
     }
     public boolean deleteCategory(Long id) {
