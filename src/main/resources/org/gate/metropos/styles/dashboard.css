@@ -1,0 +1,82 @@
+.dashboard-container {
+    -fx-background-color: #f5f5f5;
+}
+
+.stat-card {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+}
+
+.stat-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666;
+}
+
+.stat-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.stat-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #7f8c8d;
+}
+
+
+
+.section-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.total-profit-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #27ae60;
+}
+
+.branch-selector {
+    -fx-min-width: 170px;
+
+
+}
+
+.branch-table {
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.stat-card {
+    -fx-padding: 20px;
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+    -fx-min-width: 100px;
+    -fx-pref-width: -1;
+    -fx-max-width: infinity;
+}
+
+.stats-container {
+    -fx-fill-width: true;
+    -fx-alignment: center;
+}
+.branch_name{
+    -fx-font-size: 24px;
+    -fx-text-fill: -primary;
+}
