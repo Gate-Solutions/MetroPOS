@@ -17,7 +17,7 @@ public class Main extends Application {
     public void init() {
         scheduler = new SyncScheduler();
 
-//        scheduler.startScheduler();
+        scheduler.startScheduler();
 
     }
 
@@ -39,7 +39,7 @@ public class Main extends Application {
 
     @Override
     public void stop() throws Exception {
-//        scheduler.shutdownScheduler();
+        scheduler.shutdownScheduler();
         DatabaseConfig.shutdown();
         super.stop();
     }

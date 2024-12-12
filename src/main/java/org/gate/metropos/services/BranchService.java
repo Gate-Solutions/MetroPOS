@@ -82,20 +82,6 @@ public class BranchService {
         return new ServiceResponse<>(true, 200, "Branch retrieved successfully", branch);
     }
 
-    public ServiceResponse<Void> setBranchStatus(Long id, boolean isActive) {
-        Branch branch = branchRepository.findById(id);
-        if (branch == null) {
-            return new ServiceResponse<>(false, 404, "Branch not found", null);
-        }
-
-        if (!isActive && branch.getNumberOfEmployees() > 0) {
-            return new ServiceResponse<>(false, 400, "Cannot deactivate branch with active employees", null);
-        }
-
-        branchRepository.setBranchStatus(id, isActive);
-        String status = isActive ? "activated" : "deactivated";
-        return new ServiceResponse<>(true, 200, "Branch " + status + " successfully", null);
-    }
 
     public ServiceResponse<Branch> createBranch(Branch branch) {
         if (branchRepository.findByBranchCode(branch.getBranchCode()) != null) {

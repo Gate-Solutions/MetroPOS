@@ -1,5 +1,7 @@
 package org.gate.metropos.repositories;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.gate.metropos.config.DatabaseConfig;
 import org.gate.metropos.enums.BranchFields;
@@ -7,6 +9,7 @@ import org.gate.metropos.enums.EmployeeFields;
 import org.gate.metropos.enums.UserFields;
 import org.gate.metropos.enums.UserRole;
 import org.gate.metropos.models.Branch;
+import org.gate.metropos.services.SyncService;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Result;
@@ -14,16 +17,19 @@ import org.jooq.Record;
 import org.jooq.impl.DSL;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @AllArgsConstructor
 public class BranchRepository {
     private final DSLContext dsl;
-
+    private final SyncService syncService;
 
     public BranchRepository() {
         dsl = DatabaseConfig.getLocalDSL();
+        syncService = new SyncService();
     }
 
 
@@ -62,33 +68,29 @@ public class BranchRepository {
 
         Long branchId = record.get(BranchFields.ID.toField(), Long.class);
 
+        Map<String, Object> fieldValues = new HashMap<>();
+        fieldValues.put("branch_code", branch.getBranchCode());
+        fieldValues.put("name", branch.getName());
+        fieldValues.put("city", branch.getCity());
+        fieldValues.put("address", branch.getAddress());
+        fieldValues.put("phone", branch.getPhone());
+
+        try {
+            syncService.trackChange(
+                    "branches",
+                    branchId.intValue(),
+                    "insert",
+                    new ObjectMapper().writeValueAsString(fieldValues)
+            );
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+
         return findById(branchId);
     }
 
-
-    public Branch createBranch(String branchCode, String name, String city, String address, String phone) {
-        Record record = dsl.insertInto(BranchFields.toTableField())
-                .set(BranchFields.BRANCH_CODE.toField(), branchCode)
-                .set(BranchFields.NAME.toField(), name)
-                .set(BranchFields.CITY.toField(), city)
-                .set(BranchFields.ADDRESS.toField(), address)
-                .set(BranchFields.PHONE.toField(), phone)
-                .set(BranchFields.IS_ACTIVE.toField(), true)
-                .set(BranchFields.NUMBER_OF_EMPLOYEES.toField(), 0)
-                .returning(
-                        BranchFields.ID.toField(),
-                        BranchFields.BRANCH_CODE.toField(),
-                        BranchFields.NAME.toField(),
-                        BranchFields.CITY.toField(),
-                        BranchFields.ADDRESS.toField(),
-                        BranchFields.PHONE.toField(),
-                        BranchFields.IS_ACTIVE.toField(),
-                        BranchFields.NUMBER_OF_EMPLOYEES.toField()
-                        )
-                .fetchOne();
-
-        return mapToBranch(record);
-    }
 
     public Branch incrementEmployeeCount(Long branchId) {
         Branch b = this.findById(branchId);
@@ -109,6 +111,22 @@ public class BranchRepository {
                         BranchFields.NUMBER_OF_EMPLOYEES.toField()
                 )
                 .fetchOne();
+
+        Map<String, Object> fieldValues = new HashMap<>();
+        fieldValues.put("number_of_employees", employeeCount);
+
+
+        try {
+            syncService.trackChange(
+                    "branches",
+                    branchId.intValue(),
+                    "update",
+                    new ObjectMapper().writeValueAsString(fieldValues)
+            );
+        } catch (JsonProcessingException e) {
+            System.out.println(e);
+        }
+
 
         return mapToBranch(record);
     }
@@ -133,6 +151,21 @@ public class BranchRepository {
                         BranchFields.NUMBER_OF_EMPLOYEES.toField()
                 )
                 .fetchOne();
+
+        Map<String, Object> fieldValues = new HashMap<>();
+        fieldValues.put("number_of_employees", employeeCount);
+
+
+        try {
+            syncService.trackChange(
+                    "branches",
+                    branchId.intValue(),
+                    "update",
+                    new ObjectMapper().writeValueAsString(fieldValues)
+            );
+        } catch (JsonProcessingException e) {
+            System.out.println(e);
+        }
 
         return mapToBranch(record);
     }
@@ -169,17 +202,22 @@ public class BranchRepository {
                     )
                     .fetchOne();
 
+            Map<String, Object> fieldValues = new HashMap<>();
+            fieldValues.put("name", branch.getName());
+            fieldValues.put("city", branch.getCity());
+            fieldValues.put("address", branch.getAddress());
+            fieldValues.put("phone", branch.getPhone());
+            fieldValues.put("is_active", branch.isActive());
+
+            syncService.trackChange(
+                    "branches",
+                    branch.getId().intValue(),
+                    "update",
+                    new ObjectMapper().writeValueAsString(fieldValues)
+            );
+
             return mapToBranch(record);
         });
-    }
-
-
-    public void setBranchStatus(Long branchId, boolean isActive) {
-        dsl.update(BranchFields.toTableField())
-                .set(BranchFields.IS_ACTIVE.toField(), isActive)
-                .set(BranchFields.UPDATED_AT.toField(), LocalDateTime.now())
-                .where(BranchFields.ID.toField().eq(branchId))
-                .execute();
     }
 
 
@@ -246,8 +284,6 @@ public class BranchRepository {
 
         return "Not Assigned";
     }
-
-
 
 
 

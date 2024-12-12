@@ -54,20 +54,6 @@ class BranchServiceTest {
         when(branchRepository.getAllBranches()).thenReturn(Arrays.asList(mockBranch));
     }
 
-    @Test
-    void createBranchSuccessful() {
-        when(branchRepository.findByBranchCode(any())).thenReturn(null);
-        when(branchRepository.createBranch(
-                mockBranchCode, mockName, mockCity, mockAddress, mockPhone))
-                .thenReturn(mockBranch);
-
-        ServiceResponse<Branch> response = branchService.createBranch(
-                mockBranchCode, mockName, mockCity, mockAddress, mockPhone);
-
-        assertTrue(response.isSuccess());
-        assertEquals(200, response.getCode());
-        assertNotNull(response.getData());
-    }
 
     @Test
     void createBranchWithExistingCode() {
@@ -143,25 +129,8 @@ class BranchServiceTest {
         assertEquals(1, response.getData().size());
     }
 
-    @Test
-    void setBranchStatusSuccessful() {
-        ServiceResponse<Void> response = branchService.setBranchStatus(1L, false);
 
-        assertTrue(response.isSuccess());
-        assertEquals(200, response.getCode());
-        verify(branchRepository).setBranchStatus(1L, false);
-    }
 
-    @Test
-    void setBranchStatusWithActiveEmployees() {
-        mockBranch.setNumberOfEmployees(5);
-
-        ServiceResponse<Void> response = branchService.setBranchStatus(1L, false);
-
-        assertFalse(response.isSuccess());
-        assertEquals(400, response.getCode());
-        assertEquals("Cannot deactivate branch with active employees", response.getMessage());
-    }
 
     @Test
     void validateBranchDataWithInvalidPhone() {
