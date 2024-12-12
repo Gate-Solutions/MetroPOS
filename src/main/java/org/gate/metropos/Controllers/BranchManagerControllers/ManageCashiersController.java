@@ -163,39 +163,53 @@ public class ManageCashiersController {
         filteredCashiers = new FilteredList<>(allCashiers, p -> true);
         searchField.textProperty().addListener((observable, oldValue, newValue) -> updateFilters());
         statusFilter.valueProperty().addListener((observable, oldValue, newValue) -> updateFilters());
+        roleFilter.valueProperty().addListener((observable, oldValue, newValue) -> updateFilters());
         cashiersTable.setItems(filteredCashiers);
         updateFilters();
     }
 
     private void updateFilters() {
         filteredCashiers.setPredicate(cashier -> {
-            boolean matchesSearch = true;
-            boolean matchesStatus = true;
-            boolean matchesRole = true;
+            if (cashier == null) return false;
 
-            if (searchField.getText() != null && !searchField.getText().isEmpty()) {
-                String searchText = searchField.getText().toLowerCase();
-                matchesSearch = cashier.getName().toLowerCase().contains(searchText) ||
-                        cashier.getUsername().toLowerCase().contains(searchText) ||
-                        cashier.getEmail().toLowerCase().contains(searchText) ||
-                        cashier.getEmployeeNo().toLowerCase().contains(searchText);
-            }
-
+            // Get current filter values
+            String searchText = searchField.getText();
             String statusValue = statusFilter.getValue();
-            if ("Active".equals(statusValue)) {
-                matchesStatus = cashier.isActive();
-            } else if ("Inactive".equals(statusValue)) {
-                matchesStatus = !cashier.isActive();
+            UserRole selectedRole = roleFilter.getValue();
+
+            // Search text matching
+            boolean matchesSearch = true;
+            if (searchText != null && !searchText.isEmpty()) {
+                searchText = searchText.toLowerCase();
+                matchesSearch = (cashier.getName() != null && cashier.getName().toLowerCase().contains(searchText)) ||
+                        (cashier.getUsername() != null && cashier.getUsername().toLowerCase().contains(searchText)) ||
+                        (cashier.getEmail() != null && cashier.getEmail().toLowerCase().contains(searchText)) ||
+                        (cashier.getEmployeeNo() != null && cashier.getEmployeeNo().toLowerCase().contains(searchText));
             }
 
-            UserRole selectedRole = roleFilter.getValue();
-            if (selectedRole != null) {
-                matchesRole = cashier.getRole().equals(selectedRole);
+            // Status matching - maintain the selected status across role changes
+            boolean matchesStatus = true;
+            if (statusValue != null) {
+                switch (statusValue) {
+                    case "Active":
+                        matchesStatus = cashier.isActive();
+                        break;
+                    case "Inactive":
+                        matchesStatus = !cashier.isActive();
+                        break;
+                    default: // "All"
+                        matchesStatus = true;
+                }
             }
+
+            // Role matching
+            boolean matchesRole = selectedRole == null ||
+                    (cashier.getRole() != null && cashier.getRole().equals(selectedRole));
 
             return matchesSearch && matchesStatus && matchesRole;
         });
     }
+
 
     private void confirmAndRemoveCashier(Employee cashier) {
         if (AlertUtils.showConfirmation("Are you sure you want to remove employee " + cashier.getName() + "?")) {
