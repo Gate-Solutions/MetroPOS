@@ -6,7 +6,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.gate.metropos.Controllers.BranchManagerControllers.ManageCashiersController"
+            fx:controller="org.gate.metropos.Controllers.CashierControllers.ViewProductsController"
             stylesheets="@../styles/global.css, @../styles/common.css">
 
     <VBox spacing="20" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
@@ -16,29 +16,23 @@
             <Insets top="20" right="20" bottom="20" left="20"/>
         </padding>
 
-        <!-- Header Section -->
         <HBox spacing="10" alignment="CENTER_LEFT">
             <VBox>
-                <Label text="Employees" styleClass="page-title"/>
-                <Label text="Manage branch employees" styleClass="subtitle-label"/>
+                <Label text="Products" styleClass="page-title"/>
+                <Label text="View Products" styleClass="subtitle-label"/>
             </VBox>
             <Region HBox.hgrow="ALWAYS"/>
-            <Button fx:id="addCashierBtn" text="Add Employee" styleClass="primary-button">
-                <graphic>
-                    <FontAwesomeIconView glyphName="PLUS" size="14" fill="WHITE"/>
-                </graphic>
-            </Button>
         </HBox>
 
         <!-- Filters Section -->
         <HBox spacing="10" alignment="CENTER_LEFT">
-            <TextField fx:id="searchField" promptText="Search cashiers..."
+            <TextField fx:id="searchField" promptText="Search products..."
                        styleClass="search-field" HBox.hgrow="ALWAYS"/>
+            <ComboBox fx:id="categoryFilter" promptText="Category" styleClass="filter-combo"/>
             <ComboBox fx:id="statusFilter" styleClass="filter-combo"/>
-            <ComboBox fx:id="roleFilter" styleClass="filter-combo"/>
         </HBox>
 
         <!-- Table Section -->
-        <TableView fx:id="cashiersTable" VBox.vgrow="ALWAYS" />
+        <TableView fx:id="productsTable" VBox.vgrow="ALWAYS"/>
     </VBox>
 </AnchorPane>

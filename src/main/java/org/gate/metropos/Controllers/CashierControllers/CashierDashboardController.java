@@ -1,4 +1,5 @@
-package org.gate.metropos.Controllers.DataEntryOperator;
+package org.gate.metropos.Controllers.CashierControllers;
+
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -6,18 +7,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
-import javafx.scene.Parent;
 import javafx.stage.Stage;
 import org.gate.metropos.services.EmployeeService;
 import org.gate.metropos.utils.AlertUtils;
 
 import java.io.IOException;
 
-public class DataEntryDashboardController {
+public class CashierDashboardController {
     @FXML private Button dashboardBtn;
     @FXML private Button productsBtn;
-    @FXML private Button suppliersBtn;
-    @FXML private Button purchaseInvoicesBtn;
+    @FXML private Button salesInvoicesBtn;
     @FXML private Button logoutBtn;
     @FXML private StackPane contentArea;
 
@@ -25,8 +24,7 @@ public class DataEntryDashboardController {
     private void initialize() {
         dashboardBtn.setOnAction(e -> showDashboard());
         productsBtn.setOnAction(e -> showProducts());
-        suppliersBtn.setOnAction(e -> showSuppliers());
-        purchaseInvoicesBtn.setOnAction(e -> showPurchaseInvoices());
+        salesInvoicesBtn.setOnAction(e -> showSalesInvoices());
         logoutBtn.setOnAction(e -> handleLogout());
 
         // Show dashboard by default
@@ -51,32 +49,27 @@ public class DataEntryDashboardController {
 
 
     private void showDashboard() {
-        loadView("/dataEntryScreens/dashboardContent.fxml");
+        loadView("/CashierScreens/dashboardContent.fxml");
+        updateActiveButton(dashboardBtn);
     }
 
     private void showProducts() {
         contentArea.getChildren().clear();
-        loadView("/dataEntryScreens/manage-products.fxml");
+        loadView("/CashierScreens/viewProducts.fxml");
         updateActiveButton(productsBtn);
     }
 
-    private void showSuppliers() {
-        contentArea.getChildren().clear();
-        loadView("/BranchManagerScreens/manage-suppliers.fxml");
-        updateActiveButton(suppliersBtn);
-    }
 
-    private void showPurchaseInvoices() {
+    private void showSalesInvoices() {
         contentArea.getChildren().clear();
-        loadView("/dataEntryScreens/managePurchaseInvoices.fxml");
-        updateActiveButton(purchaseInvoicesBtn);
+        loadView("/CashierScreens/manageSales.fxml");
+        updateActiveButton(salesInvoicesBtn);
     }
 
     private void updateActiveButton(Button activeButton) {
         dashboardBtn.getStyleClass().remove("active");
         productsBtn.getStyleClass().remove("active");
-        suppliersBtn.getStyleClass().remove("active");
-        purchaseInvoicesBtn.getStyleClass().remove("active");
+        salesInvoicesBtn.getStyleClass().remove("active");
 
         activeButton.getStyleClass().add("active");
     }

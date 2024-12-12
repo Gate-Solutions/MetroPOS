@@ -6,8 +6,8 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.gate.metropos.Controllers.BranchManagerControllers.ManageCashiersController"
-            stylesheets="@../styles/global.css, @../styles/common.css">
+            fx:controller="org.gate.metropos.Controllers.CashierControllers.ManageSalesController"
+            stylesheets="@../styles/global.css,@../styles/common.css">
 
     <VBox spacing="20" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
           AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
@@ -19,11 +19,11 @@
         <!-- Header Section -->
         <HBox spacing="10" alignment="CENTER_LEFT">
             <VBox>
-                <Label text="Employees" styleClass="page-title"/>
-                <Label text="Manage branch employees" styleClass="subtitle-label"/>
+                <Label text="Sales" styleClass="page-title"/>
+                <Label text="Manage sales invoices" styleClass="subtitle-label"/>
             </VBox>
             <Region HBox.hgrow="ALWAYS"/>
-            <Button fx:id="addCashierBtn" text="Add Employee" styleClass="primary-button">
+            <Button fx:id="newSaleBtn" text="New Sale" styleClass="primary-button">
                 <graphic>
                     <FontAwesomeIconView glyphName="PLUS" size="14" fill="WHITE"/>
                 </graphic>
@@ -32,13 +32,12 @@
 
         <!-- Filters Section -->
         <HBox spacing="10" alignment="CENTER_LEFT">
-            <TextField fx:id="searchField" promptText="Search cashiers..."
+            <TextField fx:id="searchField" promptText="Search sales..."
                        styleClass="search-field" HBox.hgrow="ALWAYS"/>
-            <ComboBox fx:id="statusFilter" styleClass="filter-combo"/>
-            <ComboBox fx:id="roleFilter" styleClass="filter-combo"/>
+            <DatePicker fx:id="dateFilter" promptText="Filter by date"/>
         </HBox>
 
         <!-- Table Section -->
-        <TableView fx:id="cashiersTable" VBox.vgrow="ALWAYS" />
+        <TableView fx:id="salesTable" VBox.vgrow="ALWAYS"/>
     </VBox>
 </AnchorPane>

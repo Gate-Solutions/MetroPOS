@@ -169,7 +169,7 @@ public class SaleRepository {
                 .fetch();
         return records.map(record -> {
             Sale sale = mapToSale(record);
-//            sale.setItems(getSaleItems(sale.getId()));
+            sale.setItems(getSaleItems(sale.getId()));
             return sale;
         });
     }
