@@ -9,7 +9,7 @@
     -fx-padding: 20px;
     -fx-background-radius: 10;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
-    -fx-min-width: 200px;
+    -fx-min-width: 100px;
 }
 
 .stat-label {
@@ -22,3 +22,4 @@
     -fx-font-weight: bold;
     -fx-text-fill: -primary;
 }
+

@@ -25,12 +25,7 @@
     -fx-text-fill: #7f8c8d;
 }
 
-.chart-container {
-    -fx-background-color: white;
-    -fx-padding: 15px;
-    -fx-background-radius: 8px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
-}
+
 
 .section-title {
     -fx-font-size: 18px;
@@ -45,7 +40,9 @@
 }
 
 .branch-selector {
-    -fx-min-width: 200px;
+    -fx-min-width: 170px;
+
+
 }
 
 .branch-table {
@@ -54,52 +51,32 @@
 }
 
 
-.chart {
-    -fx-padding: 10px;
+
+
+
+
+
+
+
+
+
+
+
+.stat-card {
+    -fx-padding: 20px;
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+    -fx-min-width: 100px;
+    -fx-pref-width: -1;
+    -fx-max-width: infinity;
 }
 
-.chart-plot-background {
-    -fx-background-color: transparent;
+.stats-container {
+    -fx-fill-width: true;
+    -fx-alignment: center;
 }
-
-.chart-vertical-grid-lines {
-    -fx-stroke: #f0f0f0;
-}
-
-.chart-horizontal-grid-lines {
-    -fx-stroke: #f0f0f0;
-}
-
-.axis {
-    -fx-tick-label-font-size: 12px;
-}
-
-.axis-label {
-    -fx-font-size: 14px;
-}
-
-.area-chart {
-    -fx-background-color: transparent;
-}
-
-.chart-plot-background {
-    -fx-background-color: transparent;
-}
-
-.chart-vertical-grid-lines {
-    -fx-stroke: #ecf0f1;
-    -fx-stroke-dash-array: 3 3;
-}
-
-.chart-horizontal-grid-lines {
-    -fx-stroke: #ecf0f1;
-    -fx-stroke-dash-array: 3 3;
-}
-
-.default-color0.chart-series-area-line {
-    -fx-stroke-width: 2px;
-}
-
-.default-color0.chart-series-area-fill {
-    -fx-fill: linear-gradient(to bottom, rgba(41,128,185,0.3), rgba(41,128,185,0.1));
+.branch_name{
+    -fx-font-size: 24px;
+    -fx-text-fill: -primary;
 }

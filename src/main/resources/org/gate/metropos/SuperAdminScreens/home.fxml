@@ -1,51 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.*?>
 <?import javafx.geometry.Insets?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.gate.metropos.Controllers.SuperAdminControllers.HomeController"
-      stylesheets="@../styles/SuperAdmin/home.css, @../styles/global.css"
-      spacing="20">
+      stylesheets="@../styles/dashboard.css, @../styles/global.css ,  @../styles/common.css "
+      spacing="20" styleClass="dashboard-container">
 
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
-    <Label text="Dashboard Overview" styleClass="page-title"/>
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Label text="Super Admin Dashboard" styleClass="page-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+<!--        <ComboBox fx:id="branchSelector" promptText="Select Branch" styleClass="branch-selector"/>-->
+    </HBox>
 
-    <GridPane hgap="20" vgap="20">
-        <VBox styleClass="stat-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
+    <!-- Statistics Cards -->
+    <HBox spacing="20" styleClass="stats-container">
+        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
             <Label text="Total Branches" styleClass="stat-label"/>
-            <Label text="12" styleClass="stat-value"/>
+            <Label fx:id="totalBranchesLabel" styleClass="stat-value"/>
+            <Label fx:id="activeBranchesLabel" styleClass="stat-subtitle"/>
         </VBox>
 
-        <VBox styleClass="stat-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
             <Label text="Total Users" styleClass="stat-label"/>
-            <Label text="45" styleClass="stat-value"/>
+            <Label fx:id="totalUsersLabel" styleClass="stat-value"/>
+            <Label fx:id="activeUsersLabel" styleClass="stat-subtitle"/>
         </VBox>
 
-        <VBox styleClass="stat-card" GridPane.columnIndex="2" GridPane.rowIndex="0">
-            <Label text="Active Sessions" styleClass="stat-label"/>
-            <Label text="8" styleClass="stat-value"/>
-        </VBox>
-
-
-
-        <VBox styleClass="stat-card" GridPane.columnIndex="3" GridPane.rowIndex="0">
+        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
             <Label text="Total Sales Today" styleClass="stat-label"/>
-            <Label text="10" styleClass="stat-value"/>
+            <Label fx:id="totalSalesTodayLabel" styleClass="stat-value"/>
+
         </VBox>
+    </HBox>
 
-    </GridPane>
+    <!-- Profit Analysis Section -->
+    <ComboBox fx:id="branchSelector" promptText="Select Branch" styleClass="branch-selector"/>
+    <VBox styleClass="chart-box">
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label text="Profit Analysis (Last 3 Months)" styleClass="section-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="totalProfitLabel" styleClass="total-profit-label"/>
+        </HBox>
 
-    <TableView VBox.vgrow="ALWAYS">
+        <AreaChart fx:id="profitChart" legendVisible="false">
+            <xAxis><CategoryAxis label="Month"/></xAxis>
+            <yAxis><NumberAxis label="Profit (₱)"/></yAxis>
+        </AreaChart>
+
+    </VBox>
+
+    <!-- Branch Performance Table -->
+    <TableView fx:id="branchTable" VBox.vgrow="ALWAYS" styleClass="branch-table">
         <columns>
-            <TableColumn text="Branch" prefWidth="150"/>
-            <TableColumn text="Manager" prefWidth="150"/>
-            <TableColumn text="Today's Sales" prefWidth="150"/>
-            <TableColumn text="Status" prefWidth="100"/>
+            <TableColumn fx:id="branchNameColumn" text="Branch" prefWidth="150"/>
+            <TableColumn fx:id="managerColumn" text="Manager" prefWidth="150"/>
+            <TableColumn fx:id="todaySalesColumn" text="Today's Sales" prefWidth="150"/>
+            <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
         </columns>
     </TableView>
 </VBox>

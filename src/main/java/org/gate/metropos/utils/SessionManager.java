@@ -47,6 +47,9 @@ public class SessionManager {
         currentSuperAdmin = null;
         currentUserRole = null;
     }
+    public static boolean isSuperAdmin() {
+        return currentUserRole == UserRole.SUPER_ADMIN;
+    }
 
     public static boolean hasActiveSession() {
         return currentEmployee != null || currentSuperAdmin != null;
