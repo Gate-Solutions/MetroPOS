@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.image.*?>
@@ -40,12 +39,16 @@
                               styleClass="input-field"/>
 
                     <TextField fx:id="usernameField"
-                               promptText="Username"
+                               promptText="Username or Email"
                                styleClass="input-field"/>
 
-                    <PasswordField fx:id="passwordField"
-                                   promptText="Password"
-                                   styleClass="input-field"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <PasswordField fx:id="passwordField"
+                                       promptText="Password"
+                                       styleClass="input-field"
+                                       HBox.hgrow="ALWAYS"/>
+
+                    </HBox>
 
                     <Button fx:id="loginButton"
                             text="Sign In"
