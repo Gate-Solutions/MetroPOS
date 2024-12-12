@@ -109,7 +109,10 @@ public class UpdateManagerController {
             employee.setBranchId(branchComboBox.getValue().getId());
             employee.setActive(activeCheckBox.isSelected());
 
-            employeeService.updateEmployee(employee);
+            ServiceResponse<Employee> resp = employeeService.updateEmployee(employee);
+            if(!resp.isSuccess()) {
+                throw new Exception(resp.getMessage());
+            }
             showAlert(Alert.AlertType.INFORMATION, "Success", "Manager updated successfully!");
             closeWindow();
         } catch (Exception e) {
