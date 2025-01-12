@@ -1,5 +1,7 @@
 package org.gate.metropos.repositories;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.gate.metropos.config.DatabaseConfig;
@@ -7,21 +9,26 @@ import org.gate.metropos.enums.EmployeeFields;
 import org.gate.metropos.enums.UserFields;
 import org.gate.metropos.enums.UserRole;
 import org.gate.metropos.models.Employee;
+import org.gate.metropos.services.SyncService;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @AllArgsConstructor
 public class EmployeeRepository {
     private DSLContext dsl;
+    private final SyncService syncService;
 
     public EmployeeRepository () {
         dsl = DatabaseConfig.getLocalDSL();
+        syncService = new SyncService();
     }
 
     public Employee findById(Long id) {
@@ -84,6 +91,29 @@ public class EmployeeRepository {
         if(record == null) return null;
         Long id = record.get(UserFields.ID.toField(), Long.class);
 
+        Map<String, Object> fieldValues = new HashMap<>();
+        fieldValues.put("username", employee.getUsername());
+        fieldValues.put("email", employee.getEmail());
+        fieldValues.put("password", employee.getPassword());
+        fieldValues.put("role", employee.getRole().toString());
+        fieldValues.put("name", employee.getName());
+        fieldValues.put("employee_no", employee.getEmployeeNo());
+        fieldValues.put("is_active", employee.isActive());
+        fieldValues.put("is_first_time", employee.isFirstTime());
+        fieldValues.put("salary", employee.getSalary());
+        fieldValues.put("branch_id", employee.getBranchId());
+
+        try {
+            syncService.trackChange(
+                    "employees",
+                    id.intValue(),
+                    "insert",
+                    new ObjectMapper().writeValueAsString(fieldValues)
+            );
+        } catch (JsonProcessingException e) {
+            System.out.println(e);
+        }
+
         return findById(id);
     }
 
@@ -132,6 +162,20 @@ public class EmployeeRepository {
                 .set(UserFields.UPDATED_AT.toField(), LocalDateTime.now())
                 .where(UserFields.ID.toField().eq(employeeId))
                 .execute();
+
+        Map<String, Object> fieldValues = new HashMap<>();
+        fieldValues.put("is_active", isActive);
+
+        try {
+            syncService.trackChange(
+                    "employees",
+                    employeeId.intValue(),
+                    "update",
+                    new ObjectMapper().writeValueAsString(fieldValues)
+            );
+        } catch (JsonProcessingException e) {
+            System.out.println(e);
+        }
     }
 
     public void updatePassword(Long employeeId, String newPassword) {
@@ -141,6 +185,20 @@ public class EmployeeRepository {
                 .set(UserFields.UPDATED_AT.toField(), LocalDateTime.now())
                 .where(UserFields.ID.toField().eq(employeeId))
                 .execute();
+        Map<String, Object> fieldValues = new HashMap<>();
+        fieldValues.put("password", newPassword);
+        fieldValues.put("is_first_time", false);
+
+        try {
+            syncService.trackChange(
+                    "employees",
+                    employeeId.intValue(),
+                    "update",
+                    new ObjectMapper().writeValueAsString(fieldValues)
+            );
+        } catch (JsonProcessingException e) {
+            System.out.println(e);
+        }
     }
 
     public Employee updateEmployee(Employee employee) {
@@ -155,10 +213,45 @@ public class EmployeeRepository {
                 .set(EmployeeFields.BRANCH_ID.toField(), employee.getBranchId())
                 .set(EmployeeFields.IS_ACTIVE.toField(), employee.isActive())
                 .where(UserFields.ID.toField().eq(employee.getId()))
-                .returning()
+                .returning(
+                        UserFields.ID.toField(),
+                        UserFields.USERNAME.toField(),
+                        UserFields.EMAIL.toField(),
+                        UserFields.ROLE.toField(),
+                        UserFields.PASSWORD.toField(),
+                        UserFields.UPDATED_AT.toField(),
+                        EmployeeFields.NAME.toField(),
+                        EmployeeFields.EMPLOYEE_NO.toField(),
+                        EmployeeFields.SALARY.toField(),
+                        EmployeeFields.BRANCH_ID.toField(),
+                        EmployeeFields.IS_ACTIVE.toField(),
+                        EmployeeFields.IS_FIRST_TIME.toField()
+                )
                 .fetchOne();
 
-        if(record == null) return null;
+//        if(record == null) return null;
+
+        Map<String, Object> fieldValues = new HashMap<>();
+        fieldValues.put("username", employee.getUsername());
+        fieldValues.put("email", employee.getEmail());
+        fieldValues.put("role", employee.getRole().toString());
+        fieldValues.put("name", employee.getName());
+        fieldValues.put("employee_no", employee.getEmployeeNo());
+        fieldValues.put("salary", employee.getSalary());
+        fieldValues.put("branch_id", employee.getBranchId());
+        fieldValues.put("is_active", employee.isActive());
+
+        try {
+            syncService.trackChange(
+                    "employees",
+                    employee.getId().intValue(),
+                    "update",
+                    new ObjectMapper().writeValueAsString(fieldValues)
+            );
+        } catch (JsonProcessingException e) {
+            System.out.println(e);
+        }
+
         return mapToEmployee(record);
     }
 

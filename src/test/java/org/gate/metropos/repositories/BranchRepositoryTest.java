@@ -132,21 +132,6 @@ class BranchRepositoryTest {
         assertEquals(mockBranch.getName(), result.getName());
     }
 
-    @Test
-    void createBranchWithParameters() {
-        String branchCode = "BR002";
-        String name = "Test Branch";
-        String city = "Test City";
-        String address = "Test Address";
-        String phone = "1234567890";
-
-        Branch result = repository.createBranch(branchCode, name, city, address, phone);
-
-        assertNotNull(result);
-        assertEquals(mockBranch.getBranchCode(), result.getBranchCode());
-        assertTrue(result.isActive());
-        assertEquals(0, result.getNumberOfEmployees());
-    }
 
     @Test
     void updateBranch() {

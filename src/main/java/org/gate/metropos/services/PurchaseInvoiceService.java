@@ -56,12 +56,16 @@ public class PurchaseInvoiceService {
                 return new ServiceResponse<>(false, 400, "Invalid invoice data", null);
             }
 
+//            if(invoice.getInvoiceNumber() == null || invoice.getInvoiceNumber().isEmpty()) {
+//                invoice.setInvoiceNumber(generateInvoiceNumber());
+//            }
             PurchaseInvoice updatedInvoice = purchaseInvoiceRepository.updateInvoice(invoice);
             return new ServiceResponse<>(true, 200, "Invoice updated successfully", updatedInvoice);
 
         } catch (IllegalStateException e) {
             return new ServiceResponse<>(false, 400, e.getMessage(), null);
         } catch (Exception e) {
+//            e.printStackTrace();
             return new ServiceResponse<>(false, 500, "Error updating invoice: " + e.getMessage(), null);
         }
     }

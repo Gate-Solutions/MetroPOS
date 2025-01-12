@@ -1,5 +1,9 @@
 package org.gate.metropos.repositories;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AllArgsConstructor;
 import org.gate.metropos.config.DatabaseConfig;
 import org.gate.metropos.enums.PurchaseInvoice.PurchaseInvoiceFields;
@@ -8,6 +12,7 @@ import org.gate.metropos.enums.SaleItemFields;
 import org.gate.metropos.models.BranchProduct;
 import org.gate.metropos.models.Sale;
 import org.gate.metropos.models.SaleItem;
+import org.gate.metropos.services.SyncService;
 import org.gate.metropos.utils.ServiceResponse;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -19,7 +24,9 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 public class SaleRepository {
@@ -28,6 +35,10 @@ public class SaleRepository {
     private final BranchRepository branchRepository;
     private final EmployeeRepository employeeRepository;
     private final BranchProductRepository branchProductRepository;
+    private final SyncService syncService;
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
     public SaleRepository() {
         this.dsl = DatabaseConfig.getLocalDSL();
@@ -35,6 +46,7 @@ public class SaleRepository {
         this.branchRepository = new BranchRepository();
         this.employeeRepository = new EmployeeRepository();
         this.branchProductRepository = new BranchProductRepository();
+        syncService = new SyncService();
     }
 
     public Sale createSale(Sale sale) {
@@ -62,15 +74,56 @@ public class SaleRepository {
             Long invoiceId = saleRecord.get(SaleFields.ID.toField(), Long.class);
             sale.setId(invoiceId);
 
+            try {
+                Map<String, Object> fieldValues = new HashMap<>();
+                fieldValues.put("invoice_number", sale.getInvoiceNumber());
+                fieldValues.put("branch_id", sale.getBranchId());
+                fieldValues.put("created_by", sale.getCreatedBy());
+                fieldValues.put("invoice_date", Date.valueOf(sale.getInvoiceDate()));
+                fieldValues.put("total_amount", sale.getTotalAmount());
+                fieldValues.put("discount", sale.getDiscount());
+                fieldValues.put("net_amount", sale.getNetAmount());
+                fieldValues.put("notes", sale.getNotes());
+
+                syncService.trackChange(
+                        "sales",
+                        invoiceId.intValue(),
+                        "insert",
+                        objectMapper.writeValueAsString(fieldValues)
+                );
+            } catch (JsonProcessingException e) {
+                System.out.println(e);
+            }
+
             // Insert sale items
             for (SaleItem item : sale.getItems()) {
-                ctx.insertInto(SaleItemFields.toTableField())
+                Record itemRecord = ctx.insertInto(SaleItemFields.toTableField())
                         .set(SaleItemFields.SALE_ID.toField(), invoiceId)
                         .set(SaleItemFields.PRODUCT_ID.toField(), item.getProductId())
                         .set(SaleItemFields.QUANTITY.toField(), item.getQuantity())
                         .set(SaleItemFields.UNIT_PRICE.toField(), item.getUnitPrice())
                         .set(SaleItemFields.TOTAL_PRICE.toField(), item.getTotalPrice())
-                        .execute();
+                        .returning(SaleItemFields.ID.toField())
+                        .fetchOne();
+
+                try {
+                    Map<String, Object> itemFields = new HashMap<>();
+                    itemFields.put("sale_id", invoiceId);
+                    itemFields.put("product_id", item.getProductId());
+                    itemFields.put("quantity", item.getQuantity());
+                    itemFields.put("unit_price", item.getUnitPrice());
+                    itemFields.put("total_price", item.getTotalPrice());
+
+                    syncService.trackChange(
+                            ctx,
+                            "sale_items",
+                            itemRecord.get(SaleItemFields.ID.toField(), Integer.class),
+                            "insert",
+                            objectMapper.writeValueAsString(itemFields)
+                    );
+                } catch (JsonProcessingException e) {
+                    System.out.println(e);
+                }
             }
             for (SaleItem item : sale.getItems()) {
                 validateAndUpdateStock(
@@ -186,11 +239,34 @@ public class SaleRepository {
                     restoreStock(ctx, existingSale.getBranchId(), item.getProductId(), item.getQuantity());
                 }
 
+                for (SaleItem item : existingSale.getItems()) {
+                    try {
+                        syncService.trackChange(
+                                "sale_items",
+                                item.getId().intValue(),
+                                "delete",
+                                objectMapper.writeValueAsString(new HashMap<>())
+                        );
+                    } catch (JsonProcessingException e) {
+                        System.out.println(e);
+                    }
+                }
+
                 // Delete sale items first (due to foreign key)
                 ctx.deleteFrom(SaleItemFields.toTableField())
                         .where(SaleItemFields.SALE_ID.toField().eq(id))
                         .execute();
 
+                try {
+                    syncService.trackChange(
+                            "sales",
+                            id.intValue(),
+                            "delete",
+                            objectMapper.writeValueAsString(new HashMap<>())
+                    );
+                } catch (JsonProcessingException e) {
+                    System.out.println(e);
+                }
                 // Delete the sale
                 ctx.deleteFrom(SaleFields.toTableField())
                         .where(SaleFields.ID.toField().eq(id))
@@ -225,6 +301,37 @@ public class SaleRepository {
                     .where(SaleFields.ID.toField().eq(sale.getId()))
                     .execute();
 
+            try {
+                Map<String, Object> fieldValues = new HashMap<>();
+                fieldValues.put("total_amount", sale.getTotalAmount());
+                fieldValues.put("discount", sale.getDiscount());
+                fieldValues.put("net_amount", sale.getNetAmount());
+                fieldValues.put("notes", sale.getNotes());
+
+                syncService.trackChange(
+                        ctx,
+                        "sales",
+                        sale.getId().intValue(),
+                        "update",
+                        objectMapper.writeValueAsString(fieldValues)
+                );
+            } catch (JsonProcessingException e) {
+                System.out.println(e);
+            }
+
+            for (SaleItem oldItem : existingSale.getItems()) {
+                try {
+                    syncService.trackChange(
+                            "sale_items",
+                            oldItem.getId().intValue(),
+                            "delete",
+                            objectMapper.writeValueAsString(new HashMap<>())
+                    );
+                } catch (JsonProcessingException e) {
+                    System.out.println(e);
+                }
+            }
+
             // Delete existing items
             ctx.deleteFrom(SaleItemFields.toTableField())
                     .where(SaleItemFields.SALE_ID.toField().eq(sale.getId()))
@@ -233,13 +340,32 @@ public class SaleRepository {
             // Insert new items and update stock
             for (SaleItem item : sale.getItems()) {
                 // Insert new item
-                ctx.insertInto(SaleItemFields.toTableField())
+                Record itemRecord = ctx.insertInto(SaleItemFields.toTableField())
                         .set(SaleItemFields.SALE_ID.toField(), sale.getId())
                         .set(SaleItemFields.PRODUCT_ID.toField(), item.getProductId())
                         .set(SaleItemFields.QUANTITY.toField(), item.getQuantity())
                         .set(SaleItemFields.UNIT_PRICE.toField(), item.getUnitPrice())
                         .set(SaleItemFields.TOTAL_PRICE.toField(), item.getTotalPrice())
-                        .execute();
+                        .returning(SaleItemFields.ID.toField())
+                        .fetchOne();
+
+                try {
+                    Map<String, Object> itemFields = new HashMap<>();
+                    itemFields.put("sale_id", sale.getId());
+                    itemFields.put("product_id", item.getProductId());
+                    itemFields.put("quantity", item.getQuantity());
+                    itemFields.put("unit_price", item.getUnitPrice());
+                    itemFields.put("total_price", item.getTotalPrice());
+
+                    syncService.trackChange(
+                            "sale_items",
+                            itemRecord.get(SaleItemFields.ID.toField(), Integer.class),
+                            "insert",
+                            objectMapper.writeValueAsString(itemFields)
+                    );
+                } catch (JsonProcessingException e) {
+                    System.out.println(e);
+                }
 
                 // Validate and update new stock
                 validateAndUpdateStock(ctx, sale.getBranchId(), item.getProductId(), item.getQuantity());

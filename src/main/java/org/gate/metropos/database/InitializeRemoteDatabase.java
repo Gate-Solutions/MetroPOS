@@ -10,6 +10,6 @@ public class InitializeRemoteDatabase {
             return;
         }
         DatabaseInitializer initializer = new DatabaseInitializer(remoteDSL, false);
-        initializer.createTables();
+        initializer.initialize();
     }
 }

@@ -210,7 +210,6 @@ public class ManageCashiersController {
         });
     }
 
-
     private void confirmAndRemoveCashier(Employee cashier) {
         if (AlertUtils.showConfirmation("Are you sure you want to remove employee " + cashier.getName() + "?")) {
             ServiceResponse<Void> response = employeeService.setEmployeeStatus(cashier.getId(), false);
