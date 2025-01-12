@@ -1,5 +1,6 @@
 package org.gate.metropos.Controllers;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -26,8 +27,11 @@ public class SplashScreenController implements Initializable {
     @FXML
     private Label loadingLabel;
 
+    private static Dotenv dotenv;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        dotenv = Dotenv.load();
         loadingProgress.setProgress(0);
         startLoading();
     }
@@ -35,8 +39,17 @@ public class SplashScreenController implements Initializable {
     private void startLoading() {
         Timeline timeline = new Timeline();
 
+        int syncDelay = 5;
+        if(dotenv.get("SPLASH_TIME") != null) {
+            try {
+                syncDelay = Integer.parseInt(dotenv.get("SPLASH_TIME"));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+
         KeyValue keyValue = new KeyValue(loadingProgress.progressProperty(), 1);
-        KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), event -> {
+        KeyFrame keyFrame = new KeyFrame(Duration.seconds(syncDelay), event -> {
             updateLoadingText(loadingProgress.getProgress());
         }, keyValue);
 

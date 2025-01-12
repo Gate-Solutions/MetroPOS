@@ -218,6 +218,7 @@ public class EmployeeRepository {
                         UserFields.USERNAME.toField(),
                         UserFields.EMAIL.toField(),
                         UserFields.ROLE.toField(),
+                        UserFields.PASSWORD.toField(),
                         UserFields.UPDATED_AT.toField(),
                         EmployeeFields.NAME.toField(),
                         EmployeeFields.EMPLOYEE_NO.toField(),
