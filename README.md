@@ -126,10 +126,16 @@ Roles available for login:
    ```bash
    git clone https://github.com/Gate-Solutions/MetroPOS
    ```
-2. **Database Setup**:
-   - Set up PostgreSQL database in your local environment.
-   - Fill .env file with your database credentials (offline and online both).
-   - Run InitializeLocalDatabasee.java to initialize the offline database.
+2. **Install Dependencies**:
+   - Ensure you have Java Development Kit (JDK) installed.
+   - Run the following command in terminal to install the Dependencies:
+   ```bash
+   mvn clean install
+   ```
+3. **Database Setup**:
+   - Install PostgreSQL database in your local environment.
+   - Modify .env.example file with your database credentials (offline and online both) and rename it to .env .
+   - Run InitializeLocalDatabase.java to initialize the offline database.
    - Run InitializeOnlineDatabase.java to initialize the online database.
-3. **Compile and Run**:
+4. **Compile and Run**:
    - Run the Main.java file to start the application.
