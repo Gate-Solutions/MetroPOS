@@ -3,6 +3,7 @@ package org.gate.metropos.Controllers.DataEntryOperator;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -104,9 +105,7 @@ public class AddPurchaseInvoiceController {
                 field.setEditable(true);
 
                 // Prevent event propagation to the table row
-                field.setOnMouseClicked(event -> {
-                    event.consume();
-                });
+                field.setOnMouseClicked(Event::consume);
 
                 field.focusedProperty().addListener((obs, oldVal, newVal) -> {
                     if (newVal) {

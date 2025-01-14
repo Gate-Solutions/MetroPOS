@@ -3,6 +3,7 @@ package org.gate.metropos.Controllers.CashierControllers;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,6 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.gate.metropos.models.Employee;
 import org.gate.metropos.models.Product;
+import org.gate.metropos.models.PurchaseInvoice.PurchaseInvoiceItem;
 import org.gate.metropos.models.Sale;
 import org.gate.metropos.models.SaleItem;
 import org.gate.metropos.services.EmployeeService;
@@ -77,17 +79,30 @@ public class AddSaleController {
         quantityCol.setCellFactory(col -> new TableCell<>() {
             private final TextField field = new TextField();
             {
-                field.setOnAction(e -> {
-                    try {
-                        int value = Integer.parseInt(field.getText());
-                        if (value > 0) {
-                            SaleItem item = getTableView().getItems().get(getIndex());
-                            item.setQuantity(value);
-                            item.setTotalPrice(item.getUnitPrice().multiply(BigDecimal.valueOf(value)));
-                            updateAmounts();
+
+                field.setEditable(true);
+
+                // Prevent event propagation to the table row
+                field.setOnMouseClicked(Event::consume);
+
+                field.focusedProperty().addListener((obs, oldVal, newVal) -> {
+                    if (newVal) {
+                        field.selectAll();
+                    }
+                });
+                field.textProperty().addListener((observable, oldValue, newValue) -> {
+                    if (!newValue.isEmpty() && getTableRow() != null && getTableRow().getItem() != null) {
+                        try {
+                            int value = Integer.parseInt(newValue);
+                            if (value > 0) {
+                             SaleItem item = getTableView().getItems().get(getIndex());
+                                item.setQuantity(value);
+                                item.setTotalPrice(item.getUnitPrice().multiply(BigDecimal.valueOf(value)));
+                                updateAmounts();
+                            }
+                        } catch (NumberFormatException ignored) {
+                            field.setText(oldValue);
                         }
-                    } catch (NumberFormatException ex) {
-                        field.setText(String.valueOf(getItem()));
                     }
                 });
             }
