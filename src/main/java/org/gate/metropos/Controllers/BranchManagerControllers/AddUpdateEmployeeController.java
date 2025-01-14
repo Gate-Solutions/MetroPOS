@@ -14,7 +14,7 @@ import org.gate.metropos.utils.SessionManager;
 
 import java.math.BigDecimal;
 
-public class AddUpdateCashierController {
+public class AddUpdateEmployeeController {
     @FXML private TextField branchIdField;
     @FXML private TextField usernameField;
     @FXML private TextField emailField;
@@ -36,7 +36,7 @@ public class AddUpdateCashierController {
 
 
 
-    public AddUpdateCashierController() {
+    public AddUpdateEmployeeController() {
         employeeService = new EmployeeService();
         try {
             // Get current branch manager from session

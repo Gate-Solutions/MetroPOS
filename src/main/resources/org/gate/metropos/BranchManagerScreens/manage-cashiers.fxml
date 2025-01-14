@@ -6,7 +6,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.gate.metropos.Controllers.BranchManagerControllers.ManageCashiersController"
+            fx:controller="org.gate.metropos.Controllers.BranchManagerControllers.ManageEmployeeController"
             stylesheets="@../styles/global.css, @../styles/common.css">
 
     <VBox spacing="20" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"

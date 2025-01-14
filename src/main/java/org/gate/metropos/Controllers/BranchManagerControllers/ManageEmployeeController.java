@@ -16,13 +16,16 @@ import org.gate.metropos.models.Employee;
 import org.gate.metropos.services.EmployeeService;
 import org.gate.metropos.utils.AlertUtils;
 import org.gate.metropos.utils.ServiceResponse;
+import org.gate.metropos.utils.SessionManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
-public class ManageCashiersController {
+public class ManageEmployeeController {
     @FXML
     private TableView<Employee> cashiersTable;
     @FXML private Button addCashierBtn;
@@ -30,11 +33,11 @@ public class ManageCashiersController {
     @FXML private ComboBox<String> statusFilter;
     @FXML private ComboBox<UserRole> roleFilter;
 
-    private ObservableList<Employee> allCashiers = FXCollections.observableArrayList();
+    private ObservableList<Employee> allEmployees = FXCollections.observableArrayList();
     private FilteredList<Employee> filteredCashiers;
     private final EmployeeService employeeService;
 
-    public ManageCashiersController() {
+    public ManageEmployeeController() {
         employeeService = new EmployeeService();
     }
 
@@ -43,11 +46,11 @@ public class ManageCashiersController {
         cashiersTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         setupTable();
         setupFilters();
-        loadCashiers();
+        loadEmployees();
         addCashierBtn.setOnAction(e -> openAddCashierWindow());
     }
 
-    private void loadCashiers() {
+    private void loadEmployees() {
         List<UserRole> roles = Arrays.asList(UserRole.CASHIER, UserRole.DATA_ENTRY_OPERATOR);
         List<Employee> employees = new ArrayList<>();
         for (UserRole role : roles) {
@@ -56,8 +59,12 @@ public class ManageCashiersController {
                 employees.addAll(response.getData());
             }
         }
-        allCashiers.clear();
-        allCashiers.addAll(employees);
+        allEmployees.clear();
+        Employee em = SessionManager.getCurrentEmployee();
+        allEmployees.addAll(
+                employees.stream()
+                        .filter(e-> Objects.equals(e.getBranchId(), em.getBranchId()))
+                        .collect(Collectors.toCollection(ArrayList::new)));
         updateFilters();
     }
 
@@ -160,7 +167,7 @@ public class ManageCashiersController {
             }
         });
 
-        filteredCashiers = new FilteredList<>(allCashiers, p -> true);
+        filteredCashiers = new FilteredList<>(allEmployees, p -> true);
         searchField.textProperty().addListener((observable, oldValue, newValue) -> updateFilters());
         statusFilter.valueProperty().addListener((observable, oldValue, newValue) -> updateFilters());
         roleFilter.valueProperty().addListener((observable, oldValue, newValue) -> updateFilters());
@@ -215,7 +222,7 @@ public class ManageCashiersController {
             ServiceResponse<Void> response = employeeService.setEmployeeStatus(cashier.getId(), false);
             if (response.isSuccess()) {
                 AlertUtils.showSuccess("Employee removed successfully");
-                loadCashiers();
+                loadEmployees();
             } else {
                 AlertUtils.showError(response.getMessage());
             }
@@ -231,7 +238,7 @@ public class ManageCashiersController {
             stage.setScene(new Scene(loader.load()));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
-            loadCashiers();
+            loadEmployees();
         } catch (IOException ex) {
             ex.printStackTrace();
             AlertUtils.showError("Failed to open add employee window");
@@ -247,11 +254,11 @@ public class ManageCashiersController {
             stage.setScene(new Scene(loader.load()));
             stage.initModality(Modality.APPLICATION_MODAL);
 
-            AddUpdateCashierController controller = loader.getController();
+            AddUpdateEmployeeController controller = loader.getController();
             controller.setEmployeeForUpdate(cashier);
 
             stage.showAndWait();
-            loadCashiers();
+            loadEmployees();
         } catch (IOException ex) {
             ex.printStackTrace();
             AlertUtils.showError("Failed to open update employee window");
