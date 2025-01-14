@@ -75,7 +75,6 @@ public class PurchaseInvoiceRepository {
     }
 
     public Long createInvoice(PurchaseInvoice invoice) {
-
         return dsl.transactionResult(configuration -> {
             DSLContext ctx = DSL.using(configuration);
             // Insert main invoice
@@ -87,11 +86,8 @@ public class PurchaseInvoiceRepository {
                     .set(PurchaseInvoiceFields.INVOICE_DATE.toField(), invoice.getInvoiceDate())
                     .set(PurchaseInvoiceFields.TOTAL_AMOUNT.toField(), invoice.getTotalAmount())
                     .set(PurchaseInvoiceFields.NOTES.toField(), invoice.getNotes())
-                    .returning(
-                            PurchaseInvoiceFields.ID.toField()
-                    )
+                    .returning(PurchaseInvoiceFields.ID.toField())
                     .fetchOne();
-
 
             if(record == null) {
                 throw new Exception("Record not found");
@@ -116,15 +112,11 @@ public class PurchaseInvoiceRepository {
                         "insert",
                         objectMapper.writeValueAsString(fieldValues)
                 );
-
-                // Track invoice items
-                for (PurchaseInvoiceItem item : invoice.getItems()) {
-                    insertInvoiceItem(ctx, invoiceId, item);
-                }
             } catch (JsonProcessingException e) {
                 System.out.println(e);
             }
 
+            // Insert items only once and update branch product quantities
             for (PurchaseInvoiceItem item : invoice.getItems()) {
                 insertInvoiceItem(ctx, invoiceId, item);
                 updateBranchProductQuantity(ctx, invoice.getBranchId(), item.getProductId(), item.getQuantity());
@@ -133,6 +125,7 @@ public class PurchaseInvoiceRepository {
             return invoiceId;
         });
     }
+
 
     private void insertInvoiceItem(DSLContext ctx, Long invoiceId, PurchaseInvoiceItem item) {
         Record record = ctx.insertInto(PurchaseInvoiceItemFields.toTableField())

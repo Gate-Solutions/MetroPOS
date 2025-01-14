@@ -80,7 +80,7 @@ public class AddPurchaseInvoiceController {
         supplierComboBox.setValue(supplierService.getSupplier(invoiceToUpdate.getSupplierId()).getData());
         invoiceDatePicker.setValue(invoiceToUpdate.getInvoiceDate());
         notesField.setText(invoiceToUpdate.getNotes());
-
+        System.out.println(invoiceItems);
         invoiceItems.clear();
         invoiceItems.addAll(invoiceToUpdate.getItems());
         updateTotalAmount();
@@ -99,18 +99,34 @@ public class AddPurchaseInvoiceController {
         quantityCol.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         quantityCol.setCellFactory(col -> new TableCell<>() {
             private final TextField field = new TextField();
+
             {
-                field.setOnAction(e -> {
-                    try {
-                        int value = Integer.parseInt(field.getText());
-                        if (value > 0) {
-                            PurchaseInvoiceItem item = getTableView().getItems().get(getIndex());
-                            item.setQuantity(value);
-                            item.setTotalPrice(item.getUnitPrice().multiply(BigDecimal.valueOf(value)));
-                            updateTotalAmount();
+                field.setEditable(true);
+
+                // Prevent event propagation to the table row
+                field.setOnMouseClicked(event -> {
+                    event.consume();
+                });
+
+                field.focusedProperty().addListener((obs, oldVal, newVal) -> {
+                    if (newVal) {
+                        field.selectAll();
+                    }
+                });
+
+                field.textProperty().addListener((observable, oldValue, newValue) -> {
+                    if (!newValue.isEmpty() && getTableRow() != null && getTableRow().getItem() != null) {
+                        try {
+                            int value = Integer.parseInt(newValue);
+                            if (value > 0) {
+                                PurchaseInvoiceItem item = getTableView().getItems().get(getIndex());
+                                item.setQuantity(value);
+                                item.setTotalPrice(item.getUnitPrice().multiply(BigDecimal.valueOf(value)));
+                                updateTotalAmount();
+                            }
+                        } catch (NumberFormatException ignored) {
+                            field.setText(oldValue);
                         }
-                    } catch (NumberFormatException ex) {
-                        field.setText(String.valueOf(getItem()));
                     }
                 });
             }
@@ -126,6 +142,7 @@ public class AddPurchaseInvoiceController {
                 }
             }
         });
+
 
         TableColumn<PurchaseInvoiceItem, BigDecimal> unitPriceCol = new TableColumn<>("Unit Price");
         unitPriceCol.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
@@ -237,6 +254,7 @@ public class AddPurchaseInvoiceController {
         invoice.setInvoiceDate(invoiceDatePicker.getValue());
         invoice.setNotes(notesField.getText());
         invoice.setTotalAmount(totalAmount);
+        System.out.println("THIS IS FROM FRONTEND : " + invoiceItems);
         invoice.setItems(new ArrayList<>(invoiceItems));
 
         Employee em = EmployeeService.getLoggedInEmployee();
