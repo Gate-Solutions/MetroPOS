@@ -83,6 +83,8 @@ public class DataEntryDashboardController {
     }
 
     private void handleLogout() {
+        if (!AlertUtils.showConfirmation("Are you sure you want to logout ? " ))
+            return;
         EmployeeService em = new EmployeeService();
         em.logout();
 
