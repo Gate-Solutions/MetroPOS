@@ -9,7 +9,10 @@
 <HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.gate.metropos.Controllers.BranchManagerControllers.DashboardController"
-      stylesheets="@../styles/global.css,@../styles/SuperAdmin/dashboard.css">
+      stylesheets="@../styles/global.css,@../styles/SuperAdmin/dashboard.css"
+     maxHeight="Infinity"
+      maxWidth="Infinity"
+>
 
     <!-- Sidebar -->
     <VBox styleClass="sidebar">

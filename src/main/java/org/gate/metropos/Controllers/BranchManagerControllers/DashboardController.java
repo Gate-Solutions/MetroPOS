@@ -5,13 +5,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.gate.metropos.utils.AlertUtils;
+import org.gate.metropos.utils.WindowUtils;
 
 import java.io.IOException;
-import java.util.Optional;
 
 public class DashboardController {
     @FXML private Button dashboardBtn;
@@ -26,6 +25,7 @@ public class DashboardController {
     public void initialize() {
         loadView("home.fxml");
 
+        WindowUtils.ResizeDashboardWindow(contentArea);
         dashboardBtn.setOnAction(e -> loadView("home.fxml"));
         branchesBtn.setOnAction(e -> loadView("manage-cashiers.fxml"));
         usersBtn.setOnAction(e -> loadView("manage-suppliers.fxml"));
@@ -61,6 +61,8 @@ public class DashboardController {
 
                     currentStage.setScene(loginScene);
                     currentStage.setTitle("Login");
+                    currentStage.setWidth(900);
+                    currentStage.setHeight(600);
                     currentStage.centerOnScreen();
 
 

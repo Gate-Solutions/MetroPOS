@@ -10,6 +10,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.gate.metropos.services.EmployeeService;
 import org.gate.metropos.utils.AlertUtils;
+import org.gate.metropos.utils.WindowUtils;
 
 import java.io.IOException;
 
@@ -38,6 +39,7 @@ public class CashierDashboardController {
                 System.err.println("Could not find FXML file: " + fxml);
                 return;
             }
+            WindowUtils.ResizeDashboardWindow(contentArea);
             contentArea.getChildren().clear();
             contentArea.getChildren().add(loader.load());
         } catch (IOException e) {
@@ -82,6 +84,8 @@ public class CashierDashboardController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/gate/metropos/login.fxml"));
             Stage stage = (Stage) logoutBtn.getScene().getWindow();
             stage.setScene(new Scene(loader.load()));
+            stage.setWidth(900);
+            stage.setHeight(600);
             stage.centerOnScreen();
         } catch (IOException e) {
             AlertUtils.showError("Error loading login screen");

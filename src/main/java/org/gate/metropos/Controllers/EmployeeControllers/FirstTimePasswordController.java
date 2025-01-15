@@ -1,10 +1,13 @@
 package org.gate.metropos.Controllers.EmployeeControllers;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.gate.metropos.models.Employee;
 import org.gate.metropos.services.EmployeeService;
@@ -32,6 +35,12 @@ public class FirstTimePasswordController {
 
         setupStyles();
         setupActions();
+        Platform.runLater(() -> {
+            Stage stage = (Stage) mainContainer.getScene().getWindow();
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
+            stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
+        });
     }
 
     private void setupStyles() {
